@@ -281,9 +281,6 @@
           <!-- Connected Google Form for Closed Beta -->
           <form 
             id="betaForm" 
-            action="https://docs.google.com/forms/d/e/1FAIpQLSfjTBFAYWxBTbUerL8y93qf9K3G-0GtWj1jDiD4m4Vf68DbfA/formResponse" 
-            method="POST" 
-            target="hidden_iframe1"
             onsubmit="handleBetaSubmit(event)" 
             class="space-y-4"
           >
@@ -294,7 +291,6 @@
                 <input 
                   type="text" 
                   id="betaTag"
-                  name="entry.90927477"
                   required
                   placeholder="username" 
                   class="w-full bg-[#050807] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl pl-8 pr-4 py-2.5 text-sm outline-none transition-all font-mono"
@@ -307,7 +303,6 @@
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Motivation for CLOSED beta access? <span class="text-brand-200">*</span></label>
               <textarea 
                 id="betaReason"
-                name="entry.970068239"
                 required
                 rows="3"
                 placeholder="Why do you want to play Prompt Battle? Do you have experience with other card games?"
@@ -320,7 +315,6 @@
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Anything else you want to tell me?</label>
               <textarea 
                 id="betaComments"
-                name="entry.722218590" 
                 rows="2"
                 placeholder="Optional comments or suggestions..."
                 class="w-full bg-[#050807] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none resize-none transition-all"
@@ -329,15 +323,13 @@
 
             <button 
               type="submit"
+              id="betaSubmitBtn"
               class="w-full bg-gradient-to-r from-brand-200 to-brand-300 text-slate-900 font-bold text-sm tracking-wide py-3 px-4 rounded-xl hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-200/10"
             >
               Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>
             </button>
           </form>
         </div>
-
-        <!-- Silent iframe targets to handle background submission without redirect page reloads -->
-        <iframe name="hidden_iframe1" id="hidden_iframe1" class="hidden"></iframe>
 
         <!-- Success overlay page replacement -->
         <div id="betaSuccess" class="hidden absolute inset-0 bg-[#050807] p-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in z-20">
@@ -400,12 +392,9 @@
             </div>
           </div>
 
-          <!-- Connected Google Form for Suggestions -->
+          <!-- Suggestion Form -->
           <form 
             id="artistForm" 
-            action="https://docs.google.com/forms/d/e/1FAIpQLSdtbxkjmrojslxRIPRdkLTKIhk4cgB9zZW87z949xE_rqOa_w/formResponse" 
-            method="POST" 
-            target="hidden_iframe2"
             onsubmit="handleArtistSubmit(event)" 
             class="space-y-4"
           >
@@ -416,7 +405,6 @@
                 <input 
                   type="text" 
                   id="artistTag"
-                  name="entry.611683980" 
                   required
                   placeholder="username" 
                   class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl pl-8 pr-4 py-2.5 text-sm outline-none transition-all font-mono"
@@ -429,11 +417,10 @@
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Why should we include them in the game? <span class="text-brand-200">*</span></label>
               <textarea 
                 id="artistMotivation"
-                name="entry.846367865"
                 required
                 rows="2"
                 placeholder="E.g. They are highly active, run cool community events, have an iconic gallery style..."
-                class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2 py-2.5 text-sm outline-none resize-none transition-all"
+                class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none resize-none transition-all"
               ></textarea>
             </div>
 
@@ -441,11 +428,10 @@
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Faction Alignment & Passive Concept <span class="text-brand-200">*</span></label>
               <textarea 
                 id="artistPassive"
-                name="entry.1235384823"
                 required
                 rows="2"
                 placeholder="E.g. Faction: CLIP Resistance. Passive: Steals visibility from matching style tags..."
-                class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2 py-2.5 text-sm outline-none resize-none transition-all"
+                class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none resize-none transition-all"
               ></textarea>
             </div>
 
@@ -453,11 +439,10 @@
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Most Used Models & Favourite Prompt <span class="text-brand-200">*</span></label>
               <textarea 
                 id="artistModels"
-                name="entry.1424477115"
                 required
                 rows="2"
                 placeholder="E.g. Model: SDXL. Favourite Prompt: 'vibrant expressiveness, oil pastel rendering...'"
-                class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2 py-2.5 text-sm outline-none resize-none transition-all"
+                class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none resize-none transition-all"
               ></textarea>
             </div>
 
@@ -466,7 +451,6 @@
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Anything else you want to tell me?</label>
               <textarea 
                 id="artistComments"
-                name="entry.2137484019" 
                 rows="2"
                 placeholder="Optional notes or details..."
                 class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none resize-none transition-all"
@@ -476,19 +460,18 @@
             <!-- Soft Local Warning Box -->
             <div id="local-warning-box" class="hidden text-xs text-red-300 bg-red-500/10 border border-red-500/20 p-3 rounded-lg flex items-center gap-2">
               <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
-              <span>You have already suggested this Creator tag! Duplicate submissions are restricted.</span>
+              <span id="warning-text">You have already suggested this Creator tag! Duplicate submissions are restricted.</span>
             </div>
 
             <button 
               type="submit"
+              id="artistSubmitBtn"
               class="w-full bg-gradient-to-r from-brand-200 to-brand-300 text-slate-900 font-bold text-sm tracking-wide py-3 px-4 rounded-xl hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-200/10"
             >
               Submit Creator Suggestion <i data-lucide="sparkles" class="w-4 h-4"></i>
             </button>
           </form>
         </div>
-
-        <iframe name="hidden_iframe2" id="hidden_iframe2" class="hidden"></iframe>
 
         <!-- Suggestion Success Screen Replacement -->
         <div id="artistSuccess" class="hidden absolute inset-0 bg-[#050405] p-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in z-20">
@@ -500,7 +483,7 @@
             <p class="text-xs text-brand-200 font-mono" id="artistSuccessTag">@suggested</p>
           </div>
           <p class="text-xs text-slate-400 max-w-sm">
-            Thank you! Your creator card suggestion parameters have been safely stored.
+            Thank you! Your creator suggestion has been stored.
           </p>
           <button onclick="resetArtistForm()" class="text-xs text-slate-500 hover:text-brand-300 underline font-mono">Suggest another artist</button>
         </div>
@@ -630,11 +613,11 @@
   </footer>
 
   <script>
-    // Okay, so now this works. Reminder to future self: do not touch it lol, or at least be careful.
+    // Configuration
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdE5-CePIwz6vUNtJydUhgrFsVEsHZtUHRYL5E1JAx6t6GULrNrcmZL2sxMsXyNbHW/exec'; 
     const SPREADSHEET_ID = '1CBEIN3Al02f7HGXpxwCkZI5EjVP00VvaXKyb5GFeZNg'; 
 
-    // Our default card list. Honestly, they look great, so no need to touch this part at all.
+    // Our default card list
     const SAMPLE_CARDS = [
       {
         id: 'C-001', name: 'Aia', type: 'creator', rarity: 'rare', rarityDots: 3,
@@ -710,7 +693,6 @@
       }
     ];
 
-    // Starting with an empty array. Real suggested artists will load directly from the sheet!
     let SUGGESTED_ARTISTS = [];
 
     // Continuous carousel scroll state
@@ -719,50 +701,41 @@
     const glideSpeed = 0.5;
 
     document.addEventListener("DOMContentLoaded", () => {
-      // Let's fire up all the icons and load our database content!
       lucide.createIcons();
       loadSuggestedArtists();
       renderHandTrack();
       animateHandTrack();
     });
 
-    // Actually, the links work now. Let's fetch the dynamic creators from Google Sheets!
+    // Fetch dynamic creators from Google Spreadsheet (reading the Summary list)
     async function loadSuggestedArtists() {
       const cached = localStorage.getItem('pb_suggested_artists');
-      const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
       
       if (cached) {
         SUGGESTED_ARTISTS = JSON.parse(cached);
-      } else {
-        SUGGESTED_ARTISTS = [];
-        localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
       }
 
-      // If we have an active sheet ID, let's grab the rows and parse them
       if (SPREADSHEET_ID && SPREADSHEET_ID.trim() !== '') {
         try {
-          const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json`;
+          // If we have renamed our sheet to "Summary", let's explicitly request it to avoid issues
+          const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Summary`;
           const response = await fetch(url);
           const text = await response.text();
           
-          // Let's peel off Google's anti-hacking safety wrapper to parse raw JSON. Neat!
+          // Clean up Google's security wrapper
           const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
           const rows = cleanJson.table.rows;
 
           let liveArtists = [];
           
           rows.forEach((row, rowIndex) => {
-            // Row 0 is just the header titles, skip it!
-            if (rowIndex === 0) return;
+            if (rowIndex === 0) return; // Skip headers ("Creator Tag", "Total Votes", "Last Updated")
             
-            // Just grabbing the username and votes to keep things super simple and fast.
-            // Column A = row.c[0] (Username), Column B = row.c[1] (Votes count)
             if (row.c && row.c[0] && row.c[0].v) {
               const creatorTag = row.c[0].v.toString().trim().replace('@', '');
-              const totalVotes = (row.c[1] && row.c[1].v) ? parseInt(row.c[1].v) : 1;
+              const totalVotes = (row.c[1] && row.c[1].v !== null) ? parseInt(row.c[1].v) : 1;
               
               if (creatorTag) {
-                // Let's combine any duplicate rows to synchronise votes correctly.
                 const duplicateIndex = liveArtists.findIndex(x => x.name.toLowerCase() === creatorTag.toLowerCase());
                 if (duplicateIndex !== -1) {
                   liveArtists[duplicateIndex].votes += totalVotes;
@@ -776,12 +749,9 @@
             }
           });
 
-          // All done! Let's save them locally so the site loads super quickly next time.
           if (liveArtists.length > 0) {
             SUGGESTED_ARTISTS = liveArtists;
             localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
-          } else {
-            SUGGESTED_ARTISTS = [];
           }
 
         } catch (error) {
@@ -792,17 +762,16 @@
       renderPodiumAndStats();
     }
 
-    // Paint the community leaderboard podium. Hope some of my favourites are winning!
+    // Paint the community leaderboard podium
     function renderPodiumAndStats() {
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
       const podium = document.getElementById('podium-container');
       podium.innerHTML = '';
 
-      // Let's sort suggestions from highest votes to lowest!
+      // Sort suggestions by votes descending
       const sorted = [...SUGGESTED_ARTISTS].sort((a, b) => b.votes - a.votes);
       
       if (sorted.length === 0) {
-        // Safe check: if no one has submitted anything, show a sweet friendly prompt to get them started!
         podium.className = "col-span-full py-12 text-center flex flex-col items-center justify-center space-y-3 bg-brand-950/20 border border-brand-200/10 rounded-2xl";
         podium.innerHTML = `
           <div class="w-12 h-12 rounded-full bg-brand-200/10 flex items-center justify-center text-brand-200">
@@ -814,10 +783,8 @@
           </div>
         `;
       } else {
-        // Back to normal grid layout for the active leaderboard cards
         podium.className = "grid md:grid-cols-3 gap-4 pt-4";
         
-        // Loop through top 3 and hand out ranking medals!
         sorted.slice(0, 3).forEach((item, index) => {
           const medalColors = ['text-accent-gold', 'text-slate-300', 'text-amber-700'];
           const cardClass = index === 0 ? 'border-accent-gold/20 bg-accent-gold/5' : 'border-brand-200/10 bg-brand-950/40';
@@ -850,7 +817,6 @@
         });
       }
 
-      // Bumping the statistics counters. Simple loop addition.
       const totalVotes = SUGGESTED_ARTISTS.reduce((sum, item) => sum + item.votes, 0);
       document.getElementById('stat-artists').innerText = SUGGESTED_ARTISTS.length;
       document.getElementById('stat-votes').innerText = totalVotes;
@@ -859,19 +825,19 @@
       lucide.createIcons();
     }
 
-    // Upvote trigger. Make sure they don't vote for the same creator twice. No cheating! 😉
+    // Upvote trigger
     function voteForArtist(name) {
       const votedFor = JSON.parse(localStorage.getItem('pb_voted_artists') || '[]');
 
       if (votedFor.includes(name.toLowerCase())) {
-        showLocalWarning();
+        showLocalWarning("You have already cast a vote for this creator tag!");
         return;
       }
 
       votedFor.push(name.toLowerCase());
       localStorage.setItem('pb_voted_artists', JSON.stringify(votedFor));
 
-      // Local update first so the interface feels lightning fast!
+      // Instant local UI feedback
       SUGGESTED_ARTISTS = SUGGESTED_ARTISTS.map(item => {
         if (item.name.toLowerCase() === name.toLowerCase()) {
           return { ...item, votes: item.votes + 1 };
@@ -882,7 +848,7 @@
       localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
       renderPodiumAndStats();
 
-      // Submit actual vote payload over the network
+      // Submit vote payload over the network asynchronously
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
         const urlParams = new URLSearchParams();
         urlParams.append('action', 'vote');
@@ -890,43 +856,21 @@
 
         fetch(APPS_SCRIPT_URL, {
           method: 'POST',
-          mode: 'no-cors',
+          mode: 'no-cors', // Standard Google Apps Script cross-origin POST execution
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           },
           body: urlParams
         })
         .then(() => {
-          console.log(`Vote registered instantly on live Apps Script database for @${name}`);
+          console.log(`Vote registered for @${name}`);
           setTimeout(loadSuggestedArtists, 1500);
         })
-        .catch(err => console.error("Apps Script direct upvote link failed, reverting to local mock tracking.", err));
-      } else {
-        submitSilentVoteToForm(name);
+        .catch(err => console.error("Database submission link failed.", err));
       }
     }
 
-    // Post to standard Google form quietly in background without annoying page redirects!
-    function submitSilentVoteToForm(creatorName) {
-      const url = "https://docs.google.com/forms/d/e/1FAIpQLSdtbxkjmrojslxRIPRdkLTKIhk4cgB9zZW87z949xE_rqOa_w/formResponse";
-      const formData = new FormData();
-      
-      formData.append('entry.611683980', creatorName); 
-      formData.append('entry.846367865', 'Community click podium quick-vote');
-      formData.append('entry.1235384823', 'Automatic Alignment Upvote');
-      formData.append('entry.1424477115', 'Podium instant voter interaction');
-      formData.append('entry.2137484019', 'Upvoted via Podium panel directly');
-
-      fetch(url, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: formData
-      })
-      .then(() => console.log(`Upvote for @${creatorName} logged to live Google Form database.`))
-      .catch(err => console.error("Network upvote submit failed, relying on LocalStorage fallback.", err));
-    }
-
-    // Populate our lovely scroller track!
+    // Populate our scrolling track
     function renderHandTrack() {
       const track = document.getElementById('hand-track-element');
       track.innerHTML = '';
@@ -981,7 +925,7 @@
       viewport.addEventListener('mouseleave', () => isHoveringTrack = false);
     }
 
-    // Keep the scroller gliding beautifully unless our mouse gets in the way!
+    // Hand track glide execution
     function animateHandTrack() {
       const track = document.getElementById('hand-track-element');
       const viewport = document.getElementById('hand-viewport-element');
@@ -1008,7 +952,7 @@
       requestAnimationFrame(run);
     }
 
-    // Okay, the 3D tilt math actually works. Do not touch this, or at least be super careful!
+    // Inspect Card modal detailing 3D Holographic physics
     function inspectCard(card) {
       const modal = document.getElementById('inspector-modal');
       const content = document.getElementById('inspector-content');
@@ -1171,12 +1115,46 @@
       }
     });
 
+    // Handle Closed Beta requests locally & register submission
     function handleBetaSubmit(event) {
+      event.preventDefault();
       const tag = document.getElementById('betaTag').value.trim().replace('@', '');
-      setTimeout(() => {
-        document.getElementById('betaSuccessTag').innerText = `@${tag}`;
-        document.getElementById('betaSuccess').classList.remove('hidden');
-      }, 300);
+      const reason = document.getElementById('betaReason').value.trim();
+      const comments = document.getElementById('betaComments').value.trim();
+      const submitBtn = document.getElementById('betaSubmitBtn');
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Submitting...";
+
+      // Optionally send Beta details over to Google Sheets Responses sheet too!
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
+        const urlParams = new URLSearchParams();
+        urlParams.append('action', 'beta-request');
+        urlParams.append('tag', tag);
+        urlParams.append('motivation', reason);
+        urlParams.append('comments', comments);
+
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: urlParams
+        })
+        .finally(() => {
+          showBetaSuccessScreen(tag);
+        });
+      } else {
+        showBetaSuccessScreen(tag);
+      }
+    }
+
+    function showBetaSuccessScreen(tag) {
+      document.getElementById('betaSuccessTag').innerText = `@${tag}`;
+      document.getElementById('betaSuccess').classList.remove('hidden');
+      const submitBtn = document.getElementById('betaSubmitBtn');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>';
+      lucide.createIcons();
     }
 
     function resetBetaForm() {
@@ -1184,8 +1162,10 @@
       document.getElementById('betaSuccess').classList.add('hidden');
     }
 
-    // Submit suggestion. Remember to check for duplicates so people can't spam!
+    // Submit creator suggestion (ensuring it appends unique user metadata records every time)
     function handleArtistSubmit(event) {
+      event.preventDefault();
+
       const tag = document.getElementById('artistTag').value.trim().replace('@', '');
       const motivation = document.getElementById('artistMotivation').value.trim();
       const passive = document.getElementById('artistPassive').value.trim();
@@ -1193,16 +1173,19 @@
       const comments = document.getElementById('artistComments').value.trim();
       
       const warningBox = document.getElementById('local-warning-box');
+      const submitBtn = document.getElementById('artistSubmitBtn');
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
 
       if (submittedByMe.includes(tag.toLowerCase())) {
-        event.preventDefault();
-        warningBox.classList.remove('hidden');
+        showLocalWarning("You have already suggested this Creator tag! Duplicate submissions are restricted.");
         return;
       }
       
       warningBox.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Submitting suggestion...";
 
+      // Track local feedback instantly
       submittedByMe.push(tag.toLowerCase());
       localStorage.setItem('pb_my_suggestions', JSON.stringify(submittedByMe));
 
@@ -1210,18 +1193,13 @@
       if (existingIdx !== -1) {
         SUGGESTED_ARTISTS[existingIdx].votes += 1;
       } else {
-        SUGGESTED_ARTISTS.push({
-          name: tag,
-          votes: 1
-        });
+        SUGGESTED_ARTISTS.push({ name: tag, votes: 1 });
       }
 
       localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
 
-      // Post asynchronous details to Apps Script endpoint
+      // Post raw data to Apps Script so both Summary and Responses sheets get updated!
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        event.preventDefault(); // Halt default HTML form submit so our script can send a modern fetch!
-
         const urlParams = new URLSearchParams();
         urlParams.append('action', 'suggest');
         urlParams.append('tag', tag);
@@ -1239,17 +1217,26 @@
           body: urlParams
         })
         .then(() => {
-          console.log(`Creator @${tag} submitted successfully directly to Apps Script!`);
+          console.log(`Creator @${tag} logged successfully to script!`);
           setTimeout(loadSuggestedArtists, 1500);
         })
-        .catch(err => console.error("Apps Script direct suggestion failed, falling back to Local Storage client update.", err));
+        .catch(err => console.error("Apps Script direct suggestion failed, falling back to Local Storage client update.", err))
+        .finally(() => {
+          showArtistSuccessScreen(tag);
+        });
+      } else {
+        showArtistSuccessScreen(tag);
       }
+    }
 
-      setTimeout(() => {
-        renderPodiumAndStats();
-        document.getElementById('artistSuccessTag').innerText = `@${tag}`;
-        document.getElementById('artistSuccess').classList.remove('hidden');
-      }, 300);
+    function showArtistSuccessScreen(tag) {
+      renderPodiumAndStats();
+      document.getElementById('artistSuccessTag').innerText = `@${tag}`;
+      document.getElementById('artistSuccess').classList.remove('hidden');
+      const submitBtn = document.getElementById('artistSubmitBtn');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Submit Creator Suggestion <i data-lucide="sparkles" class="w-4 h-4"></i>';
+      lucide.createIcons();
     }
 
     function resetArtistForm() {
@@ -1258,14 +1245,15 @@
       document.getElementById('local-warning-box').classList.add('hidden');
     }
 
-    // Little utility function to pop up a friendly warning if they double vote
-    function showLocalWarning() {
+    // Little utility function to pop up warning alerts in custom UI rather than window.alert
+    function showLocalWarning(message) {
       const warningBox = document.getElementById('local-warning-box');
-      warningBox.innerText = "You have already cast a vote for this creator tag!";
+      const warningText = document.getElementById('warning-text');
+      warningText.innerText = message;
       warningBox.classList.remove('hidden');
       setTimeout(() => {
         warningBox.classList.add('hidden');
-      }, 4000);
+      }, 5000);
     }
   </script>
 </body>
