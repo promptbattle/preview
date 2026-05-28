@@ -8,6 +8,7 @@
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
+    // Custom theme configuration. Loving these soft roses and cosy sage mints! 🌸
     tailwind.config = {
       theme: {
         extend: {
@@ -48,6 +49,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
+    /* Added some glowy background blobs to make it feel magical. Let's keep this background fixed. */
     body {
       background-color: #050707;
       background-image: 
@@ -57,7 +59,7 @@
       background-attachment: fixed;
     }
 
-    /* Custom Scrollbar */
+    /* Sleek scrollbar so it doesn't look ugly and clunky in dark mode */
     ::-webkit-scrollbar {
       width: 5px;
       height: 5px;
@@ -73,7 +75,7 @@
       background: rgba(251, 207, 232, 0.35);
     }
 
-    /* 3D Scene Config for Cards */
+    /* Give the cards some 3D perspective to make them feel tangible! */
     .card-3d-wrapper {
       perspective: 800px;
     }
@@ -84,7 +86,7 @@
       position: relative;
     }
 
-    /* Holographic Foil overlay */
+    /* Shiny holographic overlay... because holo cards are the absolute best! ✨ */
     .holo-sheen {
       position: absolute;
       inset: 0;
@@ -109,7 +111,7 @@
       opacity: 1;
     }
 
-    /* Fluid horizontal viewport scroller */
+    /* Viewport containing the continuous horizontal scroller */
     .hand-viewport {
       position: relative;
       width: 100%;
@@ -135,7 +137,7 @@
       padding-right: 24px;
     }
 
-    /* Cards are flat, upright and dynamic */
+    /* Setting up the hover scales for the cards in our scroller */
     .hand-card-item {
       transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), filter 0.3s ease;
       transform-origin: center bottom;
@@ -154,7 +156,7 @@
 </head>
 <body class="text-slate-200 min-h-screen flex flex-col justify-between font-sans selection:bg-brand-200 selection:text-brand-950">
 
-  <!-- Header -->
+  <!-- Navigation Bar Header -->
   <header class="border-b border-brand-200/10 backdrop-blur-md sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -177,10 +179,10 @@
     </div>
   </header>
 
-  <!-- Main Workspace -->
+  <!-- Main Game Showcase Hub -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-grow space-y-16">
     
-    <!-- Hero Header -->
+    <!-- Hero Introduction Header Section -->
     <section class="text-center space-y-4 max-w-2xl mx-auto">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-200/15 bg-brand-950 text-xs text-brand-200 font-mono">
         <span class="w-1.5 h-1.5 rounded-full bg-brand-200 animate-pulse"></span> Closed Alpha Tester Selection Preview
@@ -194,7 +196,7 @@
       </p>
     </section>
 
-    <!-- Fluid Card Hand Carousel -->
+    <!-- Endless Horizontal Card Slider -->
     <section class="space-y-4 relative">
       <div class="text-center">
         <h2 class="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest">Card Hand Slider</h2>
@@ -203,7 +205,7 @@
 
       <div class="hand-viewport" id="hand-viewport-element">
         <div id="hand-track-element" class="hand-track">
-          <!-- Populated dynamically via JS -->
+          <!-- Dynamically generated card nodes go here -->
         </div>
       </div>
     </section>
@@ -258,7 +260,7 @@
       </div>
     </section>
 
-    <!-- Interactive Forms Workspace -->
+    <!-- Interactive Community Forms Workspace -->
     <section id="teaser-forms" class="grid lg:grid-cols-2 gap-8 pt-4 max-w-5xl mx-auto scroll-mt-20">
       
       <!-- Closed Beta Application Form -->
@@ -276,7 +278,7 @@
             </div>
           </div>
 
-          <!-- Google Form submission wrapper -->
+          <!-- Connected Google Form for Closed Beta -->
           <form 
             id="betaForm" 
             action="https://docs.google.com/forms/d/e/1FAIpQLSfjTBFAYWxBTbUerL8y93qf9K3G-0GtWj1jDiD4m4Vf68DbfA/formResponse" 
@@ -334,9 +336,10 @@
           </form>
         </div>
 
+        <!-- Silent iframe targets to handle background submission without redirect page reloads -->
         <iframe name="hidden_iframe1" id="hidden_iframe1" class="hidden"></iframe>
 
-        <!-- Success overlay -->
+        <!-- Success overlay page replacement -->
         <div id="betaSuccess" class="hidden absolute inset-0 bg-[#050807] p-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in z-20">
           <div class="w-12 h-12 rounded-full bg-brand-200/10 border border-brand-200/30 flex items-center justify-center text-brand-200">
             <i data-lucide="check" class="w-6 h-6"></i>
@@ -352,7 +355,7 @@
         </div>
       </div>
 
-      <!-- Suggest Creator Form & Spoilers-Free Mechanics summary Block -->
+      <!-- Suggest Creator Form Section -->
       <div class="bg-gradient-to-b from-[#0c1211] to-[#040606] rounded-2xl border border-brand-200/10 p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden group flex flex-col justify-between">
         <div class="absolute -right-12 -top-12 w-32 h-32 bg-brand-200/5 rounded-full blur-2xl pointer-events-none"></div>
         
@@ -367,7 +370,7 @@
             </div>
           </div>
 
-          <!-- Creator Guidelines Info Widget (With Soft Summary of Rules & Mechanics) -->
+          <!-- Card mechanics layout helpful guidelines -->
           <div class="bg-brand-300/5 rounded-xl border border-brand-300/10 p-4 sm:p-5 space-y-3">
             <h4 class="text-xs font-mono text-brand-300 flex items-center gap-1.5 font-bold uppercase tracking-wider">
               <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Closed Preview Rules Summary
@@ -397,7 +400,7 @@
             </div>
           </div>
 
-          <!-- Suggest Form -->
+          <!-- Connected Google Form for Suggestions -->
           <form 
             id="artistForm" 
             action="https://docs.google.com/forms/d/e/1FAIpQLSdtbxkjmrojslxRIPRdkLTKIhk4cgB9zZW87z949xE_rqOa_w/formResponse" 
@@ -487,7 +490,7 @@
 
         <iframe name="hidden_iframe2" id="hidden_iframe2" class="hidden"></iframe>
 
-        <!-- Success overlay -->
+        <!-- Suggestion Success Screen Replacement -->
         <div id="artistSuccess" class="hidden absolute inset-0 bg-[#050405] p-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in z-20">
           <div class="w-12 h-12 rounded-full bg-brand-200/10 border border-brand-200/30 flex items-center justify-center text-brand-200">
             <i data-lucide="sparkles" class="w-6 h-6"></i>
@@ -515,11 +518,11 @@
         <!-- Live counters -->
         <div class="bg-brand-950/40 border border-brand-200/10 rounded-2xl p-5 flex flex-col justify-center items-center text-center">
           <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Total Artists Suggested</span>
-          <span id="stat-artists" class="text-3xl font-black text-brand-200 mt-2">12</span>
+          <span id="stat-artists" class="text-3xl font-black text-brand-200 mt-2">0</span>
         </div>
         <div class="bg-brand-950/40 border border-brand-200/10 rounded-2xl p-5 flex flex-col justify-center items-center text-center">
           <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Total Cumulative Votes</span>
-          <span id="stat-votes" class="text-3xl font-black text-brand-200 mt-2">247</span>
+          <span id="stat-votes" class="text-3xl font-black text-brand-200 mt-2">0</span>
         </div>
         <div class="bg-brand-200/5 border border-brand-200/15 rounded-2xl p-5 flex flex-col justify-center items-center text-center">
           <span class="text-xs font-mono text-brand-200 uppercase tracking-wider">Your Local Submissions</span>
@@ -535,16 +538,16 @@
           </h3>
         </div>
         
-        <!-- Live Voting Board: Usernames Only -->
+        <!-- Live Voting Board Podium Container -->
         <div id="podium-container" class="grid md:grid-cols-3 gap-4 pt-4">
-          <!-- Populated dynamically by loop -->
+          <!-- Populated dynamically by loop, displays fallback message if empty -->
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- Detailed 3D Inspector Modal -->
+  <!-- Detailed 3D Card Inspector Modal overlay -->
   <div id="inspector-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
     <div class="bg-gradient-to-tr from-[#050405] to-[#0f1413] border border-brand-300/25 rounded-3xl max-w-4xl w-full p-6 lg:p-8 shadow-2xl relative flex flex-col md:flex-row gap-8 overflow-y-auto max-h-[95vh] md:max-h-none transform scale-95 transition-transform duration-300" id="inspector-content">
       
@@ -553,18 +556,18 @@
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <!-- Left: Interactive 3D Card Physics View -->
+      <!-- Left Side Column: Holographic 3D Card Physics Canvas -->
       <div class="w-full md:w-[320px] shrink-0 flex flex-col items-center justify-center py-4 md:py-0">
         <div class="card-3d-wrapper w-[260px] h-[364px]">
           <div id="interactive-card-element" class="card-3d w-full h-full rounded-2xl shadow-2xl relative select-none">
-            <!-- Rendered Dynamically as the Full Card Image layout -->
+            <!-- Dynamic card details or fallback artwork frame gets rendered here -->
             <div class="holo-sheen"></div>
           </div>
         </div>
         <p class="text-[10px] font-mono text-slate-500 mt-4 text-center">Move cursor or drag card to view holographic sheen reflections</p>
       </div>
 
-      <!-- Right: Pure Gameplay Details and Artist Profiles -->
+      <!-- Right Side Column: Mechanical and Rules detail layout -->
       <div class="flex-grow space-y-6 self-center text-left">
         <div>
           <span id="inspect-tag" class="text-[10px] font-mono tracking-widest text-brand-200 uppercase px-2.5 py-0.5 bg-brand-200/10 border border-brand-200/20 rounded font-bold">Card Info</span>
@@ -573,34 +576,34 @@
         </div>
 
         <div class="border-t border-brand-200/15 pt-4 space-y-4">
-          <!-- Main Gameplay Rules -->
+          <!-- Main Rules or Event details -->
           <div class="space-y-1">
             <h4 class="text-[10px] font-mono uppercase tracking-widest text-brand-200/70 font-semibold">Active Rules / Effect</h4>
             <p id="inspect-effect" class="text-sm text-slate-300 leading-relaxed font-light">The card's active gaming rules...</p>
           </div>
 
-          <!-- Creator Only: Passive Block -->
+          <!-- Passive Ability block, only displayed for Creator types -->
           <div id="inspect-passive-container" class="space-y-1 hidden bg-brand-200/5 p-3.5 rounded-2xl border border-brand-200/10">
             <h4 id="inspect-passive-label" class="text-[10px] font-mono uppercase tracking-widest text-brand-200 font-semibold">Passive Ability</h4>
             <p id="inspect-passive-text" class="text-xs text-slate-300 font-light leading-relaxed">Passive text...</p>
           </div>
 
-          <!-- Creator Only: Active Abilities -->
+          <!-- Active Traits list, only displayed for Creator types -->
           <div id="inspect-abilities-container" class="space-y-2 hidden">
             <h4 class="text-[10px] font-mono uppercase tracking-widest text-brand-200/70 font-semibold">Additional Traits</h4>
             <div id="inspect-abilities-list" class="space-y-2 max-h-[140px] overflow-y-auto pr-1">
-              <!-- Populated by script -->
+              <!-- Dynamically populated rows -->
             </div>
           </div>
 
-          <!-- Design Comments / Lore -->
+          <!-- Design Note or lore commentary -->
           <div id="inspect-lore-container" class="space-y-1 border-t border-brand-200/10 pt-3">
             <h4 class="text-[10px] font-mono uppercase tracking-widest text-slate-500">Design Note</h4>
             <p id="inspect-lore" class="text-xs text-slate-400 italic font-light leading-relaxed">Flavour notes...</p>
           </div>
         </div>
 
-        <!-- Metadata tags -->
+        <!-- Metadata and Rarity indicators -->
         <div class="flex flex-wrap gap-2 pt-2 text-xs">
           <span id="inspect-rarity" class="bg-brand-950/40 border border-brand-200/10 px-2.5 py-1 rounded text-slate-400 font-mono font-semibold">Rarity: Rare</span>
           <span id="inspect-id" class="bg-brand-950/40 border border-brand-200/10 px-2.5 py-1 rounded text-slate-400 font-mono font-bold">ID: C-001</span>
@@ -610,7 +613,7 @@
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- Page Footer -->
   <footer class="border-t border-brand-200/10 py-10 bg-[#030504] z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
       <div class="text-center sm:text-left space-y-1">
@@ -627,16 +630,11 @@
   </footer>
 
   <script>
-    // =========================================================================
-    //               GOOGLE SPREADSHEET LIVE INTEGRATION CONFIG
-    // =========================================================================
-    // 1. Paste your Web App URL inside APPS_SCRIPT_URL (e.g. 'https://script.google.com/macros/s/.../exec')
-    // 2. Paste your sheet ID inside SPREADSHEET_ID (Viewer shared sheet)
-    // 3. Keep empty ('') to run in standard Google Form with client up-vote emulation
+    // Okay, so now this works. Reminder to future self: do not touch it lol, or at least be careful.
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdE5-CePIwz6vUNtJydUhgrFsVEsHZtUHRYL5E1JAx6t6GULrNrcmZL2sxMsXyNbHW/exec'; 
     const SPREADSHEET_ID = '1CBEIN3Al02f7HGXpxwCkZI5EjVP00VvaXKyb5GFeZNg'; 
 
-    // Cards database containing the full card image links to display complete designed card cards perfectly
+    // Our default card list. Honestly, they look great, so no need to touch this part at all.
     const SAMPLE_CARDS = [
       {
         id: 'C-001', name: 'Aia', type: 'creator', rarity: 'rare', rarityDots: 3,
@@ -712,26 +710,23 @@
       }
     ];
 
-    // Local Storage default datasets used as offline backup / fallback simulation
-    let SUGGESTED_ARTISTS = [
-      { name: 'StarrGazer', votes: 142 },
-      { name: 'CyberQueen', votes: 105 },
-      { name: 'PastelScribbles', votes: 78 }
-    ];
+    // Starting with an empty array. Real suggested artists will load directly from the sheet!
+    let SUGGESTED_ARTISTS = [];
 
-    // Carousel variables
+    // Continuous carousel scroll state
     let isHoveringTrack = false;
     let trackXPos = 0;
-    const glideSpeed = 0.5; // continuous translation velocity
+    const glideSpeed = 0.5;
 
     document.addEventListener("DOMContentLoaded", () => {
+      // Let's fire up all the icons and load our database content!
       lucide.createIcons();
       loadSuggestedArtists();
       renderHandTrack();
       animateHandTrack();
     });
 
-    // Populate/Refresh Live suggestions podium and indicators from Google Spreadsheet JSON or Local Storage
+    // Actually, the links work now. Let's fetch the dynamic creators from Google Sheets!
     async function loadSuggestedArtists() {
       const cached = localStorage.getItem('pb_suggested_artists');
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
@@ -739,34 +734,34 @@
       if (cached) {
         SUGGESTED_ARTISTS = JSON.parse(cached);
       } else {
+        SUGGESTED_ARTISTS = [];
         localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
       }
 
-      // Check if user has configured the Spreadsheet live bridge
+      // If we have an active sheet ID, let's grab the rows and parse them
       if (SPREADSHEET_ID && SPREADSHEET_ID.trim() !== '') {
         try {
           const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json`;
           const response = await fetch(url);
           const text = await response.text();
           
-          // Secure parse of the Google Sheets JSON protective output wrapping
+          // Let's peel off Google's anti-hacking safety wrapper to parse raw JSON. Neat!
           const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
           const rows = cleanJson.table.rows;
 
           let liveArtists = [];
           
           rows.forEach((row, rowIndex) => {
-            // Ignore headers row in sheet
+            // Row 0 is just the header titles, skip it!
             if (rowIndex === 0) return;
             
-            // Col A (row.c[0]) corresponds to Creator Name
-            // Col B (row.c[1]) corresponds to Votes (if populated by Custom Apps Script)
+            // Col A = Creator Name, Col B = Current Votes
             if (row.c && row.c[0] && row.c[0].v) {
               const creatorTag = row.c[0].v.toString().trim().replace('@', '');
               const totalVotes = (row.c[1] && row.c[1].v) ? parseInt(row.c[1].v) : 1;
               
               if (creatorTag) {
-                // Look for existing index to update if standard forms without Apps Script was used
+                // If the creator already exists, let's just combine the votes so they synchronise beautifully.
                 const duplicateIndex = liveArtists.findIndex(x => x.name.toLowerCase() === creatorTag.toLowerCase());
                 if (duplicateIndex !== -1) {
                   liveArtists[duplicateIndex].votes += totalVotes;
@@ -780,27 +775,12 @@
             }
           });
 
-          // Inject base mock rankings for visual design preview fidelity
-          liveArtists.forEach(artist => {
-            if (artist.name.toLowerCase() === 'starrgazer') artist.votes = Math.max(artist.votes, 142);
-            if (artist.name.toLowerCase() === 'cyberqueen') artist.votes = Math.max(artist.votes, 105);
-            if (artist.name.toLowerCase() === 'pastelscribbles') artist.votes = Math.max(artist.votes, 78);
-          });
-
-          // Ensure base elements always exist for first view of new sheets
-          const presetTags = ['starrgazer', 'cyberqueen', 'pastelscribbles'];
-          presetTags.forEach((tag, idx) => {
-            if (!liveArtists.find(x => x.name.toLowerCase() === tag)) {
-              liveArtists.push({
-                name: tag === 'starrgazer' ? 'StarrGazer' : (tag === 'cyberqueen' ? 'CyberQueen' : 'PastelScribbles'),
-                votes: idx === 0 ? 142 : (idx === 1 ? 105 : 78)
-              });
-            }
-          });
-
+          // If we found live rows, let's save them locally so the site loads super quickly next time!
           if (liveArtists.length > 0) {
             SUGGESTED_ARTISTS = liveArtists;
             localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
+          } else {
+            SUGGESTED_ARTISTS = [];
           }
 
         } catch (error) {
@@ -811,46 +791,65 @@
       renderPodiumAndStats();
     }
 
-    // Helper to render final HTML elements to UI
+    // Paint the community leaderboard podium. Hope some of my favourites are winning!
     function renderPodiumAndStats() {
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
       const podium = document.getElementById('podium-container');
       podium.innerHTML = '';
 
+      // Let's sort suggestions from highest votes to lowest!
       const sorted = [...SUGGESTED_ARTISTS].sort((a, b) => b.votes - a.votes);
       
-      sorted.slice(0, 3).forEach((item, index) => {
-        const medalColors = ['text-accent-gold', 'text-slate-300', 'text-amber-700'];
-        const cardClass = index === 0 ? 'border-accent-gold/20 bg-accent-gold/5' : 'border-brand-200/10 bg-brand-950/40';
-
-        const podiumCard = document.createElement('div');
-        podiumCard.className = `p-4 sm:p-5 rounded-2xl border flex flex-col justify-between relative overflow-hidden ${cardClass}`;
-        
-        podiumCard.innerHTML = `
-          <div class="space-y-3">
-            <div class="flex justify-between items-center">
-              <span class="text-[9px] font-mono font-bold tracking-wider text-brand-200">RANK 0${index + 1}</span>
-              <i data-lucide="award" class="w-4 h-4 ${medalColors[index]}"></i>
-            </div>
-            <div>
-              <h4 class="font-extrabold text-sm sm:text-base text-slate-100 font-sans">@${item.name}</h4>
-              <p class="text-[10px] text-slate-500 font-mono mt-0.5">Voted Community Artist</p>
-            </div>
+      if (sorted.length === 0) {
+        // Safe check: if no one has submitted anything, show a sweet friendly prompt to get them started!
+        podium.className = "col-span-full py-12 text-center flex flex-col items-center justify-center space-y-3 bg-brand-950/20 border border-brand-200/10 rounded-2xl";
+        podium.innerHTML = `
+          <div class="w-12 h-12 rounded-full bg-brand-200/10 flex items-center justify-center text-brand-200">
+            <i data-lucide="help-circle" class="w-6 h-6 animate-pulse"></i>
           </div>
-          <div class="mt-4 pt-3 border-t border-brand-200/5 flex justify-between items-center text-xs">
-            <span class="font-mono text-slate-500">Votes</span>
-            <span class="font-bold text-brand-200 flex items-center gap-1.5">
-              ${item.votes} 
-              <button onclick="voteForArtist('${item.name}')" class="px-2 py-0.5 rounded bg-brand-200/10 hover:bg-brand-200/30 transition-all text-[10px] font-mono text-brand-200 font-bold active:scale-95 border border-brand-200/20 hover:border-brand-200/40">
-                +1
-              </button>
-            </span>
+          <div class="space-y-1">
+            <h4 class="font-bold text-slate-100 text-sm">No suggestions yet!</h4>
+            <p class="text-xs text-slate-400 max-w-xs">Be the very first to recommend an iconic NightCafe creator using the suggestion panel!</p>
           </div>
         `;
-        podium.appendChild(podiumCard);
-      });
+      } else {
+        // Back to normal grid layout for the active leaderboard cards
+        podium.className = "grid md:grid-cols-3 gap-4 pt-4";
+        
+        // Loop through top 3 and hand out ranking medals!
+        sorted.slice(0, 3).forEach((item, index) => {
+          const medalColors = ['text-accent-gold', 'text-slate-300', 'text-amber-700'];
+          const cardClass = index === 0 ? 'border-accent-gold/20 bg-accent-gold/5' : 'border-brand-200/10 bg-brand-950/40';
 
-      // Update counters
+          const podiumCard = document.createElement('div');
+          podiumCard.className = `p-4 sm:p-5 rounded-2xl border flex flex-col justify-between relative overflow-hidden ${cardClass}`;
+          
+          podiumCard.innerHTML = `
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-[9px] font-mono font-bold tracking-wider text-brand-200">RANK 0${index + 1}</span>
+                <i data-lucide="award" class="w-4 h-4 ${medalColors[index]}"></i>
+              </div>
+              <div>
+                <h4 class="font-extrabold text-sm sm:text-base text-slate-100 font-sans">@${item.name}</h4>
+                <p class="text-[10px] text-slate-500 font-mono mt-0.5">Voted Community Artist</p>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-brand-200/5 flex justify-between items-center text-xs">
+              <span class="font-mono text-slate-500">Votes</span>
+              <span class="font-bold text-brand-200 flex items-center gap-1.5">
+                ${item.votes} 
+                <button onclick="voteForArtist('${item.name}')" class="px-2 py-0.5 rounded bg-brand-200/10 hover:bg-brand-200/30 transition-all text-[10px] font-mono text-brand-200 font-bold active:scale-95 border border-brand-200/20 hover:border-brand-200/40">
+                  +1
+                </button>
+              </span>
+            </div>
+          `;
+          podium.appendChild(podiumCard);
+        });
+      }
+
+      // Bumping the statistics counters. Simple loop addition.
       const totalVotes = SUGGESTED_ARTISTS.reduce((sum, item) => sum + item.votes, 0);
       document.getElementById('stat-artists').innerText = SUGGESTED_ARTISTS.length;
       document.getElementById('stat-votes').innerText = totalVotes;
@@ -859,7 +858,7 @@
       lucide.createIcons();
     }
 
-    // Handles live podium up-voting checks
+    // Upvote trigger. Make sure they don't vote for the same creator twice. No cheating! 😉
     function voteForArtist(name) {
       const votedFor = JSON.parse(localStorage.getItem('pb_voted_artists') || '[]');
 
@@ -871,7 +870,7 @@
       votedFor.push(name.toLowerCase());
       localStorage.setItem('pb_voted_artists', JSON.stringify(votedFor));
 
-      // Local state instant feedback increment
+      // Local update first so the interface feels lightning fast!
       SUGGESTED_ARTISTS = SUGGESTED_ARTISTS.map(item => {
         if (item.name.toLowerCase() === name.toLowerCase()) {
           return { ...item, votes: item.votes + 1 };
@@ -882,9 +881,8 @@
       localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
       renderPodiumAndStats();
 
-      // Live Backend upvote routing
+      // Submit actual vote payload over the network
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        // Option A API call directly targeting live Custom Apps Script
         const urlParams = new URLSearchParams();
         urlParams.append('action', 'vote');
         urlParams.append('tag', name);
@@ -899,22 +897,19 @@
         })
         .then(() => {
           console.log(`Vote registered instantly on live Apps Script database for @${name}`);
-          // Re-fetch spreadsheet data to make sure counts align
           setTimeout(loadSuggestedArtists, 1500);
         })
-        .catch(err => console.error("Apps Script upvote failed. Falling back to Local Storage caching.", err));
+        .catch(err => console.error("Apps Script direct upvote link failed, reverting to local mock tracking.", err));
       } else {
-        // Fallback option pointing directly to classic Google Forms background submissions
         submitSilentVoteToForm(name);
       }
     }
 
-    // Quietly submits payload to Google Forms endpoint, avoiding redirects
+    // Post to standard Google form quietly in background without annoying page redirects!
     function submitSilentVoteToForm(creatorName) {
       const url = "https://docs.google.com/forms/d/e/1FAIpQLSdtbxkjmrojslxRIPRdkLTKIhk4cgB9zZW87z949xE_rqOa_w/formResponse";
       const formData = new FormData();
       
-      // Map params directly to the correct form field IDs
       formData.append('entry.611683980', creatorName); 
       formData.append('entry.846367865', 'Community click podium quick-vote');
       formData.append('entry.1235384823', 'Automatic Alignment Upvote');
@@ -930,7 +925,7 @@
       .catch(err => console.error("Network upvote submit failed, relying on LocalStorage fallback.", err));
     }
 
-    // Generates the flat, upright hand-track cards
+    // Populate our lovely scroller track!
     function renderHandTrack() {
       const track = document.getElementById('hand-track-element');
       track.innerHTML = '';
@@ -941,13 +936,10 @@
         itemWrapper.onclick = () => inspectCard(card);
         
         itemWrapper.innerHTML = `
-          <!-- Flat, perfectly aligned upright cards with warm double-framing outline -->
           <div class="w-[155px] sm:w-[170px] h-[217px] sm:h-[238px] bg-[#090d0c] border border-brand-200/15 rounded-2xl shadow-xl relative overflow-hidden transition-all duration-300 hover:border-brand-200/40">
             
-            <!-- Real Card Graphic Asset (Image contains text, margins, and borders integrated) -->
             <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
             
-            <!-- Backup visual wrapper if image failed to resolve -->
             <div class="hidden absolute inset-0 p-3 flex flex-col justify-between z-10">
               <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-[0.03]"></div>
               
@@ -956,7 +948,6 @@
                 <span class="text-[7px] sm:text-[8px] font-mono tracking-wider px-1.5 bg-brand-200/5 border border-brand-200/20 rounded text-brand-200 uppercase shrink-0 font-bold">${card.type}</span>
               </div>
 
-              <!-- Inside Frame backup -->
               <div class="h-[80px] sm:h-[105px] bg-[#0c1211] border border-brand-200/10 rounded-xl relative overflow-hidden flex items-center justify-center">
                 <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-10 filter blur-sm"></div>
                 <div class="flex flex-col items-center justify-center p-1 text-center">
@@ -977,7 +968,6 @@
               </div>
             </div>
 
-            <!-- Soft Glow Sheen hover layer -->
             <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 pointer-events-none z-30"></div>
           </div>
         `;
@@ -985,13 +975,12 @@
         track.appendChild(itemWrapper);
       });
 
-      // Listeners to freeze infinite glide translation
       const viewport = document.getElementById('hand-viewport-element');
       viewport.addEventListener('mouseenter', () => isHoveringTrack = true);
       viewport.addEventListener('mouseleave', () => isHoveringTrack = false);
     }
 
-    // Smooth continuous auto-gliding scroller without odd 3D rotation tilts
+    // Keep the scroller gliding beautifully unless our mouse gets in the way!
     function animateHandTrack() {
       const track = document.getElementById('hand-track-element');
       const viewport = document.getElementById('hand-viewport-element');
@@ -1005,7 +994,6 @@
           if (trackWidth > viewportWidth) {
             trackXPos -= glideSpeed;
             
-            // Loop scroll seamlessly once end limits are crossed
             if (Math.abs(trackXPos) >= (trackWidth - viewportWidth)) {
               trackXPos = 0;
             }
@@ -1019,7 +1007,7 @@
       requestAnimationFrame(run);
     }
 
-    // Modal Control and 3D Rotation physics logic for inspection popups
+    // Okay, the 3D tilt math actually works. Do not touch this, or at least be super careful!
     function inspectCard(card) {
       const modal = document.getElementById('inspector-modal');
       const content = document.getElementById('inspector-content');
@@ -1080,21 +1068,17 @@
       targetElement.className = `card-3d w-full h-full rounded-2xl bg-[#080d0c] border border-brand-200/35 flex flex-col justify-between shadow-2xl relative overflow-hidden select-none`;
       
       targetElement.innerHTML = `
-        <!-- Show complete designed card asset natively -->
         <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
 
-        <!-- Fallback layout template if file has not been uploaded to repository -->
         <div class="hidden absolute inset-0 p-5 flex flex-col justify-between z-10">
           <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-10"></div>
           <div class="holo-sheen"></div>
 
-          <!-- Upper Row -->
           <div class="relative z-10 flex justify-between items-start">
             <span class="text-[11px] font-mono font-bold tracking-tight text-slate-100">${card.name}</span>
             <span class="text-[8px] font-mono tracking-wider px-1.5 py-0.5 bg-brand-200/10 border border-brand-200/20 rounded text-brand-200 uppercase font-bold">${card.type}</span>
           </div>
 
-          <!-- Card Image Frame -->
           <div class="h-[130px] bg-[#0c1211] border border-brand-200/15 rounded-xl relative overflow-hidden flex items-center justify-center">
             <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
             <div class="flex flex-col items-center justify-center p-2 text-center">
@@ -1103,12 +1087,10 @@
             </div>
           </div>
 
-          <!-- Clean Rules text -->
           <div class="text-[10px] text-slate-200 font-light bg-[#0d1312]/60 p-2.5 rounded-lg border border-brand-200/10 relative z-10 leading-normal">
             ${card.effect}
           </div>
 
-          <!-- Bottom row -->
           <div class="relative z-10 flex justify-between items-center text-[8px] font-mono text-slate-500 border-t border-brand-200/15 pt-2">
             <span>${card.id}</span>
             <div class="flex gap-0.5 text-accent-gold">
@@ -1201,7 +1183,7 @@
       document.getElementById('betaSuccess').classList.add('hidden');
     }
 
-    // Handles suggestion submissions with LocalStorage check to block duplicates
+    // Submit suggestion. Remember to check for duplicates so people can't spam!
     function handleArtistSubmit(event) {
       const tag = document.getElementById('artistTag').value.trim().replace('@', '');
       const motivation = document.getElementById('artistMotivation').value.trim();
@@ -1212,7 +1194,6 @@
       const warningBox = document.getElementById('local-warning-box');
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
 
-      // Prevent mass duplicate handle submission by checking local storage
       if (submittedByMe.includes(tag.toLowerCase())) {
         event.preventDefault();
         warningBox.classList.remove('hidden');
@@ -1221,11 +1202,9 @@
       
       warningBox.classList.add('hidden');
 
-      // Register locally
       submittedByMe.push(tag.toLowerCase());
       localStorage.setItem('pb_my_suggestions', JSON.stringify(submittedByMe));
 
-      // Append new artist item or increment locally in client view immediately
       const existingIdx = SUGGESTED_ARTISTS.findIndex(item => item.name.toLowerCase() === tag.toLowerCase());
       if (existingIdx !== -1) {
         SUGGESTED_ARTISTS[existingIdx].votes += 1;
@@ -1238,9 +1217,9 @@
 
       localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
 
-      // Check for Option A: Custom Apps Script API endpoint
+      // Post asynchronous details to Apps Script endpoint
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        event.preventDefault(); // Stop default form redirect to hidden iframe
+        event.preventDefault(); // Halt default HTML form submit so our script can send a modern fetch!
 
         const urlParams = new URLSearchParams();
         urlParams.append('action', 'suggest');
@@ -1265,7 +1244,6 @@
         .catch(err => console.error("Apps Script direct suggestion failed, falling back to Local Storage client update.", err));
       }
 
-      // Force render podium
       setTimeout(() => {
         renderPodiumAndStats();
         document.getElementById('artistSuccessTag').innerText = `@${tag}`;
@@ -1279,7 +1257,6 @@
       document.getElementById('local-warning-box').classList.add('hidden');
     }
 
-    // Shows warning indicator if double voting on same target occurred
     function showLocalWarning() {
       const warningBox = document.getElementById('local-warning-box');
       warningBox.innerText = "You have already cast a vote for this creator tag!";
