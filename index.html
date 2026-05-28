@@ -627,13 +627,13 @@
   </footer>
 
   <script>
-    // ==========================================
-    // GOOGLE SPREADSHEET LIVE INTEGRATION CONFIG
-    // ==========================================
-    // 1. In Google Sheets linked to your form, click "Share" (top right)
-    // 2. Change access to "Anyone with the link can view" (Viewer)
-    // 3. Paste the Spreadsheet ID below (found between /d/ and /edit in the URL)
-    // 4. Leave empty ('') to run in offline / LocalStorage simulation fallback mode.
+    // =========================================================================
+    //               GOOGLE SPREADSHEET LIVE INTEGRATION CONFIG
+    // =========================================================================
+    // 1. Paste your Web App URL inside APPS_SCRIPT_URL (e.g. 'https://script.google.com/macros/s/.../exec')
+    // 2. Paste your sheet ID inside SPREADSHEET_ID (Viewer shared sheet)
+    // 3. Keep empty ('') to run in standard Google Form with client up-vote emulation
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdE5-CePIwz6vUNtJydUhgrFsVEsHZtUHRYL5E1JAx6t6GULrNrcmZL2sxMsXyNbHW/exec'; 
     const SPREADSHEET_ID = '1CBEIN3Al02f7HGXpxwCkZI5EjVP00VvaXKyb5GFeZNg'; 
 
     // Cards database containing the full card image links to display complete designed card cards perfectly
@@ -753,41 +753,49 @@
           const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
           const rows = cleanJson.table.rows;
 
-          let rawArtistsList = [];
+          let liveArtists = [];
           
           rows.forEach((row, rowIndex) => {
             // Ignore headers row in sheet
             if (rowIndex === 0) return;
             
-            // Col B (row.c[1]) corresponds to Creator NightCafe Tag (entry.611683980)
-            if (row.c && row.c[1] && row.c[1].v) {
-              const creatorTag = row.c[1].v.toString().trim().replace('@', '');
+            // Col A (row.c[0]) corresponds to Creator Name
+            // Col B (row.c[1]) corresponds to Votes (if populated by Custom Apps Script)
+            if (row.c && row.c[0] && row.c[0].v) {
+              const creatorTag = row.c[0].v.toString().trim().replace('@', '');
+              const totalVotes = (row.c[1] && row.c[1].v) ? parseInt(row.c[1].v) : 1;
+              
               if (creatorTag) {
-                rawArtistsList.push(creatorTag);
+                // Look for existing index to update if standard forms without Apps Script was used
+                const duplicateIndex = liveArtists.findIndex(x => x.name.toLowerCase() === creatorTag.toLowerCase());
+                if (duplicateIndex !== -1) {
+                  liveArtists[duplicateIndex].votes += totalVotes;
+                } else {
+                  liveArtists.push({
+                    name: creatorTag,
+                    votes: totalVotes
+                  });
+                }
               }
             }
           });
 
-          // Aggregate duplicate suggestions to dynamically produce the vote scores!
-          let countMap = {};
-          rawArtistsList.forEach(name => {
-            countMap[name] = (countMap[name] || 0) + 1;
+          // Inject base mock rankings for visual design preview fidelity
+          liveArtists.forEach(artist => {
+            if (artist.name.toLowerCase() === 'starrgazer') artist.votes = Math.max(artist.votes, 142);
+            if (artist.name.toLowerCase() === 'cyberqueen') artist.votes = Math.max(artist.votes, 105);
+            if (artist.name.toLowerCase() === 'pastelscribbles') artist.votes = Math.max(artist.votes, 78);
           });
 
-          // Rebuild suggested artists dataset from actual live responses
-          let liveArtists = Object.keys(countMap).map(name => {
-            // Base score is rows matching this tag, add 100 base score offset for default starter assets if applicable
-            let calculatedVotes = countMap[name];
-            
-            // Preserve high mock ratings for design previews, or adjust natively
-            if (name.toLowerCase() === 'starrgazer') calculatedVotes += 140;
-            if (name.toLowerCase() === 'cyberqueen') calculatedVotes += 100;
-            if (name.toLowerCase() === 'pastelscribbles') calculatedVotes += 75;
-
-            return {
-              name: name,
-              votes: calculatedVotes
-            };
+          // Ensure base elements always exist for first view of new sheets
+          const presetTags = ['starrgazer', 'cyberqueen', 'pastelscribbles'];
+          presetTags.forEach((tag, idx) => {
+            if (!liveArtists.find(x => x.name.toLowerCase() === tag)) {
+              liveArtists.push({
+                name: tag === 'starrgazer' ? 'StarrGazer' : (tag === 'cyberqueen' ? 'CyberQueen' : 'PastelScribbles'),
+                votes: idx === 0 ? 142 : (idx === 1 ? 105 : 78)
+              });
+            }
           });
 
           if (liveArtists.length > 0) {
@@ -863,7 +871,7 @@
       votedFor.push(name.toLowerCase());
       localStorage.setItem('pb_voted_artists', JSON.stringify(votedFor));
 
-      // Local state increment so responsiveness is instantaneous
+      // Local state instant feedback increment
       SUGGESTED_ARTISTS = SUGGESTED_ARTISTS.map(item => {
         if (item.name.toLowerCase() === name.toLowerCase()) {
           return { ...item, votes: item.votes + 1 };
@@ -874,8 +882,31 @@
       localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
       renderPodiumAndStats();
 
-      // Submit silent vote to Google Forms in background to permanently save response row to the sheet
-      submitSilentVoteToForm(name);
+      // Live Backend upvote routing
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
+        // Option A API call directly targeting live Custom Apps Script
+        const urlParams = new URLSearchParams();
+        urlParams.append('action', 'vote');
+        urlParams.append('tag', name);
+
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: urlParams
+        })
+        .then(() => {
+          console.log(`Vote registered instantly on live Apps Script database for @${name}`);
+          // Re-fetch spreadsheet data to make sure counts align
+          setTimeout(loadSuggestedArtists, 1500);
+        })
+        .catch(err => console.error("Apps Script upvote failed. Falling back to Local Storage caching.", err));
+      } else {
+        // Fallback option pointing directly to classic Google Forms background submissions
+        submitSilentVoteToForm(name);
+      }
     }
 
     // Quietly submits payload to Google Forms endpoint, avoiding redirects
@@ -885,9 +916,9 @@
       
       // Map params directly to the correct form field IDs
       formData.append('entry.611683980', creatorName); 
-      formData.append('entry.846367865', ' podcaster community click upvote');
+      formData.append('entry.846367865', 'Community click podium quick-vote');
       formData.append('entry.1235384823', 'Automatic Alignment Upvote');
-      formData.append('entry.1424477115', 'Podium click upvoter');
+      formData.append('entry.1424477115', 'Podium instant voter interaction');
       formData.append('entry.2137484019', 'Upvoted via Podium panel directly');
 
       fetch(url, {
@@ -1172,8 +1203,12 @@
 
     // Handles suggestion submissions with LocalStorage check to block duplicates
     function handleArtistSubmit(event) {
-      // Form default action handles iframe transmission cleanly in background
       const tag = document.getElementById('artistTag').value.trim().replace('@', '');
+      const motivation = document.getElementById('artistMotivation').value.trim();
+      const passive = document.getElementById('artistPassive').value.trim();
+      const models = document.getElementById('artistModels').value.trim();
+      const comments = document.getElementById('artistComments').value.trim();
+      
       const warningBox = document.getElementById('local-warning-box');
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
 
@@ -1202,6 +1237,33 @@
       }
 
       localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
+
+      // Check for Option A: Custom Apps Script API endpoint
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
+        event.preventDefault(); // Stop default form redirect to hidden iframe
+
+        const urlParams = new URLSearchParams();
+        urlParams.append('action', 'suggest');
+        urlParams.append('tag', tag);
+        urlParams.append('motivation', motivation);
+        urlParams.append('passive', passive);
+        urlParams.append('models', models);
+        urlParams.append('comments', comments);
+
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: urlParams
+        })
+        .then(() => {
+          console.log(`Creator @${tag} submitted successfully directly to Apps Script!`);
+          setTimeout(loadSuggestedArtists, 1500);
+        })
+        .catch(err => console.error("Apps Script direct suggestion failed, falling back to Local Storage client update.", err));
+      }
 
       // Force render podium
       setTimeout(() => {
