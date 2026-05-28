@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prompt Battle — Closed Beta Gallery & Sign-up</title>
-  
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // Custom theme configuration. Loving these soft roses and cosy sage mints! 🌸
+    // Custom theme configuration. Soft roses and cosy sage mints! 🌸
     tailwind.config = {
       theme: {
         extend: {
@@ -24,7 +24,7 @@
               950: '#070a0a',
             },
             accent: {
-              gold: '#dfb76c', 
+              gold: '#dfb76c',
               pink: '#fbcfe8', // Rosy highlights
               lavender: '#e9e3f8', // cosy lavender
               slate: '#475569'
@@ -43,16 +43,16 @@
       }
     }
   </script>
-  
+
   <!-- Google Fonts & Lucide Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* Added some glowy background blobs to make it feel magical. Let's keep this background fixed. */
+    /* Fixed premium cosmic background with glowing orbs */
     body {
       background-color: #050707;
-      background-image: 
+      background-image:
         radial-gradient(circle at 5% 10%, rgba(251, 207, 232, 0.07) 0%, transparent 40%),
         radial-gradient(circle at 95% 90%, rgba(155, 195, 190, 0.05) 0%, transparent 45%),
         radial-gradient(circle at 50% 50%, rgba(251, 207, 232, 0.02) 0%, transparent 80%);
@@ -75,7 +75,7 @@
       background: rgba(251, 207, 232, 0.35);
     }
 
-    /* Give the cards some 3D perspective to make them feel tangible! */
+    /* Card 3D Perspective properties */
     .card-3d-wrapper {
       perspective: 800px;
     }
@@ -86,7 +86,7 @@
       position: relative;
     }
 
-    /* Shiny holographic overlay... because holo cards are the absolute best! ✨ */
+    /* Shiny holographic overlay */
     .holo-sheen {
       position: absolute;
       inset: 0;
@@ -137,7 +137,7 @@
       padding-right: 24px;
     }
 
-    /* Setting up the hover scales for the cards in our scroller */
+    /* Hover scales for the cards in our scroller */
     .hand-card-item {
       transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), filter 0.3s ease;
       transform-origin: center bottom;
@@ -170,7 +170,7 @@
           <span class="text-[9px] font-mono tracking-widest text-brand-200/90 ml-2 px-2 py-0.5 rounded border border-brand-200/20 bg-brand-200/5">CLOSED PREVIEW</span>
         </div>
       </div>
-      
+
       <div class="flex items-center gap-4">
         <a href="#teaser-forms" class="text-xs font-mono font-medium tracking-wide text-brand-200 hover:text-brand-300 transition-all bg-brand-200/5 hover:bg-brand-200/10 px-4 py-2 rounded-full border border-brand-200/20 hover:border-brand-200/40">
           Get Invited
@@ -181,7 +181,7 @@
 
   <!-- Main Game Showcase Hub -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-grow space-y-16">
-    
+
     <!-- Hero Introduction Header Section -->
     <section class="text-center space-y-4 max-w-2xl mx-auto">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-200/15 bg-brand-950 text-xs text-brand-200 font-mono">
@@ -216,7 +216,7 @@
         <h2 class="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest">Base Set Cast (Already Implemented)</h2>
         <p class="text-xs text-slate-500">These creators are already integrated into Set 001. Check here to avoid duplicate submissions!</p>
       </div>
-      
+
       <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
         <div class="p-4 rounded-xl border border-brand-200/10 bg-brand-950/40 flex items-center gap-3">
           <div class="w-8 h-8 rounded-lg bg-brand-300/10 flex items-center justify-center text-brand-300">
@@ -262,11 +262,11 @@
 
     <!-- Interactive Community Forms Workspace -->
     <section id="teaser-forms" class="grid lg:grid-cols-2 gap-8 pt-4 max-w-5xl mx-auto scroll-mt-20">
-      
+
       <!-- Closed Beta Application Form -->
       <div class="bg-gradient-to-b from-[#0c1211] to-[#040606] rounded-2xl border border-brand-200/10 p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden group flex flex-col justify-between">
         <div class="absolute -right-12 -top-12 w-32 h-32 bg-brand-200/5 rounded-full blur-2xl pointer-events-none"></div>
-        
+
         <div class="space-y-5">
           <div class="flex items-start gap-4">
             <div class="w-10 h-10 rounded-xl bg-brand-200/10 border border-brand-200/20 flex items-center justify-center text-brand-200">
@@ -279,20 +279,20 @@
           </div>
 
           <!-- Connected Google Form for Closed Beta -->
-          <form 
-            id="betaForm" 
-            onsubmit="handleBetaSubmit(event)" 
+          <form
+            id="betaForm"
+            onsubmit="handleBetaSubmit(event)"
             class="space-y-4"
           >
             <div class="space-y-1.5">
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Your NightCafe Handle <span class="text-brand-200">*</span></label>
               <div class="relative">
                 <span class="absolute left-3.5 top-3 text-brand-200/50 font-mono text-sm pointer-events-none">@</span>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   id="betaTag"
                   required
-                  placeholder="username" 
+                  placeholder="username"
                   class="w-full bg-[#050807] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl pl-8 pr-4 py-2.5 text-sm outline-none transition-all font-mono"
                 />
               </div>
@@ -301,7 +301,7 @@
 
             <div class="space-y-1.5">
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Motivation for CLOSED beta access? <span class="text-brand-200">*</span></label>
-              <textarea 
+              <textarea
                 id="betaReason"
                 required
                 rows="3"
@@ -310,10 +310,10 @@
               ></textarea>
             </div>
 
-            <!-- Added comment question block strictly relating to the beta request -->
+            <!-- Comment question block -->
             <div class="space-y-1.5">
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Anything else you want to tell me?</label>
-              <textarea 
+              <textarea
                 id="betaComments"
                 rows="2"
                 placeholder="Optional comments or suggestions..."
@@ -321,7 +321,7 @@
               ></textarea>
             </div>
 
-            <button 
+            <button
               type="submit"
               id="betaSubmitBtn"
               class="w-full bg-gradient-to-r from-brand-200 to-brand-300 text-slate-900 font-bold text-sm tracking-wide py-3 px-4 rounded-xl hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-200/10"
@@ -350,7 +350,7 @@
       <!-- Suggest Creator Form Section -->
       <div class="bg-gradient-to-b from-[#0c1211] to-[#040606] rounded-2xl border border-brand-200/10 p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden group flex flex-col justify-between">
         <div class="absolute -right-12 -top-12 w-32 h-32 bg-brand-200/5 rounded-full blur-2xl pointer-events-none"></div>
-        
+
         <div class="space-y-5">
           <div class="flex items-start gap-4">
             <div class="w-10 h-10 rounded-xl bg-brand-300/10 border border-brand-300/20 flex items-center justify-center text-brand-300">
@@ -367,7 +367,7 @@
             <h4 class="text-xs font-mono text-brand-300 flex items-center gap-1.5 font-bold uppercase tracking-wider">
               <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Closed Preview Rules Summary
             </h4>
-            
+
             <p class="text-[11px] text-slate-300 leading-relaxed font-light">
               We look for unique creative styles in NightCafe artists. Structure your parameters based on our mechanical guidelines:
             </p>
@@ -393,20 +393,20 @@
           </div>
 
           <!-- Suggestion Form -->
-          <form 
-            id="artistForm" 
-            onsubmit="handleArtistSubmit(event)" 
+          <form
+            id="artistForm"
+            onsubmit="handleArtistSubmit(event)"
             class="space-y-4"
           >
             <div class="space-y-1.5">
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Creator NightCafe Tag <span class="text-brand-200">*</span></label>
               <div class="relative">
                 <span class="absolute left-3.5 top-3 text-brand-200/50 font-mono text-sm pointer-events-none">@</span>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   id="artistTag"
                   required
-                  placeholder="username" 
+                  placeholder="username"
                   class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl pl-8 pr-4 py-2.5 text-sm outline-none transition-all font-mono"
                 />
               </div>
@@ -415,7 +415,7 @@
 
             <div class="space-y-1.5">
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Why should we include them in the game? <span class="text-brand-200">*</span></label>
-              <textarea 
+              <textarea
                 id="artistMotivation"
                 required
                 rows="2"
@@ -426,7 +426,7 @@
 
             <div class="space-y-1.5">
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Faction Alignment & Passive Concept <span class="text-brand-200">*</span></label>
-              <textarea 
+              <textarea
                 id="artistPassive"
                 required
                 rows="2"
@@ -437,7 +437,7 @@
 
             <div class="space-y-1.5">
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Most Used Models & Favourite Prompt <span class="text-brand-200">*</span></label>
-              <textarea 
+              <textarea
                 id="artistModels"
                 required
                 rows="2"
@@ -449,7 +449,7 @@
             <!-- Added comment question block strictly relating to suggestions -->
             <div class="space-y-1.5">
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Anything else you want to tell me?</label>
-              <textarea 
+              <textarea
                 id="artistComments"
                 rows="2"
                 placeholder="Optional notes or details..."
@@ -463,7 +463,7 @@
               <span id="warning-text">You have already suggested this Creator tag! Duplicate submissions are restricted.</span>
             </div>
 
-            <button 
+            <button
               type="submit"
               id="artistSubmitBtn"
               class="w-full bg-gradient-to-r from-brand-200 to-brand-300 text-slate-900 font-bold text-sm tracking-wide py-3 px-4 rounded-xl hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-200/10"
@@ -520,11 +520,45 @@
             <i data-lucide="crown" class="text-accent-gold w-4 h-4"></i> Suggested Creator Podium (Most Voted)
           </h3>
         </div>
-        
+
         <!-- Live Voting Board Podium Container -->
         <div id="podium-container" class="grid md:grid-cols-3 gap-4 pt-4">
           <!-- Populated dynamically by loop, displays fallback message if empty -->
         </div>
+
+        <!-- Toggle Nominees Dashboard Panel -->
+        <div class="border-t border-brand-200/10 pt-6 flex flex-col items-center justify-center gap-4">
+          <button id="toggle-nominees-btn" onclick="toggleNomineesPanel()" class="flex items-center gap-2 text-xs font-mono tracking-wider font-semibold text-brand-200 hover:text-brand-300 transition-all bg-brand-200/10 hover:bg-brand-200/15 px-6 py-3 rounded-xl border border-brand-200/20">
+            <span>View All Suggested Nominees</span>
+            <i data-lucide="chevron-down" id="toggle-arrow" class="w-4 h-4 transition-transform duration-300"></i>
+          </button>
+
+          <!-- Drawer Panel with Live Search and Full Nomination Index -->
+          <div id="nominees-panel" class="hidden w-full space-y-4 pt-4 border-t border-brand-200/5 transition-all duration-300">
+            <div class="flex flex-col sm:flex-row items-center gap-4 justify-between">
+              <div class="relative w-full sm:max-w-xs">
+                <span class="absolute left-3 top-2.5 text-brand-200/50">
+                  <i data-lucide="search" class="w-4 h-4"></i>
+                </span>
+                <input
+                  type="text"
+                  id="nomineeSearch"
+                  oninput="filterNominees()"
+                  placeholder="Search nominees by tag..."
+                  class="w-full bg-[#050807]/90 border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-600 rounded-xl pl-9 pr-4 py-2 text-xs outline-none transition-all font-mono"
+                />
+              </div>
+              <p class="text-[10px] text-slate-500 font-mono uppercase tracking-widest">Showing all community suggestions in real-time</p>
+            </div>
+
+            <div class="overflow-hidden rounded-2xl border border-brand-200/10 bg-brand-950/60 backdrop-blur">
+              <div class="max-h-[350px] overflow-y-auto" id="full-nominees-list">
+                <!-- Programmatically rendered row elements go here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -533,7 +567,7 @@
   <!-- Detailed 3D Card Inspector Modal overlay -->
   <div id="inspector-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
     <div class="bg-gradient-to-tr from-[#050405] to-[#0f1413] border border-brand-300/25 rounded-3xl max-w-4xl w-full p-6 lg:p-8 shadow-2xl relative flex flex-col md:flex-row gap-8 overflow-y-auto max-h-[95vh] md:max-h-none transform scale-95 transition-transform duration-300" id="inspector-content">
-      
+
       <!-- Close Button -->
       <button onclick="closeInspector()" class="absolute right-4 top-4 text-slate-400 hover:text-brand-200 transition-colors bg-brand-950/40 p-2 rounded-full border border-brand-200/10">
         <i data-lucide="x" class="w-5 h-5"></i>
@@ -614,8 +648,8 @@
 
   <script>
     // Configuration
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdE5-CePIwz6vUNtJydUhgrFsVEsHZtUHRYL5E1JAx6t6GULrNrcmZL2sxMsXyNbHW/exec'; 
-    const SPREADSHEET_ID = '1CBEIN3Al02f7HGXpxwCkZI5EjVP00VvaXKyb5GFeZNg'; 
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdE5-CePIwz6vUNtJydUhgrFsVEsHZtUHRYL5E1JAx6t6GULrNrcmZL2sxMsXyNbHW/exec';
+    const SPREADSHEET_ID = '1CBEIN3Al02f7HGXpxwCkZI5EjVP00VvaXKyb5GFeZNg';
 
     // Our default card list
     const SAMPLE_CARDS = [
@@ -710,31 +744,31 @@
     // Fetch dynamic creators from Google Spreadsheet (reading the Summary list)
     async function loadSuggestedArtists() {
       const cached = localStorage.getItem('pb_suggested_artists');
-      
+
       if (cached) {
         SUGGESTED_ARTISTS = JSON.parse(cached);
       }
 
       if (SPREADSHEET_ID && SPREADSHEET_ID.trim() !== '') {
         try {
-          // If we have renamed our sheet to "Summary", let's explicitly request it to avoid issues
           const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Summary`;
           const response = await fetch(url);
           const text = await response.text();
-          
+
           // Clean up Google's security wrapper
           const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
           const rows = cleanJson.table.rows;
 
           let liveArtists = [];
-          
-          rows.forEach((row, rowIndex) => {
-            if (rowIndex === 0) return; // Skip headers ("Creator Tag", "Total Votes", "Last Updated")
-            
+
+          rows.forEach((row) => {
+            // BUG RESOLUTION: Do NOT ignore rowIndex === 0 anymore!
+            // In Google Visualization API queries, rows are directly the data values.
+            // Excluding index 0 deleted the first suggested artist permanently on feed!
             if (row.c && row.c[0] && row.c[0].v) {
               const creatorTag = row.c[0].v.toString().trim().replace('@', '');
               const totalVotes = (row.c[1] && row.c[1].v !== null) ? parseInt(row.c[1].v) : 1;
-              
+
               if (creatorTag) {
                 const duplicateIndex = liveArtists.findIndex(x => x.name.toLowerCase() === creatorTag.toLowerCase());
                 if (duplicateIndex !== -1) {
@@ -762,15 +796,102 @@
       renderPodiumAndStats();
     }
 
+    // Toggle Nominees Full list
+    function toggleNomineesPanel() {
+      const panel = document.getElementById('nominees-panel');
+      const arrow = document.getElementById('toggle-arrow');
+      const btnSpan = document.getElementById('toggle-nominees-btn').querySelector('span');
+
+      if (panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+        btnSpan.innerText = 'Hide Nominees List';
+        renderFullNomineesList();
+      } else {
+        panel.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+        btnSpan.innerText = 'View All Suggested Nominees';
+      }
+    }
+
+    // Render Searchable Complete List of nominated artists
+    function renderFullNomineesList() {
+      const container = document.getElementById('full-nominees-list');
+      const query = document.getElementById('nomineeSearch').value.toLowerCase().trim();
+      container.innerHTML = '';
+
+      const votedFor = JSON.parse(localStorage.getItem('pb_voted_artists') || '[]');
+      const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
+
+      // Sort entire nominated dataset by vote count
+      const sorted = [...SUGGESTED_ARTISTS].sort((a, b) => b.votes - a.votes);
+      const filtered = sorted.filter(item => item.name.toLowerCase().includes(query));
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-xs text-slate-500 font-mono">
+            No matching suggestions found. Try another search terms or nominate them above!
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach((item, index) => {
+        const isSuggested = submittedByMe.includes(item.name.toLowerCase());
+        const isVoted = votedFor.includes(item.name.toLowerCase());
+        const cannotVote = isSuggested || isVoted;
+
+        let actionHtml = '';
+        if (isSuggested) {
+          actionHtml = `<span class="text-[10px] font-mono font-bold text-brand-300 px-2 py-1 bg-brand-300/10 rounded-lg border border-brand-300/20">Suggested</span>`;
+        } else if (isVoted) {
+          actionHtml = `<span class="text-[10px] font-mono font-bold text-brand-200 px-2 py-1 bg-brand-200/10 rounded-lg border border-brand-200/20">Voted</span>`;
+        } else {
+          actionHtml = `
+            <button onclick="voteForArtist('${item.name}')" class="px-3 py-1 rounded bg-brand-200/10 hover:bg-brand-200/30 transition-all text-xs font-mono text-brand-200 font-bold active:scale-95 border border-brand-200/20 hover:border-brand-200/40">
+              +1 Vote
+            </button>
+          `;
+        }
+
+        const row = document.createElement('div');
+        row.className = `flex justify-between items-center px-4 py-3 border-b border-brand-200/5 hover:bg-brand-200/[0.02] transition-colors`;
+        row.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="text-[10px] font-mono text-slate-500 w-6">#${index + 1}</span>
+            <div>
+              <h4 class="font-bold text-xs sm:text-sm text-slate-200">@${item.name}</h4>
+            </div>
+          </div>
+          <div class="flex items-center gap-6">
+            <div class="text-right">
+              <span class="text-[10px] text-slate-500 block font-mono">Score</span>
+              <span class="text-xs font-mono font-bold text-brand-200">${item.votes}</span>
+            </div>
+            <div>
+              ${actionHtml}
+            </div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    // Filter nominations list helper
+    function filterNominees() {
+      renderFullNomineesList();
+    }
+
     // Paint the community leaderboard podium
     function renderPodiumAndStats() {
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
+      const votedFor = JSON.parse(localStorage.getItem('pb_voted_artists') || '[]');
       const podium = document.getElementById('podium-container');
       podium.innerHTML = '';
 
       // Sort suggestions by votes descending
       const sorted = [...SUGGESTED_ARTISTS].sort((a, b) => b.votes - a.votes);
-      
+
       if (sorted.length === 0) {
         podium.className = "col-span-full py-12 text-center flex flex-col items-center justify-center space-y-3 bg-brand-950/20 border border-brand-200/10 rounded-2xl";
         podium.innerHTML = `
@@ -784,14 +905,31 @@
         `;
       } else {
         podium.className = "grid md:grid-cols-3 gap-4 pt-4";
-        
+
         sorted.slice(0, 3).forEach((item, index) => {
           const medalColors = ['text-accent-gold', 'text-slate-300', 'text-amber-700'];
           const cardClass = index === 0 ? 'border-accent-gold/20 bg-accent-gold/5' : 'border-brand-200/10 bg-brand-950/40';
 
+          const isSuggested = submittedByMe.includes(item.name.toLowerCase());
+          const isVoted = votedFor.includes(item.name.toLowerCase());
+          const cannotVote = isSuggested || isVoted;
+
+          let voteButtonHtml = '';
+          if (isSuggested) {
+            voteButtonHtml = `<span class="px-2 py-0.5 rounded text-[9px] font-mono text-brand-300 bg-brand-300/10 border border-brand-300/20 font-bold uppercase tracking-wider">Suggested</span>`;
+          } else if (isVoted) {
+            voteButtonHtml = `<span class="px-2 py-0.5 rounded text-[9px] font-mono text-brand-200 bg-brand-200/10 border border-brand-200/20 font-bold uppercase tracking-wider">Voted</span>`;
+          } else {
+            voteButtonHtml = `
+              <button onclick="voteForArtist('${item.name}')" class="px-2 py-0.5 rounded bg-brand-200/10 hover:bg-brand-200/30 transition-all text-[10px] font-mono text-brand-200 font-bold active:scale-95 border border-brand-200/20 hover:border-brand-200/40">
+                +1
+              </button>
+            `;
+          }
+
           const podiumCard = document.createElement('div');
           podiumCard.className = `p-4 sm:p-5 rounded-2xl border flex flex-col justify-between relative overflow-hidden ${cardClass}`;
-          
+
           podiumCard.innerHTML = `
             <div class="space-y-3">
               <div class="flex justify-between items-center">
@@ -800,16 +938,14 @@
               </div>
               <div>
                 <h4 class="font-extrabold text-sm sm:text-base text-slate-100 font-sans">@${item.name}</h4>
-                <p class="text-[10px] text-slate-500 font-mono mt-0.5">Voted Community Artist</p>
+                <p class="text-[10px] text-slate-500 font-mono mt-0.5 font-light">Voted Community Nominee</p>
               </div>
             </div>
             <div class="mt-4 pt-3 border-t border-brand-200/5 flex justify-between items-center text-xs">
               <span class="font-mono text-slate-500">Votes</span>
               <span class="font-bold text-brand-200 flex items-center gap-1.5">
-                ${item.votes} 
-                <button onclick="voteForArtist('${item.name}')" class="px-2 py-0.5 rounded bg-brand-200/10 hover:bg-brand-200/30 transition-all text-[10px] font-mono text-brand-200 font-bold active:scale-95 border border-brand-200/20 hover:border-brand-200/40">
-                  +1
-                </button>
+                ${item.votes}
+                ${voteButtonHtml}
               </span>
             </div>
           `;
@@ -822,15 +958,22 @@
       document.getElementById('stat-votes').innerText = totalVotes;
       document.getElementById('stat-local').innerText = submittedByMe.length;
 
+      // Also refresh nominee list if panel is open
+      if (!document.getElementById('nominees-panel').classList.contains('hidden')) {
+        renderFullNomineesList();
+      }
+
       lucide.createIcons();
     }
 
-    // Upvote trigger
+    // Upvote trigger with validation rules
     function voteForArtist(name) {
       const votedFor = JSON.parse(localStorage.getItem('pb_voted_artists') || '[]');
+      const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
 
-      if (votedFor.includes(name.toLowerCase())) {
-        showLocalWarning("You have already cast a vote for this creator tag!");
+      // RULE: Block voting if they suggested this name or voted it already
+      if (votedFor.includes(name.toLowerCase()) || submittedByMe.includes(name.toLowerCase())) {
+        showLocalWarning("You have already voted for or suggested this creator!");
         return;
       }
 
@@ -844,7 +987,7 @@
         }
         return item;
       });
-      
+
       localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
       renderPodiumAndStats();
 
@@ -875,19 +1018,19 @@
       const track = document.getElementById('hand-track-element');
       track.innerHTML = '';
 
-      SAMPLE_CARDS.forEach((card, index) => {
+      SAMPLE_CARDS.forEach((card) => {
         const itemWrapper = document.createElement('div');
         itemWrapper.className = "hand-card-item shrink-0 select-none relative";
         itemWrapper.onclick = () => inspectCard(card);
-        
+
         itemWrapper.innerHTML = `
           <div class="w-[155px] sm:w-[170px] h-[217px] sm:h-[238px] bg-[#090d0c] border border-brand-200/15 rounded-2xl shadow-xl relative overflow-hidden transition-all duration-300 hover:border-brand-200/40">
-            
+
             <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
-            
+
             <div class="hidden absolute inset-0 p-3 flex flex-col justify-between z-10">
               <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-[0.03]"></div>
-              
+
               <div class="flex justify-between items-start gap-1">
                 <span class="text-[9px] sm:text-[10px] font-mono tracking-tight text-slate-100 font-bold truncate pr-1">${card.name}</span>
                 <span class="text-[7px] sm:text-[8px] font-mono tracking-wider px-1.5 bg-brand-200/5 border border-brand-200/20 rounded text-brand-200 uppercase shrink-0 font-bold">${card.type}</span>
@@ -935,20 +1078,20 @@
         if (!isHoveringTrack) {
           const trackWidth = track.scrollWidth;
           const viewportWidth = viewport.clientWidth;
-          
+
           if (trackWidth > viewportWidth) {
             trackXPos -= glideSpeed;
-            
+
             if (Math.abs(trackXPos) >= (trackWidth - viewportWidth)) {
               trackXPos = 0;
             }
-            
+
             track.style.transform = `translateX(${trackXPos}px)`;
           }
         }
         requestAnimationFrame(run);
       };
-      
+
       requestAnimationFrame(run);
     }
 
@@ -956,7 +1099,7 @@
     function inspectCard(card) {
       const modal = document.getElementById('inspector-modal');
       const content = document.getElementById('inspector-content');
-      
+
       document.getElementById('inspect-tag').innerText = card.type;
       document.getElementById('inspect-name').innerText = card.name;
       document.getElementById('inspect-subtype').innerText = card.subtype;
@@ -1011,7 +1154,7 @@
 
       const targetElement = document.getElementById('interactive-card-element');
       targetElement.className = `card-3d w-full h-full rounded-2xl bg-[#080d0c] border border-brand-200/35 flex flex-col justify-between shadow-2xl relative overflow-hidden select-none`;
-      
+
       targetElement.innerHTML = `
         <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
 
@@ -1047,7 +1190,7 @@
 
       const wrapper = targetElement.parentElement;
       const card3D = targetElement;
-      
+
       const newCardNode = card3D.cloneNode(true);
       card3D.parentNode.replaceChild(newCardNode, card3D);
 
@@ -1059,10 +1202,10 @@
         const y = e.clientY - rect.top;
         const px = x / rect.width;
         const py = y / rect.height;
-        
+
         const rotX = (0.5 - py) * 30;
         const rotY = (px - 0.5) * 30;
-        
+
         newCardNode.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
         if(sheen) {
           sheen.style.setProperty('--sheen-x', `${px * 100}%`);
@@ -1126,7 +1269,7 @@
       submitBtn.disabled = true;
       submitBtn.innerText = "Submitting...";
 
-      // Optionally send Beta details over to Google Sheets Responses sheet too!
+      // Post Beta details over to Google Sheets Responses sheet
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
         const urlParams = new URLSearchParams();
         urlParams.append('action', 'beta-request');
@@ -1171,7 +1314,7 @@
       const passive = document.getElementById('artistPassive').value.trim();
       const models = document.getElementById('artistModels').value.trim();
       const comments = document.getElementById('artistComments').value.trim();
-      
+
       const warningBox = document.getElementById('local-warning-box');
       const submitBtn = document.getElementById('artistSubmitBtn');
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
@@ -1180,12 +1323,12 @@
         showLocalWarning("You have already suggested this Creator tag! Duplicate submissions are restricted.");
         return;
       }
-      
+
       warningBox.classList.add('hidden');
       submitBtn.disabled = true;
       submitBtn.innerText = "Submitting suggestion...";
 
-      // Track local feedback instantly
+      // Track local feedback instantly (blocks voting for self-nominated artist)
       submittedByMe.push(tag.toLowerCase());
       localStorage.setItem('pb_my_suggestions', JSON.stringify(submittedByMe));
 
