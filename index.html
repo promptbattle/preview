@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompt Battle — Closed Beta Gallery & Sign-up</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fdf2f7',
+              100: '#fce7f3',
+              200: '#fbcfe8', // Soft warm rose pink
+              300: '#9bc3be', // Elegant Sage/Mint
+              400: '#7faea9',
+              500: '#649590',
+              800: '#141c1b',
+              950: '#070a0a',
+            },
+            accent: {
+              gold: '#dfb76c', 
+              pink: '#fbcfe8', // Rosy highlights
+              lavender: '#e9e3f8', // Cosy lavender
+              slate: '#475569'
+            },
+            soft: {
+              bg: '#050707',
+              card: '#0c1211',
+              border: 'rgba(251, 207, 232, 0.12)'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Google Fonts & Lucide Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      background-color: #050707;
+      background-image: 
+        radial-gradient(circle at 5% 10%, rgba(251, 207, 232, 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 95% 90%, rgba(155, 195, 190, 0.05) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(251, 207, 232, 0.02) 0%, transparent 80%);
+      background-attachment: fixed;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #050707;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(251, 207, 232, 0.2);
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(251, 207, 232, 0.35);
+    }
+
+    /* 3D Scene Config for Cards */
+    .card-3d-wrapper {
+      perspective: 800px;
+    }
+
+    .card-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    /* Holographic Foil overlay */
+    .holo-sheen {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(
+        115deg,
+        transparent 20%,
+        rgba(251, 207, 232, 0.15) 35%,
+        rgba(155, 195, 190, 0.15) 50%,
+        rgba(223, 183, 108, 0.08) 65%,
+        transparent 80%
+      );
+      background-size: 250% 250%;
+      background-position: var(--sheen-x, 50%) var(--sheen-y, 50%);
+      mix-blend-mode: color-dodge;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .card-3d:hover .holo-sheen {
+      opacity: 1;
+    }
+
+    /* Fluid horizontal viewport scroller */
+    .hand-viewport {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      height: 330px;
+      overflow: hidden;
+      margin: 0 auto;
+      border-radius: 24px;
+      background: rgba(12, 18, 17, 0.2);
+      border: 1px solid rgba(251, 207, 232, 0.06);
+    }
+
+    .hand-track {
+      display: flex;
+      align-items: center;
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      will-change: transform;
+      gap: 24px;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    /* Cards are flat, upright and dynamic */
+    .hand-card-item {
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), filter 0.3s ease;
+      transform-origin: center bottom;
+    }
+
+    .hand-track:hover .hand-card-item {
+      filter: brightness(0.75);
+    }
+
+    .hand-track:hover .hand-card-item:hover {
+      filter: brightness(1.1);
+      transform: translateY(-12px) scale(1.06);
+      z-index: 50 !important;
+    }
+  </style>
+</head>
+<body class="text-slate-200 min-h-screen flex flex-col justify-between font-sans selection:bg-brand-200 selection:text-brand-950">
+
+  <!-- Header -->
+  <header class="border-b border-brand-200/10 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-200 via-accent-lavender to-brand-300 p-[1px] flex items-center justify-center">
+          <div class="w-full h-full bg-[#050707] rounded-[11px] flex items-center justify-center">
+            <i data-lucide="sparkles" class="w-4 h-4 text-brand-200"></i>
+          </div>
+        </div>
+        <div>
+          <span class="font-bold text-base sm:text-lg tracking-tight text-slate-100">Prompt<span class="text-brand-200">Battle</span></span>
+          <span class="text-[9px] font-mono tracking-widest text-brand-200/90 ml-2 px-2 py-0.5 rounded border border-brand-200/20 bg-brand-200/5">CLOSED PREVIEW</span>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <a href="#teaser-forms" class="text-xs font-mono font-medium tracking-wide text-brand-200 hover:text-brand-300 transition-all bg-brand-200/5 hover:bg-brand-200/10 px-4 py-2 rounded-full border border-brand-200/20 hover:border-brand-200/40">
+          Get Invited
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-grow space-y-16">
+    
+    <!-- Hero Header -->
+    <section class="text-center space-y-4 max-w-2xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-200/15 bg-brand-950 text-xs text-brand-200 font-mono">
+        <span class="w-1.5 h-1.5 rounded-full bg-brand-200 animate-pulse"></span> Closed Alpha Tester Selection Preview
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-100 leading-tight">
+        Who goes viral first on<br/>
+        <span class="bg-gradient-to-r from-brand-200 via-accent-lavender to-brand-300 bg-clip-text text-transparent">The NightCafe Feed?</span>
+      </h1>
+      <p class="text-slate-300 text-sm sm:text-base leading-relaxed font-light">
+        Welcome to the preview gallery of <span class="text-brand-200 font-medium">Prompt Battle</span>—the tactical AI art card game. Explore the playable cards below in our fluid hand scroller, which glides smoothly from right to left!
+      </p>
+    </section>
+
+    <!-- Fluid Card Hand Carousel -->
+    <section class="space-y-4 relative">
+      <div class="text-center">
+        <h2 class="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest">Card Hand Slider</h2>
+        <p class="text-xs text-slate-500">Hover over cards to freeze scrolling and inspect individual traits!</p>
+      </div>
+
+      <div class="hand-viewport" id="hand-viewport-element">
+        <div id="hand-track-element" class="hand-track">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Implemented Artists Showcase Grid -->
+    <section class="max-w-5xl mx-auto space-y-4">
+      <div class="text-center">
+        <h2 class="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest">Base Set Cast (Already Implemented)</h2>
+        <p class="text-xs text-slate-500">These creators are already integrated into Set 001. Check here to avoid duplicate submissions!</p>
+      </div>
+      
+      <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="p-4 rounded-xl border border-brand-200/10 bg-brand-950/40 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-brand-300/10 flex items-center justify-center text-brand-300">
+            <i data-lucide="user" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-100">@aia</h4>
+            <span class="text-[9px] font-mono text-brand-200 uppercase tracking-widest">CLIP Resistance</span>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-brand-200/10 bg-brand-950/40 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-brand-200/10 flex items-center justify-center text-brand-200">
+            <i data-lucide="user-cog" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-100">@Anonymous</h4>
+            <span class="text-[9px] font-mono text-brand-200 uppercase tracking-widest">Legends / Newbies</span>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-brand-200/10 bg-brand-950/40 flex items-center gap-3 opacity-60">
+          <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400">
+            <i data-lucide="lock" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-300">Expansion Slot A</h4>
+            <span class="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Set 002</span>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-brand-200/10 bg-brand-950/40 flex items-center gap-3 opacity-60">
+          <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400">
+            <i data-lucide="lock" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-300">Expansion Slot B</h4>
+            <span class="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Set 002</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Forms Workspace -->
+    <section id="teaser-forms" class="grid lg:grid-cols-2 gap-8 pt-4 max-w-5xl mx-auto scroll-mt-20">
+      
+      <!-- Closed Beta Application Form -->
+      <div class="bg-gradient-to-b from-[#0c1211] to-[#040606] rounded-2xl border border-brand-200/10 p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden group flex flex-col justify-between">
+        <div class="absolute -right-12 -top-12 w-32 h-32 bg-brand-200/5 rounded-full blur-2xl pointer-events-none"></div>
+        
+        <div class="space-y-5">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-brand-200/10 border border-brand-200/20 flex items-center justify-center text-brand-200">
+              <i data-lucide="key-round" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg text-slate-100 font-sans">Closed Beta Request</h3>
+              <p class="text-xs text-slate-400 mt-0.5">Apply strictly for direct cerrado beta server permissions.</p>
+            </div>
+          </div>
+
+          <!-- Google Form submission wrapper -->
+          <form 
+            id="betaForm" 
+            action="https://docs.google.com/forms/d/e/1FAIpQLScP_pYq9D4vK0bX8Z6FvUvXfXyX_Y_D_z_z_z_z_z_z_z_z/formResponse" 
+            method="POST" 
+            target="hidden_iframe1"
+            onsubmit="handleBetaSubmit(event)" 
+            class="space-y-4"
+          >
+            <div class="space-y-1.5">
+              <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Your NightCafe Handle <span class="text-brand-200">*</span></label>
+              <div class="relative">
+                <span class="absolute left-3.5 top-3 text-brand-200/50 font-mono text-sm pointer-events-none">@</span>
+                <input 
+                  type="text" 
+                  id="betaTag"
+                  name="entry.12345678" 
+                  required
+                  placeholder="username" 
+                  class="w-full bg-[#050807] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl pl-8 pr-4 py-2.5 text-sm outline-none transition-all font-mono"
+                />
+              </div>
+              <p class="text-[10px] text-slate-500">We contact chosen testers straight on NightCafe chat/comments!</p>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Motivation for CLOSED beta access? <span class="text-brand-200">*</span></label>
+              <textarea 
+                id="betaReason"
+                name="entry.87654321" 
+                required
+                rows="3"
+                placeholder="Why do you want to play Prompt Battle? Do you have experience with other card games?"
+                class="w-full bg-[#050807] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none resize-none transition-all"
+              ></textarea>
+            </div>
+
+            <!-- Added comment question block strictly relating to the beta request -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Anything else you want to tell me?</label>
+              <textarea 
+                id="betaComments"
+                name="entry.99991111" 
+                rows="2"
+                placeholder="Optional comments or suggestions..."
+                class="w-full bg-[#050807] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none resize-none transition-all"
+              ></textarea>
+            </div>
+
+            <button 
+              type="submit"
+              class="w-full bg-gradient-to-r from-brand-200 to-brand-300 text-slate-900 font-bold text-sm tracking-wide py-3 px-4 rounded-xl hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-200/10"
+            >
+              Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+          </form>
+        </div>
+
+        <iframe name="hidden_iframe1" id="hidden_iframe1" class="hidden"></iframe>
+
+        <!-- Success overlay -->
+        <div id="betaSuccess" class="hidden absolute inset-0 bg-[#050807] p-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in z-20">
+          <div class="w-12 h-12 rounded-full bg-brand-200/10 border border-brand-200/30 flex items-center justify-center text-brand-200">
+            <i data-lucide="check" class="w-6 h-6"></i>
+          </div>
+          <div class="space-y-1">
+            <h4 class="font-bold text-slate-100 text-lg">Application Transmitted!</h4>
+            <p class="text-xs text-brand-200 font-mono" id="betaSuccessTag">@username</p>
+          </div>
+          <p class="text-xs text-slate-400 max-w-sm">
+            Closed preview registration parameter locked in. Keep your eyes on your NightCafe chat notifications!
+          </p>
+          <button onclick="resetBetaForm()" class="text-xs text-slate-500 hover:text-brand-200 underline font-mono">Submit another response</button>
+        </div>
+      </div>
+
+      <!-- Suggest Creator Form & Spoilers-Free Mechanics summary Block -->
+      <div class="bg-gradient-to-b from-[#0c1211] to-[#040606] rounded-2xl border border-brand-200/10 p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden group flex flex-col justify-between">
+        <div class="absolute -right-12 -top-12 w-32 h-32 bg-brand-200/5 rounded-full blur-2xl pointer-events-none"></div>
+        
+        <div class="space-y-5">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-brand-300/10 border border-brand-300/20 flex items-center justify-center text-brand-300">
+              <i data-lucide="palette" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg text-slate-100 font-sans">Suggest Creator Card</h3>
+              <p class="text-xs text-slate-400 mt-0.5">Recommend other creators or suggest yourself! (Self-suggestions are welcome)</p>
+            </div>
+          </div>
+
+          <!-- Creator Guidelines Info Widget (With Soft Summary of Rules & Mechanics) -->
+          <div class="bg-brand-300/5 rounded-xl border border-brand-300/10 p-4 sm:p-5 space-y-3">
+            <h4 class="text-xs font-mono text-brand-300 flex items-center gap-1.5 font-bold uppercase tracking-wider">
+              <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Closed Preview Rules Summary
+            </h4>
+            
+            <p class="text-[11px] text-slate-300 leading-relaxed font-light">
+              We look for unique creative styles in NightCafe artists. Structure your parameters based on our mechanical guidelines:
+            </p>
+
+            <div class="grid grid-cols-2 gap-3 text-[10px] text-slate-400 font-sans">
+              <div class="space-y-1">
+                <span class="text-brand-300 font-mono uppercase text-[9px] block">Factions</span>
+                <span class="block">Design alignments (like <em>CLIP Resistance</em> or <em>Newbies</em>), reflecting community identity.</span>
+              </div>
+              <div class="space-y-1">
+                <span class="text-brand-200 font-mono uppercase text-[9px] block">Passives</span>
+                <span class="block">Traits triggering automatically (such as copying tags or taking opponent visibility).</span>
+              </div>
+              <div class="space-y-1">
+                <span class="text-brand-300 font-mono uppercase text-[9px] block">Signature (Ults)</span>
+                <span class="block">High-impact active mechanics costing both Creator Loyalty and Reputation.</span>
+              </div>
+              <div class="space-y-1">
+                <span class="text-brand-200 font-mono uppercase text-[9px] block">Favourite Prompt</span>
+                <span class="block">A unique prompt phrase that awards bonus stats (e.g. +1 Quality or Visibility).</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suggest Form -->
+          <form 
+            id="artistForm" 
+            action="https://docs.google.com/forms/d/e/1FAIpQLScP_pYq9D4vK0bX8Z6FvUvXfXyX_Y_D_z_z_z_z_z_z_z_z/formResponse" 
+            method="POST" 
+            target="hidden_iframe2"
+            onsubmit="handleArtistSubmit(event)" 
+            class="space-y-4"
+          >
+            <div class="space-y-1.5">
+              <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Creator NightCafe Tag <span class="text-brand-200">*</span></label>
+              <div class="relative">
+                <span class="absolute left-3.5 top-3 text-brand-200/50 font-mono text-sm pointer-events-none">@</span>
+                <input 
+                  type="text" 
+                  id="artistTag"
+                  name="entry.11112222" 
+                  required
+                  placeholder="username" 
+                  class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl pl-8 pr-4 py-2.5 text-sm outline-none transition-all font-mono"
+                />
+              </div>
+              <p class="text-[10px] text-slate-500">You can suggest yourself if you want!</p>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Why should we include them in the game? <span class="text-brand-200">*</span></label>
+              <textarea 
+                id="artistMotivation"
+                name="entry.22223333"
+                required
+                rows="2"
+                placeholder="E.g. They are highly active, run cool community events, have an iconic gallery style..."
+                class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2 py-2.5 text-sm outline-none resize-none transition-all"
+              ></textarea>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Faction Alignment & Passive Concept <span class="text-brand-200">*</span></label>
+              <textarea 
+                id="artistPassive"
+                name="entry.33334444"
+                required
+                rows="2"
+                placeholder="E.g. Faction: CLIP Resistance. Passive: Steals visibility from matching style tags..."
+                class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2 py-2.5 text-sm outline-none resize-none transition-all"
+              ></textarea>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Most Used Models & Favourite Prompt <span class="text-brand-200">*</span></label>
+              <textarea 
+                id="artistModels"
+                name="entry.44445555"
+                required
+                rows="2"
+                placeholder="E.g. Model: SDXL. Favourite Prompt: 'vibrant expressiveness, oil pastel rendering...'"
+                class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2 py-2.5 text-sm outline-none resize-none transition-all"
+              ></textarea>
+            </div>
+
+            <!-- Added comment question block strictly relating to suggestions -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Anything else you want to tell me?</label>
+              <textarea 
+                id="artistComments"
+                name="entry.55556666" 
+                rows="2"
+                placeholder="Optional notes or details..."
+                class="w-full bg-[#050405] border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none resize-none transition-all"
+              ></textarea>
+            </div>
+
+            <!-- Soft Local Warning Box -->
+            <div id="local-warning-box" class="hidden text-xs text-red-300 bg-red-500/10 border border-red-500/20 p-3 rounded-lg flex items-center gap-2">
+              <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+              <span>You have already suggested this Creator tag! Duplicate submissions are restricted.</span>
+            </div>
+
+            <button 
+              type="submit"
+              class="w-full bg-gradient-to-r from-brand-200 to-brand-300 text-slate-900 font-bold text-sm tracking-wide py-3 px-4 rounded-xl hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-200/10"
+            >
+              Submit Creator Suggestion <i data-lucide="sparkles" class="w-4 h-4"></i>
+            </button>
+          </form>
+        </div>
+
+        <iframe name="hidden_iframe2" id="hidden_iframe2" class="hidden"></iframe>
+
+        <!-- Success overlay -->
+        <div id="artistSuccess" class="hidden absolute inset-0 bg-[#050405] p-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in z-20">
+          <div class="w-12 h-12 rounded-full bg-brand-200/10 border border-brand-200/30 flex items-center justify-center text-brand-200">
+            <i data-lucide="sparkles" class="w-6 h-6"></i>
+          </div>
+          <div class="space-y-1">
+            <h4 class="font-bold text-slate-100 text-lg">Suggestion Captured!</h4>
+            <p class="text-xs text-brand-200 font-mono" id="artistSuccessTag">@suggested</p>
+          </div>
+          <p class="text-xs text-slate-400 max-w-sm">
+            Thank you! Your creator card suggestion parameters have been safely stored.
+          </p>
+          <button onclick="resetArtistForm()" class="text-xs text-slate-500 hover:text-brand-300 underline font-mono">Suggest another artist</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Suggested Artist Vote Leaderboard Podium -->
+    <section class="max-w-5xl mx-auto space-y-6 pt-4">
+      <div class="text-center">
+        <h2 class="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest">Community Suggestions Dashboard</h2>
+        <p class="text-xs text-slate-500">Live indicators of total submitted creators and leaderboard standings</p>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-6">
+        <!-- Live counters -->
+        <div class="bg-brand-950/40 border border-brand-200/10 rounded-2xl p-5 flex flex-col justify-center items-center text-center">
+          <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Total Artists Suggested</span>
+          <span id="stat-artists" class="text-3xl font-black text-brand-200 mt-2">12</span>
+        </div>
+        <div class="bg-brand-950/40 border border-brand-200/10 rounded-2xl p-5 flex flex-col justify-center items-center text-center">
+          <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Total Cumulative Votes</span>
+          <span id="stat-votes" class="text-3xl font-black text-brand-200 mt-2">247</span>
+        </div>
+        <div class="bg-brand-200/5 border border-brand-200/15 rounded-2xl p-5 flex flex-col justify-center items-center text-center">
+          <span class="text-xs font-mono text-brand-200 uppercase tracking-wider">Your Local Submissions</span>
+          <span id="stat-local" class="text-3xl font-black text-slate-100 mt-2">0</span>
+        </div>
+      </div>
+
+      <!-- Main Podium Frame -->
+      <div class="bg-gradient-to-tr from-[#0a0e0d] to-[#0d1413] border border-brand-200/10 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden">
+        <div class="flex justify-between items-center">
+          <h3 class="text-sm font-mono text-slate-300 font-bold uppercase tracking-wider flex items-center gap-2">
+            <i data-lucide="crown" class="text-accent-gold w-4 h-4"></i> Suggested Creator Podium (Most Voted)
+          </h3>
+          <button onclick="toggleSetupGuide()" class="text-xs font-mono text-brand-200 hover:text-accent-pink flex items-center gap-1.5 underline">
+            <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Spreadsheet Setup Info
+          </button>
+        </div>
+        
+        <!-- Live Voting Board: Usernames Only -->
+        <div id="podium-container" class="grid md:grid-cols-3 gap-4 pt-4">
+          <!-- Populated dynamically by loop -->
+        </div>
+
+        <!-- Hidden Webhook / Apps Script configuration explanation block -->
+        <div id="setup-guide-box" class="hidden bg-brand-950/80 p-5 rounded-2xl border border-brand-200/15 space-y-4 animate-fade-in text-xs leading-relaxed">
+          <h4 class="font-bold text-slate-100 flex items-center gap-1.5 font-mono text-xs uppercase tracking-wide">
+            <i data-lucide="info" class="w-4 h-4 text-brand-200"></i> Linking Submissions to a Live Google Sheet
+          </h4>
+          <p class="text-slate-300">
+            By default, suggestions submit to a standard Google Form endpoint in the background. If you want submission parameters to **auto-populate a spreadsheet** and dynamically match duplicates to increase the vote counter by one, use Google Apps Script!
+          </p>
+          <div class="bg-[#050606] p-3.5 rounded-xl border border-brand-200/5 text-[11px] text-brand-300 font-mono space-y-2 whitespace-pre-wrap overflow-x-auto">
+// 1. Create a Google Sheet. Go to Extensions -> Apps Script.
+// 2. Paste this Code:
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var params = e.parameter;
+  var tag = params.tag;
+  var reason = params.reason;
+  
+  // Search if artist row already exists to increment vote
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0].toLowerCase() === tag.toLowerCase()) {
+      var currentVotes = data[i][1];
+      sheet.getRange(i+1, 2).setValue(currentVotes + 1);
+      return ContentService.createTextOutput("incremented");
+    }
+  }
+  
+  // If not found, add a new row with 1 vote
+  sheet.appendRow([tag, 1, reason, new Date()]);
+  return ContentService.createTextOutput("inserted");
+}
+          </div>
+          <p class="text-slate-400">
+            3. Click <strong>Deploy -> New Deployment</strong>, choose "Web App", and select "Execute as Me" and "Who has access: Anyone". Copy the Web App URL and replace your Form endpoints in the code!
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Detailed 3D Inspector Modal -->
+  <div id="inspector-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-gradient-to-tr from-[#050405] to-[#0f1413] border border-brand-300/25 rounded-3xl max-w-4xl w-full p-6 lg:p-8 shadow-2xl relative flex flex-col md:flex-row gap-8 overflow-y-auto max-h-[95vh] md:max-h-none transform scale-95 transition-transform duration-300" id="inspector-content">
+      
+      <!-- Close Button -->
+      <button onclick="closeInspector()" class="absolute right-4 top-4 text-slate-400 hover:text-brand-200 transition-colors bg-brand-950/40 p-2 rounded-full border border-brand-200/10">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Left: Interactive 3D Card Physics View -->
+      <div class="w-full md:w-[320px] shrink-0 flex flex-col items-center justify-center py-4 md:py-0">
+        <div class="card-3d-wrapper w-[260px] h-[364px]">
+          <div id="interactive-card-element" class="card-3d w-full h-full rounded-2xl shadow-2xl relative select-none">
+            <!-- Rendered Dynamically as the Full Card Image layout -->
+            <div class="holo-sheen"></div>
+          </div>
+        </div>
+        <p class="text-[10px] font-mono text-slate-500 mt-4 text-center">Move cursor or drag card to view holographic sheen reflections</p>
+      </div>
+
+      <!-- Right: Pure Gameplay Details and Artist Profiles -->
+      <div class="flex-grow space-y-6 self-center text-left">
+        <div>
+          <span id="inspect-tag" class="text-[10px] font-mono tracking-widest text-brand-200 uppercase px-2.5 py-0.5 bg-brand-200/10 border border-brand-200/20 rounded font-bold">Card Info</span>
+          <h2 id="inspect-name" class="text-2xl sm:text-3xl font-extrabold text-slate-100 mt-2 tracking-tight">Card Name</h2>
+          <p id="inspect-subtype" class="text-xs text-slate-400 italic font-mono mt-1">Subtype info</p>
+        </div>
+
+        <div class="border-t border-brand-200/15 pt-4 space-y-4">
+          <!-- Main Gameplay Rules -->
+          <div class="space-y-1">
+            <h4 class="text-[10px] font-mono uppercase tracking-widest text-brand-200/70 font-semibold">Active Rules / Effect</h4>
+            <p id="inspect-effect" class="text-sm text-slate-300 leading-relaxed font-light">The card's active gaming rules...</p>
+          </div>
+
+          <!-- Creator Only: Passive Block -->
+          <div id="inspect-passive-container" class="space-y-1 hidden bg-brand-200/5 p-3.5 rounded-2xl border border-brand-200/10">
+            <h4 id="inspect-passive-label" class="text-[10px] font-mono uppercase tracking-widest text-brand-200 font-semibold">Passive Ability</h4>
+            <p id="inspect-passive-text" class="text-xs text-slate-300 font-light leading-relaxed">Passive text...</p>
+          </div>
+
+          <!-- Creator Only: Active Abilities -->
+          <div id="inspect-abilities-container" class="space-y-2 hidden">
+            <h4 class="text-[10px] font-mono uppercase tracking-widest text-brand-200/70 font-semibold">Additional Traits</h4>
+            <div id="inspect-abilities-list" class="space-y-2 max-h-[140px] overflow-y-auto pr-1">
+              <!-- Populated by script -->
+            </div>
+          </div>
+
+          <!-- Design Comments / Lore -->
+          <div id="inspect-lore-container" class="space-y-1 border-t border-brand-200/10 pt-3">
+            <h4 class="text-[10px] font-mono uppercase tracking-widest text-slate-500">Design Note</h4>
+            <p id="inspect-lore" class="text-xs text-slate-400 italic font-light leading-relaxed">Flavour notes...</p>
+          </div>
+        </div>
+
+        <!-- Metadata tags -->
+        <div class="flex flex-wrap gap-2 pt-2 text-xs">
+          <span id="inspect-rarity" class="bg-brand-950/40 border border-brand-200/10 px-2.5 py-1 rounded text-slate-400 font-mono font-semibold">Rarity: Rare</span>
+          <span id="inspect-id" class="bg-brand-950/40 border border-brand-200/10 px-2.5 py-1 rounded text-slate-400 font-mono font-bold">ID: C-001</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-brand-200/10 py-10 bg-[#030504] z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="text-center sm:text-left space-y-1">
+        <p class="text-xs text-slate-400 font-medium">Prompt Battle is an experimental trading card game concept designed for the AI artists community.</p>
+        <p class="text-[10px] text-slate-600 font-mono">Set 001 — First Render · Closed Beta selection preview space.</p>
+      </div>
+      <div class="flex items-center gap-2 text-slate-400 text-xs font-mono">
+        <span>Curated with passion by</span>
+        <a href="https://nightcafe.art/u/aia" target="_blank" rel="noopener noreferrer" class="text-brand-200 hover:text-brand-300 transition-colors font-semibold flex items-center gap-1">
+          @aia <i data-lucide="external-link" class="w-3 h-3"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Cards database containing the full card image links to display complete designed card cards perfectly
+    const SAMPLE_CARDS = [
+      {
+        id: 'C-001', name: 'Aia', type: 'creator', rarity: 'rare', rarityDots: 3,
+        subtype: 'CLIP Resistance / Experimentalist',
+        colorTheme: 'from-[#fbcfe8] to-slate-500',
+        image: 'images/cards/C-001.png',
+        passive: {
+          name: 'CLIP-LOCK Mastery',
+          text: 'Once per turn, during your Main Phase, you may apply CLIP-LOCK to one of your active Coherent Creations.'
+        },
+        abilities: [
+          { name: 'Overrender', cost: '3 Reputation', text: 'Target one opponent Creation. It loses 1 Quality. If it has Glitch tokens, it loses -2 Quality total.' },
+          { name: 'Iridescent Shift', cost: '6 Reputation', text: 'Target active Creation gains 2 Visibility, cannot be single-targeted by opponent abilities.' }
+        ],
+        creatorNotes: 'A defensive tactical style emphasizing CLIP-LOCK protection and slow, high-quality rendering.',
+        effect: 'Creator card focused on CLIP-LOCK protections and high-quality rendering controls.'
+      },
+      {
+        id: 'C-002', name: 'Anonymous User', type: 'creator', rarity: 'mythic', rarityDots: 5,
+        subtype: 'Legends / Newbies',
+        colorTheme: 'from-accent-gold to-slate-600',
+        image: 'images/cards/C-002.png',
+        passive: {
+          name: 'Copycat',
+          text: 'Whenever this Creator generates a Creation sharing a Style tag with an opponent active Creation, steal 2 Visibility from that Creation.'
+        },
+        abilities: [
+          { name: 'Flood the Feed', cost: '6 Reputation', text: 'Move all queued Creations to the field immediately. Each enters with 1 additional Glitch token.' },
+          { name: 'Going Viral', cost: '4 Loyalty, 12 Rep', text: 'All your active Creations gain 3 Visibility. If they cross Liked or Featured thresholds, target opponent loses Loyalty.' }
+        ],
+        creatorNotes: 'Aggressive volume-oriented playstyle. Win by overloading the feed with creations and pulling visibility.',
+        effect: 'Horde-based builder archetype utilizing high numbers and sudden viral visibility surges.'
+      },
+      {
+        id: 'M-001', name: 'Coherent (Low Settings)', type: 'model', rarity: 'rare', rarityDots: 3,
+        subtype: 'Standard Model — Coherent',
+        colorTheme: 'from-[#cbd5e1] to-[#fbcfe8]',
+        image: 'images/cards/M-001.png',
+        effect: 'Creations generated by this Model enter the field with +1 Visibility. CLIP-LOCK may be manually applied to them.',
+        creatorNotes: 'High quality threshold, compatible with Landscape and Fantasy tags for an immediate +1 Quality bonus.'
+      },
+      {
+        id: 'P-003', name: 'Copycat... Copygazelle...', type: 'prompt', rarity: 'uncommon', rarityDots: 2,
+        subtype: 'Negative Prompt',
+        colorTheme: 'from-[#9bc3be] to-slate-400',
+        image: 'images/cards/P-003.png',
+        effect: 'The generated Creation cannot be affected by opponent Modifiers, Artifacts, abilities, or Glitch tokens for 3 turns after entry.',
+        creatorNotes: 'Excellent defensive prompt choice to secure your highest-visibility Creations.'
+      },
+      {
+        id: 'MO-001', name: 'The Astronaut', type: 'modifier', rarity: 'mythic', rarityDots: 5,
+        subtype: 'Universal Creator Modifier',
+        colorTheme: 'from-accent-gold to-slate-500',
+        image: 'images/cards/MO-001.png',
+        effect: 'Target Creator gains +3 Loyalty immediately; all Creations they generate enter with +2 Visibility. On detach, each active Creation gains 1 Glitch token.',
+        creatorNotes: 'High-risk spotlight modifier. Plan for the detach penalty by having glitch removal ready!'
+      },
+      {
+        id: 'A-001', name: 'Centaur Problem', type: 'artifact', rarity: 'uncommon', rarityDots: 2,
+        subtype: 'Anomaly',
+        colorTheme: 'from-[#9bc3be] to-slate-500',
+        image: 'images/cards/A-001.png',
+        effect: 'All Fantasy Creations entering the field arrive with 1 Glitch. Existing Fantasy Creations gain 1 Glitch at the start of each round. Any player may spend 3 Credits to remove this.',
+        creatorNotes: 'Tactical field-control card to disrupt standard fantasy decks.'
+      },
+      {
+        id: 'E-004', name: 'Priority Rendering', type: 'event', rarity: 'uncommon', rarityDots: 2,
+        subtype: 'Site Update Event',
+        colorTheme: 'from-[#fbcfe8] to-[#9bc3be]',
+        image: 'images/cards/E-004.png',
+        effect: 'Move one of your queued Creations to arrive at the start of your next turn, bypassing remaining Runtime.',
+        creatorNotes: 'Saves critical turns in slow lineups, letting a high-quality Coherent Creation arrive early.'
+      }
+    ];
+
+    // Local Storage based submissions & leaderboards
+    let SUGGESTED_ARTISTS = [
+      { name: 'StarrGazer', votes: 142 },
+      { name: 'CyberQueen', votes: 105 },
+      { name: 'PastelScribbles', votes: 78 }
+    ];
+
+    // Carousel variables
+    let isHoveringTrack = false;
+    let trackXPos = 0;
+    const glideSpeed = 0.5; // continuous translation velocity
+
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      loadSuggestedArtists();
+      renderHandTrack();
+      animateHandTrack();
+    });
+
+    // Populate/Refresh Live suggestions podium and indicators
+    function loadSuggestedArtists() {
+      const cached = localStorage.getItem('pb_suggested_artists');
+      const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
+      
+      if (cached) {
+        SUGGESTED_ARTISTS = JSON.parse(cached);
+      } else {
+        localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
+      }
+
+      // Render Voting Podium (Simplified: Handles usernames only to allow multiple variations)
+      const podium = document.getElementById('podium-container');
+      podium.innerHTML = '';
+
+      const sorted = [...SUGGESTED_ARTISTS].sort((a, b) => b.votes - a.votes);
+      
+      sorted.slice(0, 3).forEach((item, index) => {
+        const medalColors = ['text-accent-gold', 'text-slate-300', 'text-amber-700'];
+        const cardClass = index === 0 ? 'border-accent-gold/20 bg-accent-gold/5' : 'border-brand-200/10 bg-brand-950/40';
+
+        const podiumCard = document.createElement('div');
+        podiumCard.className = `p-4 sm:p-5 rounded-2xl border flex flex-col justify-between relative overflow-hidden ${cardClass}`;
+        
+        podiumCard.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-[9px] font-mono font-bold tracking-wider text-brand-200">RANK 0${index + 1}</span>
+              <i data-lucide="award" class="w-4 h-4 ${medalColors[index]}"></i>
+            </div>
+            <div>
+              <h4 class="font-extrabold text-sm sm:text-base text-slate-100 font-sans">@${item.name}</h4>
+              <p class="text-[10px] text-slate-500 font-mono mt-0.5">Voted Community Artist</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-brand-200/5 flex justify-between items-center text-xs">
+            <span class="font-mono text-slate-500">Votes</span>
+            <span class="font-bold text-brand-200 flex items-center gap-1.5">
+              ${item.votes} 
+              <button onclick="voteForArtist('${item.name}')" class="px-2 py-0.5 rounded bg-brand-200/10 hover:bg-brand-200/30 transition-all text-[10px] font-mono text-brand-200 font-bold active:scale-95 border border-brand-200/20 hover:border-brand-200/40">
+                +1
+              </button>
+            </span>
+          </div>
+        `;
+        podium.appendChild(podiumCard);
+      });
+
+      // Update counters
+      const totalVotes = SUGGESTED_ARTISTS.reduce((sum, item) => sum + item.votes, 0);
+      document.getElementById('stat-artists').innerText = SUGGESTED_ARTISTS.length;
+      document.getElementById('stat-votes').innerText = totalVotes;
+      document.getElementById('stat-local').innerText = submittedByMe.length;
+
+      lucide.createIcons();
+    }
+
+    // Handles live podium up-voting checks
+    function voteForArtist(name) {
+      const votedFor = JSON.parse(localStorage.getItem('pb_voted_artists') || '[]');
+
+      if (votedFor.includes(name.toLowerCase())) {
+        // Simple elegant display warning alert
+        showLocalWarning();
+        return;
+      }
+
+      votedFor.push(name.toLowerCase());
+      localStorage.setItem('pb_voted_artists', JSON.stringify(votedFor));
+
+      SUGGESTED_ARTISTS = SUGGESTED_ARTISTS.map(item => {
+        if (item.name === name) {
+          return { ...item, votes: item.votes + 1 };
+        }
+        return item;
+      });
+      
+      localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
+      loadSuggestedArtists();
+    }
+
+    // Generates the flat, upright hand-track cards
+    function renderHandTrack() {
+      const track = document.getElementById('hand-track-element');
+      track.innerHTML = '';
+
+      SAMPLE_CARDS.forEach((card, index) => {
+        const itemWrapper = document.createElement('div');
+        itemWrapper.className = "hand-card-item shrink-0 select-none relative";
+        itemWrapper.onclick = () => inspectCard(card);
+        
+        itemWrapper.innerHTML = `
+          <!-- Flat, perfectly aligned upright cards with warm double-framing outline -->
+          <div class="w-[155px] sm:w-[170px] h-[217px] sm:h-[238px] bg-[#090d0c] border border-brand-200/15 rounded-2xl shadow-xl relative overflow-hidden transition-all duration-300 hover:border-brand-200/40">
+            
+            <!-- Real Card Graphic Asset (Image contains text, margins, and borders integrated) -->
+            <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+            
+            <!-- Backup visual wrapper if image failed to resolve -->
+            <div class="hidden absolute inset-0 p-3 flex flex-col justify-between z-10">
+              <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-[0.03]"></div>
+              
+              <div class="flex justify-between items-start gap-1">
+                <span class="text-[9px] sm:text-[10px] font-mono tracking-tight text-slate-100 font-bold truncate pr-1">${card.name}</span>
+                <span class="text-[7px] sm:text-[8px] font-mono tracking-wider px-1.5 bg-brand-200/5 border border-brand-200/20 rounded text-brand-200 uppercase shrink-0 font-bold">${card.type}</span>
+              </div>
+
+              <!-- Inside Frame backup -->
+              <div class="h-[80px] sm:h-[105px] bg-[#0c1211] border border-brand-200/10 rounded-xl relative overflow-hidden flex items-center justify-center">
+                <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-10 filter blur-sm"></div>
+                <div class="flex flex-col items-center justify-center p-1 text-center">
+                  <span class="text-[7px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Art Frame</span>
+                  <span class="text-[6px] text-slate-500 mt-1 truncate max-w-[120px]">${card.id}.png</span>
+                </div>
+              </div>
+
+              <div class="text-[8px] sm:text-[9px] text-slate-300 font-light line-clamp-3 min-h-[36px] flex items-center bg-[#0d1312]/50 p-1.5 rounded-lg border border-brand-200/10 leading-snug">
+                ${card.effect}
+              </div>
+
+              <div class="flex justify-between items-center text-[7px] sm:text-[8px] font-mono text-slate-500 border-t border-brand-200/15 pt-1.5">
+                <span class="font-bold">${card.id}</span>
+                <div class="flex gap-0.5 text-accent-gold">
+                  ${'★'.repeat(card.rarityDots)}
+                </div>
+              </div>
+            </div>
+
+            <!-- Soft Glow Sheen hover layer -->
+            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 pointer-events-none z-30"></div>
+          </div>
+        `;
+
+        track.appendChild(itemWrapper);
+      });
+
+      // Listeners to freeze infinite glide translation
+      const viewport = document.getElementById('hand-viewport-element');
+      viewport.addEventListener('mouseenter', () => isHoveringTrack = true);
+      viewport.addEventListener('mouseleave', () => isHoveringTrack = false);
+    }
+
+    // Smooth continuous auto-gliding scroller without odd 3D rotation tilts
+    function animateHandTrack() {
+      const track = document.getElementById('hand-track-element');
+      const viewport = document.getElementById('hand-viewport-element');
+      if (!track || !viewport) return;
+
+      const run = () => {
+        if (!isHoveringTrack) {
+          const trackWidth = track.scrollWidth;
+          const viewportWidth = viewport.clientWidth;
+          
+          if (trackWidth > viewportWidth) {
+            trackXPos -= glideSpeed;
+            
+            // Loop scroll seamlessly once end limits are crossed
+            if (Math.abs(trackXPos) >= (trackWidth - viewportWidth)) {
+              trackXPos = 0;
+            }
+            
+            track.style.transform = `translateX(${trackXPos}px)`;
+          }
+        }
+        requestAnimationFrame(run);
+      };
+      
+      requestAnimationFrame(run);
+    }
+
+    // Modal Control and 3D Rotation physics logic for inspection popups
+    function inspectCard(card) {
+      const modal = document.getElementById('inspector-modal');
+      const content = document.getElementById('inspector-content');
+      
+      document.getElementById('inspect-tag').innerText = card.type;
+      document.getElementById('inspect-name').innerText = card.name;
+      document.getElementById('inspect-subtype').innerText = card.subtype;
+      document.getElementById('inspect-effect').innerText = card.effect;
+      document.getElementById('inspect-id').innerText = `ID: ${card.id}`;
+      document.getElementById('inspect-rarity').innerText = `Rarity: ${card.rarity.toUpperCase()}`;
+
+      const bioContainer = document.getElementById('inspect-profile-container');
+      const passiveContainer = document.getElementById('inspect-passive-container');
+      const abilitiesContainer = document.getElementById('inspect-abilities-container');
+      const loreContainer = document.getElementById('inspect-lore-container');
+
+      if (card.type === 'creator') {
+        if (card.passive) {
+          document.getElementById('inspect-passive-label').innerText = `Passive: ${card.passive.name}`;
+          document.getElementById('inspect-passive-text').innerText = card.passive.text;
+          passiveContainer.classList.remove('hidden');
+        } else {
+          passiveContainer.classList.add('hidden');
+        }
+
+        const abList = document.getElementById('inspect-abilities-list');
+        abList.innerHTML = '';
+        if (card.abilities) {
+          card.abilities.forEach(ab => {
+            const row = document.createElement('div');
+            row.className = 'p-2 bg-[#0c1211] border border-brand-200/10 rounded-xl text-xs space-y-0.5';
+            row.innerHTML = `
+              <div class="flex justify-between font-mono text-[10px] text-brand-200 font-bold">
+                <span>⚡ ${ab.name}</span>
+                <span>${ab.cost}</span>
+              </div>
+              <p class="text-slate-300 font-light leading-snug">${ab.text}</p>
+            `;
+            abList.appendChild(row);
+          });
+          abilitiesContainer.classList.remove('hidden');
+        } else {
+          abilitiesContainer.classList.add('hidden');
+        }
+
+      } else {
+        bioContainer.classList.add('hidden');
+        passiveContainer.classList.add('hidden');
+        abilitiesContainer.classList.add('hidden');
+      }
+
+      if (card.creatorNotes) {
+        document.getElementById('inspect-lore').innerText = card.creatorNotes;
+        loreContainer.classList.remove('hidden');
+      } else {
+        loreContainer.classList.add('hidden');
+      }
+
+      const targetElement = document.getElementById('interactive-card-element');
+      targetElement.className = `card-3d w-full h-full rounded-2xl bg-[#080d0c] border border-brand-200/35 flex flex-col justify-between shadow-2xl relative overflow-hidden select-none`;
+      
+      targetElement.innerHTML = `
+        <!-- Show complete designed card asset natively -->
+        <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+
+        <!-- Fallback layout template if file has not been uploaded to repository -->
+        <div class="hidden absolute inset-0 p-5 flex flex-col justify-between z-10">
+          <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-10"></div>
+          <div class="holo-sheen"></div>
+
+          <!-- Upper Row -->
+          <div class="relative z-10 flex justify-between items-start">
+            <span class="text-[11px] font-mono font-bold tracking-tight text-slate-100">${card.name}</span>
+            <span class="text-[8px] font-mono tracking-wider px-1.5 py-0.5 bg-brand-200/10 border border-brand-200/20 rounded text-brand-200 uppercase font-bold">${card.type}</span>
+          </div>
+
+          <!-- Card Image Frame -->
+          <div class="h-[130px] bg-[#0c1211] border border-brand-200/15 rounded-xl relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
+            <div class="flex flex-col items-center justify-center p-2 text-center">
+              <span class="text-[8px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Art Frame</span>
+              <span class="text-[7px] text-slate-500 mt-1 truncate max-w-full">${card.id}.png</span>
+            </div>
+          </div>
+
+          <!-- Clean Rules text -->
+          <div class="text-[10px] text-slate-200 font-light bg-[#0d1312]/60 p-2.5 rounded-lg border border-brand-200/10 relative z-10 leading-normal">
+            ${card.effect}
+          </div>
+
+          <!-- Bottom row -->
+          <div class="relative z-10 flex justify-between items-center text-[8px] font-mono text-slate-500 border-t border-brand-200/15 pt-2">
+            <span>${card.id}</span>
+            <div class="flex gap-0.5 text-accent-gold">
+              ${'★'.repeat(card.rarityDots)}
+            </div>
+          </div>
+        </div>
+      `;
+
+      const wrapper = targetElement.parentElement;
+      const card3D = targetElement;
+      
+      const newCardNode = card3D.cloneNode(true);
+      card3D.parentNode.replaceChild(newCardNode, card3D);
+
+      const sheen = newCardNode.querySelector('.holo-sheen');
+
+      const handleMove = (e) => {
+        const rect = wrapper.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const px = x / rect.width;
+        const py = y / rect.height;
+        
+        const rotX = (0.5 - py) * 30;
+        const rotY = (px - 0.5) * 30;
+        
+        newCardNode.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
+        if(sheen) {
+          sheen.style.setProperty('--sheen-x', `${px * 100}%`);
+          sheen.style.setProperty('--sheen-y', `${py * 100}%`);
+        }
+      };
+
+      const handleLeave = () => {
+        newCardNode.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+      };
+
+      wrapper.addEventListener('mousemove', handleMove);
+      wrapper.addEventListener('mouseleave', handleLeave);
+
+      wrapper.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          const t = e.touches[0];
+          const rect = wrapper.getBoundingClientRect();
+          const x = t.clientX - rect.left;
+          const y = t.clientY - rect.top;
+          if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+            const px = x / rect.width;
+            const py = y / rect.height;
+            newCardNode.style.transform = `rotateX(${(0.5 - py) * 25}deg) rotateY(${(px - 0.5) * 25}deg) scale(1.02)`;
+            if(sheen) {
+              sheen.style.setProperty('--sheen-x', `${px * 100}%`);
+              sheen.style.setProperty('--sheen-y', `${py * 100}%`);
+            }
+          }
+        }
+      });
+      wrapper.addEventListener('touchend', handleLeave);
+
+      modal.classList.remove('pointer-events-none');
+      modal.classList.remove('opacity-0');
+      content.classList.remove('scale-95');
+    }
+
+    function closeInspector() {
+      const modal = document.getElementById('inspector-modal');
+      const content = document.getElementById('inspector-content');
+      modal.classList.add('pointer-events-none');
+      modal.classList.add('opacity-0');
+      content.classList.add('scale-95');
+    }
+
+    document.getElementById('inspector-modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('inspector-modal')) {
+        closeInspector();
+      }
+    });
+
+    function handleBetaSubmit(event) {
+      const tag = document.getElementById('betaTag').value.trim().replace('@', '');
+      setTimeout(() => {
+        document.getElementById('betaSuccessTag').innerText = `@${tag}`;
+        document.getElementById('betaSuccess').classList.remove('hidden');
+      }, 300);
+    }
+
+    function resetBetaForm() {
+      document.getElementById('betaForm').reset();
+      document.getElementById('betaSuccess').classList.add('hidden');
+    }
+
+    // Handles suggestion submissions with LocalStorage check to block duplicates
+    function handleArtistSubmit(event) {
+      event.preventDefault();
+      
+      const tag = document.getElementById('artistTag').value.trim().replace('@', '');
+      const motivation = document.getElementById('artistMotivation').value.trim();
+      const passive = document.getElementById('artistPassive').value.trim();
+      const models = document.getElementById('artistModels').value.trim();
+      const comments = document.getElementById('artistComments').value.trim();
+      
+      const warningBox = document.getElementById('local-warning-box');
+      const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
+
+      // Prevent mass duplicate handle submission by checking local storage
+      if (submittedByMe.includes(tag.toLowerCase())) {
+        warningBox.classList.remove('hidden');
+        return;
+      }
+      
+      warningBox.classList.add('hidden');
+
+      // Register locally
+      submittedByMe.push(tag.toLowerCase());
+      localStorage.setItem('pb_my_suggestions', JSON.stringify(submittedByMe));
+
+      // Append new artist item or increment
+      const existingIdx = SUGGESTED_ARTISTS.findIndex(item => item.name.toLowerCase() === tag.toLowerCase());
+      if (existingIdx !== -1) {
+        SUGGESTED_ARTISTS[existingIdx].votes += 1;
+      } else {
+        SUGGESTED_ARTISTS.push({
+          name: tag,
+          concept: `${passive} - Models: ${models}`,
+          votes: 1
+        });
+      }
+
+      localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
+
+      // Force render podium
+      setTimeout(() => {
+        loadSuggestedArtists();
+        document.getElementById('artistSuccessTag').innerText = `@${tag}`;
+        document.getElementById('artistSuccess').classList.remove('hidden');
+      }, 300);
+    }
+
+    function resetArtistForm() {
+      document.getElementById('artistForm').reset();
+      document.getElementById('artistSuccess').classList.add('hidden');
+      document.getElementById('local-warning-box').classList.add('hidden');
+    }
+
+    // Toggle Spreadsheet Integration drawer
+    function toggleSetupGuide() {
+      const guideBox = document.getElementById('setup-guide-box');
+      guideBox.classList.toggle('hidden');
+    }
+
+    // Shows warning indicator if double voting on same target occurred
+    function showLocalWarning() {
+      const warningBox = document.getElementById('local-warning-box');
+      warningBox.innerText = "You have already cast a vote for this creator tag!";
+      warningBox.classList.remove('hidden');
+      setTimeout(() => {
+        warningBox.classList.add('hidden');
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
