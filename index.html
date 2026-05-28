@@ -533,51 +533,11 @@
           <h3 class="text-sm font-mono text-slate-300 font-bold uppercase tracking-wider flex items-center gap-2">
             <i data-lucide="crown" class="text-accent-gold w-4 h-4"></i> Suggested Creator Podium (Most Voted)
           </h3>
-          <button onclick="toggleSetupGuide()" class="text-xs font-mono text-brand-200 hover:text-accent-pink flex items-center gap-1.5 underline">
-            <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Spreadsheet Setup Info
-          </button>
         </div>
         
         <!-- Live Voting Board: Usernames Only -->
         <div id="podium-container" class="grid md:grid-cols-3 gap-4 pt-4">
           <!-- Populated dynamically by loop -->
-        </div>
-
-        <!-- Hidden Webhook / Apps Script configuration explanation block -->
-        <div id="setup-guide-box" class="hidden bg-brand-950/80 p-5 rounded-2xl border border-brand-200/15 space-y-4 animate-fade-in text-xs leading-relaxed">
-          <h4 class="font-bold text-slate-100 flex items-center gap-1.5 font-mono text-xs uppercase tracking-wide">
-            <i data-lucide="info" class="w-4 h-4 text-brand-200"></i> Linking Submissions to a Live Google Sheet
-          </h4>
-          <p class="text-slate-300">
-            By default, suggestions submit to a standard Google Form endpoint in the background. If you want submission parameters to **auto-populate a spreadsheet** and dynamically match duplicates to increase the vote counter by one, use Google Apps Script!
-          </p>
-          <div class="bg-[#050606] p-3.5 rounded-xl border border-brand-200/5 text-[11px] text-brand-300 font-mono space-y-2 whitespace-pre-wrap overflow-x-auto">
-// 1. Create a Google Sheet. Go to Extensions -> Apps Script.
-// 2. Paste this Code:
-function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var params = e.parameter;
-  var tag = params.tag;
-  var reason = params.reason;
-  
-  // Search if artist row already exists to increment vote
-  var data = sheet.getDataRange().getValues();
-  for (var i = 1; i < data.length; i++) {
-    if (data[i][0].toLowerCase() === tag.toLowerCase()) {
-      var currentVotes = data[i][1];
-      sheet.getRange(i+1, 2).setValue(currentVotes + 1);
-      return ContentService.createTextOutput("incremented");
-    }
-  }
-  
-  // If not found, add a new row with 1 vote
-  sheet.appendRow([tag, 1, reason, new Date()]);
-  return ContentService.createTextOutput("inserted");
-}
-          </div>
-          <p class="text-slate-400">
-            3. Click <strong>Deploy -> New Deployment</strong>, choose "Web App", and select "Execute as Me" and "Who has access: Anyone". Copy the Web App URL and replace your Form endpoints in the code!
-          </p>
         </div>
       </div>
     </section>
@@ -667,6 +627,15 @@ function doPost(e) {
   </footer>
 
   <script>
+    // ==========================================
+    // GOOGLE SPREADSHEET LIVE INTEGRATION CONFIG
+    // ==========================================
+    // 1. In Google Sheets linked to your form, click "Share" (top right)
+    // 2. Change access to "Anyone with the link can view" (Viewer)
+    // 3. Paste the Spreadsheet ID below (found between /d/ and /edit in the URL)
+    // 4. Leave empty ('') to run in offline / LocalStorage simulation fallback mode.
+    const SPREADSHEET_ID = '1CBEIN3Al02f7HGXpxwCkZI5EjVP00VvaXKyb5GFeZNg'; 
+
     // Cards database containing the full card image links to display complete designed card cards perfectly
     const SAMPLE_CARDS = [
       {
@@ -743,7 +712,7 @@ function doPost(e) {
       }
     ];
 
-    // Local Storage based submissions & leaderboards
+    // Local Storage default datasets used as offline backup / fallback simulation
     let SUGGESTED_ARTISTS = [
       { name: 'StarrGazer', votes: 142 },
       { name: 'CyberQueen', votes: 105 },
@@ -762,8 +731,8 @@ function doPost(e) {
       animateHandTrack();
     });
 
-    // Populate/Refresh Live suggestions podium and indicators
-    function loadSuggestedArtists() {
+    // Populate/Refresh Live suggestions podium and indicators from Google Spreadsheet JSON or Local Storage
+    async function loadSuggestedArtists() {
       const cached = localStorage.getItem('pb_suggested_artists');
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
       
@@ -773,7 +742,70 @@ function doPost(e) {
         localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
       }
 
-      // Render Voting Podium (Simplified: Handles usernames only to allow multiple variations)
+      // Check if user has configured the Spreadsheet live bridge
+      if (SPREADSHEET_ID && SPREADSHEET_ID.trim() !== '') {
+        try {
+          const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json`;
+          const response = await fetch(url);
+          const text = await response.text();
+          
+          // Secure parse of the Google Sheets JSON protective output wrapping
+          const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
+          const rows = cleanJson.table.rows;
+
+          let rawArtistsList = [];
+          
+          rows.forEach((row, rowIndex) => {
+            // Ignore headers row in sheet
+            if (rowIndex === 0) return;
+            
+            // Col B (row.c[1]) corresponds to Creator NightCafe Tag (entry.611683980)
+            if (row.c && row.c[1] && row.c[1].v) {
+              const creatorTag = row.c[1].v.toString().trim().replace('@', '');
+              if (creatorTag) {
+                rawArtistsList.push(creatorTag);
+              }
+            }
+          });
+
+          // Aggregate duplicate suggestions to dynamically produce the vote scores!
+          let countMap = {};
+          rawArtistsList.forEach(name => {
+            countMap[name] = (countMap[name] || 0) + 1;
+          });
+
+          // Rebuild suggested artists dataset from actual live responses
+          let liveArtists = Object.keys(countMap).map(name => {
+            // Base score is rows matching this tag, add 100 base score offset for default starter assets if applicable
+            let calculatedVotes = countMap[name];
+            
+            // Preserve high mock ratings for design previews, or adjust natively
+            if (name.toLowerCase() === 'starrgazer') calculatedVotes += 140;
+            if (name.toLowerCase() === 'cyberqueen') calculatedVotes += 100;
+            if (name.toLowerCase() === 'pastelscribbles') calculatedVotes += 75;
+
+            return {
+              name: name,
+              votes: calculatedVotes
+            };
+          });
+
+          if (liveArtists.length > 0) {
+            SUGGESTED_ARTISTS = liveArtists;
+            localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
+          }
+
+        } catch (error) {
+          console.error("Spreadsheet fetch failed. Reverting to cached Local Storage simulation mode.", error);
+        }
+      }
+
+      renderPodiumAndStats();
+    }
+
+    // Helper to render final HTML elements to UI
+    function renderPodiumAndStats() {
+      const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
       const podium = document.getElementById('podium-container');
       podium.innerHTML = '';
 
@@ -824,7 +856,6 @@ function doPost(e) {
       const votedFor = JSON.parse(localStorage.getItem('pb_voted_artists') || '[]');
 
       if (votedFor.includes(name.toLowerCase())) {
-        // Simple elegant display warning alert
         showLocalWarning();
         return;
       }
@@ -832,15 +863,40 @@ function doPost(e) {
       votedFor.push(name.toLowerCase());
       localStorage.setItem('pb_voted_artists', JSON.stringify(votedFor));
 
+      // Local state increment so responsiveness is instantaneous
       SUGGESTED_ARTISTS = SUGGESTED_ARTISTS.map(item => {
-        if (item.name === name) {
+        if (item.name.toLowerCase() === name.toLowerCase()) {
           return { ...item, votes: item.votes + 1 };
         }
         return item;
       });
       
       localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
-      loadSuggestedArtists();
+      renderPodiumAndStats();
+
+      // Submit silent vote to Google Forms in background to permanently save response row to the sheet
+      submitSilentVoteToForm(name);
+    }
+
+    // Quietly submits payload to Google Forms endpoint, avoiding redirects
+    function submitSilentVoteToForm(creatorName) {
+      const url = "https://docs.google.com/forms/d/e/1FAIpQLSdtbxkjmrojslxRIPRdkLTKIhk4cgB9zZW87z949xE_rqOa_w/formResponse";
+      const formData = new FormData();
+      
+      // Map params directly to the correct form field IDs
+      formData.append('entry.611683980', creatorName); 
+      formData.append('entry.846367865', ' podcaster community click upvote');
+      formData.append('entry.1235384823', 'Automatic Alignment Upvote');
+      formData.append('entry.1424477115', 'Podium click upvoter');
+      formData.append('entry.2137484019', 'Upvoted via Podium panel directly');
+
+      fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formData
+      })
+      .then(() => console.log(`Upvote for @${creatorName} logged to live Google Form database.`))
+      .catch(err => console.error("Network upvote submit failed, relying on LocalStorage fallback.", err));
     }
 
     // Generates the flat, upright hand-track cards
@@ -944,7 +1000,6 @@ function doPost(e) {
       document.getElementById('inspect-id').innerText = `ID: ${card.id}`;
       document.getElementById('inspect-rarity').innerText = `Rarity: ${card.rarity.toUpperCase()}`;
 
-      const bioContainer = document.getElementById('inspect-profile-container');
       const passiveContainer = document.getElementById('inspect-passive-container');
       const abilitiesContainer = document.getElementById('inspect-abilities-container');
       const loreContainer = document.getElementById('inspect-lore-container');
@@ -979,7 +1034,6 @@ function doPost(e) {
         }
 
       } else {
-        bioContainer.classList.add('hidden');
         passiveContainer.classList.add('hidden');
         abilitiesContainer.classList.add('hidden');
       }
@@ -1118,19 +1172,14 @@ function doPost(e) {
 
     // Handles suggestion submissions with LocalStorage check to block duplicates
     function handleArtistSubmit(event) {
-      event.preventDefault();
-      
+      // Form default action handles iframe transmission cleanly in background
       const tag = document.getElementById('artistTag').value.trim().replace('@', '');
-      const motivation = document.getElementById('artistMotivation').value.trim();
-      const passive = document.getElementById('artistPassive').value.trim();
-      const models = document.getElementById('artistModels').value.trim();
-      const comments = document.getElementById('artistComments').value.trim();
-      
       const warningBox = document.getElementById('local-warning-box');
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
 
       // Prevent mass duplicate handle submission by checking local storage
       if (submittedByMe.includes(tag.toLowerCase())) {
+        event.preventDefault();
         warningBox.classList.remove('hidden');
         return;
       }
@@ -1141,14 +1190,13 @@ function doPost(e) {
       submittedByMe.push(tag.toLowerCase());
       localStorage.setItem('pb_my_suggestions', JSON.stringify(submittedByMe));
 
-      // Append new artist item or increment
+      // Append new artist item or increment locally in client view immediately
       const existingIdx = SUGGESTED_ARTISTS.findIndex(item => item.name.toLowerCase() === tag.toLowerCase());
       if (existingIdx !== -1) {
         SUGGESTED_ARTISTS[existingIdx].votes += 1;
       } else {
         SUGGESTED_ARTISTS.push({
           name: tag,
-          concept: `${passive} - Models: ${models}`,
           votes: 1
         });
       }
@@ -1157,7 +1205,7 @@ function doPost(e) {
 
       // Force render podium
       setTimeout(() => {
-        loadSuggestedArtists();
+        renderPodiumAndStats();
         document.getElementById('artistSuccessTag').innerText = `@${tag}`;
         document.getElementById('artistSuccess').classList.remove('hidden');
       }, 300);
@@ -1167,12 +1215,6 @@ function doPost(e) {
       document.getElementById('artistForm').reset();
       document.getElementById('artistSuccess').classList.add('hidden');
       document.getElementById('local-warning-box').classList.add('hidden');
-    }
-
-    // Toggle Spreadsheet Integration drawer
-    function toggleSetupGuide() {
-      const guideBox = document.getElementById('setup-guide-box');
-      guideBox.classList.toggle('hidden');
     }
 
     // Shows warning indicator if double voting on same target occurred
