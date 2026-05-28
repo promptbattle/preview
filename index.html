@@ -26,7 +26,7 @@
             accent: {
               gold: '#dfb76c', 
               pink: '#fbcfe8', // Rosy highlights
-              lavender: '#e9e3f8', // Cosy lavender
+              lavender: '#e9e3f8', // cosy lavender
               slate: '#475569'
             },
             soft: {
@@ -755,13 +755,14 @@
             // Row 0 is just the header titles, skip it!
             if (rowIndex === 0) return;
             
-            // Col A = Creator Name, Col B = Current Votes
+            // Just grabbing the username and votes to keep things super simple and fast.
+            // Column A = row.c[0] (Username), Column B = row.c[1] (Votes count)
             if (row.c && row.c[0] && row.c[0].v) {
               const creatorTag = row.c[0].v.toString().trim().replace('@', '');
               const totalVotes = (row.c[1] && row.c[1].v) ? parseInt(row.c[1].v) : 1;
               
               if (creatorTag) {
-                // If the creator already exists, let's just combine the votes so they synchronise beautifully.
+                // Let's combine any duplicate rows to synchronise votes correctly.
                 const duplicateIndex = liveArtists.findIndex(x => x.name.toLowerCase() === creatorTag.toLowerCase());
                 if (duplicateIndex !== -1) {
                   liveArtists[duplicateIndex].votes += totalVotes;
@@ -775,7 +776,7 @@
             }
           });
 
-          // If we found live rows, let's save them locally so the site loads super quickly next time!
+          // All done! Let's save them locally so the site loads super quickly next time.
           if (liveArtists.length > 0) {
             SUGGESTED_ARTISTS = liveArtists;
             localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
@@ -1257,6 +1258,7 @@
       document.getElementById('local-warning-box').classList.add('hidden');
     }
 
+    // Little utility function to pop up a friendly warning if they double vote
     function showLocalWarning() {
       const warningBox = document.getElementById('local-warning-box');
       warningBox.innerText = "You have already cast a vote for this creator tag!";
