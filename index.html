@@ -214,10 +214,10 @@
       <div class="text-center max-w-xl mx-auto space-y-2">
         <span class="text-xs font-mono uppercase tracking-wider text-brand-200 bg-brand-200/10 px-3 py-1 rounded-full border border-brand-200/20 font-bold">Community Vote</span>
         <h2 class="text-xl sm:text-2xl font-extrabold text-slate-100">Help Us Choose the Official Card Frame!</h2>
-        <p class="text-xs text-slate-400" id="design-vote-subtitle">Which layout style do you prefer for the cards? The idea is to have normal cards and then full-art special versions, so I included a full-art card for comparison (mostly the vote is between 1 and 2 for a normal card). Click an option to inspect, then cast your design preference vote below.</p>
+        <p class="text-xs text-slate-400" id="design-vote-subtitle">Which layout style do you prefer for the cards? The idea is to have normal cards and then full-art special versions, so I included a full-art card for comparison (mostly the vote is between 1 and 2 for a normal card, but I think maybe 2 would fit better for a special edition or something? Idk). Click an option to inspect, then cast your design preference vote below.</p>
       </div>
 
-      <!-- Option Cards Showcase Wrapper -->
+      <!-- Option Cards Showcase Wrapper (optimised to exact 2:3 aspect ratios) -->
       <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto pt-4" id="design-options-grid">
         
         <!-- OPTION 1: Classic Border -->
@@ -228,13 +228,13 @@
           <span class="text-[10px] font-mono tracking-widest text-slate-400">OPTION 1</span>
           <h3 class="font-bold text-sm text-slate-100">Classic</h3>
           
-          <!-- Miniature Image & Fallback Layout -->
-          <div class="w-[140px] h-[190px] rounded-lg shadow-lg relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+          <!-- Miniature Image & Fallback Layout (2:3 Aspect ratio) -->
+          <div class="w-[140px] h-[210px] rounded-lg shadow-lg relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
             <img src="images/cards/option1.png" alt="Option 1" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
             
             <div class="hidden absolute inset-0 border-8 border-brand-200/30 bg-[#121c1a] p-2 flex flex-col justify-between shadow-inner">
               <div class="h-1 bg-brand-200/20 w-3/4 rounded"></div>
-              <div class="h-[90px] bg-brand-950/80 border border-brand-200/10 rounded flex items-center justify-center text-[8px] font-mono text-slate-500">Artwork Frame</div>
+              <div class="h-[105px] bg-brand-950/80 border border-brand-200/10 rounded flex items-center justify-center text-[8px] font-mono text-slate-500">Artwork Frame</div>
               <div class="space-y-1">
                 <div class="h-1 bg-slate-600 w-full rounded"></div>
                 <div class="h-1 bg-slate-600 w-5/6 rounded"></div>
@@ -257,8 +257,8 @@
           <span class="text-[10px] font-mono tracking-widest text-slate-400">OPTION 2</span>
           <h3 class="font-bold text-sm text-slate-100">Immersive</h3>
           
-          <!-- Miniature Image & Fallback Layout -->
-          <div class="w-[140px] h-[190px] rounded-lg shadow-lg relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+          <!-- Miniature Image & Fallback Layout (2:3 Aspect ratio) -->
+          <div class="w-[140px] h-[210px] rounded-lg shadow-lg relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
             <img src="images/cards/option2.png" alt="Option 2" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
 
             <div class="hidden absolute inset-0 border border-brand-200/20 bg-[#121c1a] p-1.5 flex flex-col justify-between shadow-inner">
@@ -266,7 +266,7 @@
                 <div class="h-1.5 bg-brand-200/20 w-1/2 rounded"></div>
                 <div class="w-2 h-2 rounded bg-brand-300"></div>
               </div>
-              <div class="h-[110px] bg-brand-950/60 border border-brand-200/5 rounded flex items-center justify-center text-[8px] font-mono text-slate-500">Expanded Art</div>
+              <div class="h-[125px] bg-brand-950/60 border border-brand-200/5 rounded flex items-center justify-center text-[8px] font-mono text-slate-500">Expanded Art</div>
               <div class="space-y-1">
                 <div class="h-1 bg-slate-600 w-full rounded"></div>
               </div>
@@ -288,8 +288,8 @@
           <span class="text-[10px] font-mono tracking-widest text-slate-400">OPTION 3</span>
           <h3 class="font-bold text-sm text-slate-100">Full-Art</h3>
           
-          <!-- Miniature Image & Fallback Layout -->
-          <div class="w-[140px] h-[190px] rounded-lg shadow-lg relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+          <!-- Miniature Image & Fallback Layout (2:3 Aspect ratio) -->
+          <div class="w-[140px] h-[210px] rounded-lg shadow-lg relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
             <img src="images/cards/option3.png" alt="Option 3" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
 
             <div class="hidden absolute inset-0 border border-brand-200/40 bg-gradient-to-tr from-[#121c1a] to-brand-300/30 p-2 flex flex-col justify-end shadow-inner">
@@ -757,9 +757,9 @@
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <!-- Left Side Column: Holographic 3D Card Physics Canvas -->
-      <div class="w-full md:w-[320px] shrink-0 flex flex-col items-center justify-center py-4 md:py-0">
-        <div class="card-3d-wrapper w-[230px] sm:w-[260px] h-[322px] sm:h-[364px]">
+      <!-- Left Side Column: Holographic 3D Card Physics Canvas (Aligned perfectly to 2:3 aspect ratio) -->
+      <div class="w-full shrink-0 flex flex-col items-center justify-center py-4 md:py-0 transition-all duration-300" id="inspect-left-column">
+        <div class="card-3d-wrapper w-[240px] sm:w-[300px] h-[360px] sm:h-[450px]">
           <div id="interactive-card-element" class="card-3d w-full h-full rounded-2xl shadow-2xl relative select-none">
             <!-- Dynamic card details or fallback artwork frame gets rendered here -->
             <div class="holo-sheen"></div>
@@ -768,8 +768,8 @@
         <p class="text-[10px] font-mono text-slate-500 mt-4 text-center">Move cursor or drag card to view holographic sheen reflections</p>
       </div>
 
-      <!-- Right Side Column: Mechanical and Rules detail layout -->
-      <div class="flex-grow space-y-6 self-center text-left">
+      <!-- Right Side Column: Mechanical and Rules detail layout (Can be completely hidden) -->
+      <div class="flex-grow space-y-6 self-center text-left transition-all duration-300" id="inspect-details-panel">
         <div>
           <span id="inspect-tag" class="text-[10px] font-mono tracking-widest text-brand-200 uppercase px-2.5 py-0.5 bg-brand-200/10 border border-brand-200/20 rounded font-bold">Card Info</span>
           <h2 id="inspect-name" class="text-2xl sm:text-3xl font-extrabold text-slate-100 mt-2 tracking-tight">Card Name</h2>
@@ -1015,7 +1015,7 @@
       submitBtn.innerText = `Vote for ${optionName}`;
     }
 
-    // Opens 3D preview specifically optimized to showcase frame voting options
+    // Opens 3D preview specifically optimised to showcase frame voting options
     function inspectDesignOption(optionName) {
       const designCard = DESIGN_OPTIONS_CARDS[optionName];
       if (designCard) {
@@ -1496,14 +1496,14 @@
       }
     }
 
-    // Helper to generate custom card components for the horizontal hand scroller
+    // Helper to generate custom card components for the horizontal hand scroller (exact 2:3 aspect ratio)
     function createCardNode(card) {
       const itemWrapper = document.createElement('div');
       itemWrapper.className = "hand-card-item shrink-0 select-none relative cursor-pointer";
       itemWrapper.onclick = () => inspectCard(card);
 
       itemWrapper.innerHTML = `
-        <div class="w-[155px] sm:w-[170px] h-[217px] sm:h-[238px] bg-[#090d0c] border border-brand-200/15 rounded-2xl shadow-xl relative overflow-hidden transition-all duration-300 hover:border-brand-200/40">
+        <div class="w-[150px] sm:w-[170px] h-[225px] sm:h-[255px] bg-[#090d0c] border border-brand-200/15 rounded-2xl shadow-xl relative overflow-hidden transition-all duration-300 hover:border-brand-200/40">
 
           <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
 
@@ -1515,7 +1515,7 @@
               <span class="text-[7px] sm:text-[8px] font-mono tracking-wider px-1.5 bg-brand-200/5 border border-brand-200/20 rounded text-brand-200 uppercase shrink-0 font-bold">${card.type}</span>
             </div>
 
-            <div class="h-[80px] sm:h-[105px] bg-[#0c1211] border border-brand-200/10 rounded-xl relative overflow-hidden flex items-center justify-center">
+            <div class="h-[90px] sm:h-[110px] bg-[#0c1211] border border-brand-200/10 rounded-xl relative overflow-hidden flex items-center justify-center">
               <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-10 filter blur-sm"></div>
               <div class="flex flex-col items-center justify-center p-1 text-center">
                 <span class="text-[7px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Art Frame</span>
@@ -1606,63 +1606,80 @@
     function inspectCard(card) {
       const modal = document.getElementById('inspector-modal');
       const content = document.getElementById('inspector-content');
+      const detailsPanel = document.getElementById('inspect-details-panel');
+      const leftColumn = document.getElementById('inspect-left-column');
 
-      document.getElementById('inspect-tag').innerText = card.type;
-      document.getElementById('inspect-name').innerText = card.name;
-      document.getElementById('inspect-subtype').innerText = card.subtype;
-      document.getElementById('inspect-effect').innerText = card.effect;
-      document.getElementById('inspect-id').innerText = `ID: ${card.id}`;
-      document.getElementById('inspect-rarity').innerText = `Rarity: ${card.rarity.toUpperCase()}`;
+      // Adjust UI layout structure based on card type to hide text on Option Vote templates
+      if (card.type === 'design-preview') {
+        detailsPanel.classList.add('hidden');
+        content.classList.remove('max-w-4xl');
+        content.classList.add('max-w-md');
+        leftColumn.classList.remove('md:w-[320px]');
+        leftColumn.classList.add('w-full');
+      } else {
+        detailsPanel.classList.remove('hidden');
+        content.classList.remove('max-w-md');
+        content.classList.add('max-w-4xl');
+        leftColumn.classList.add('md:w-[320px]');
 
-      const passiveContainer = document.getElementById('inspect-passive-container');
-      const abilitiesContainer = document.getElementById('inspect-abilities-container');
-      const loreContainer = document.getElementById('inspect-lore-container');
+        // Update mechanical rules sidebar parameters
+        document.getElementById('inspect-tag').innerText = card.type;
+        document.getElementById('inspect-name').innerText = card.name;
+        document.getElementById('inspect-subtype').innerText = card.subtype;
+        document.getElementById('inspect-effect').innerText = card.effect;
+        document.getElementById('inspect-id').innerText = `ID: ${card.id}`;
+        document.getElementById('inspect-rarity').innerText = `Rarity: ${card.rarity.toUpperCase()}`;
 
-      if (card.type === 'creator') {
-        if (card.passive) {
-          document.getElementById('inspect-passive-label').innerText = `Passive: ${card.passive.name}`;
-          document.getElementById('inspect-passive-text').innerText = card.passive.text;
-          passiveContainer.classList.remove('hidden');
+        const passiveContainer = document.getElementById('inspect-passive-container');
+        const abilitiesContainer = document.getElementById('inspect-abilities-container');
+        const loreContainer = document.getElementById('inspect-lore-container');
+
+        if (card.type === 'creator') {
+          if (card.passive) {
+            document.getElementById('inspect-passive-label').innerText = `Passive: ${card.passive.name}`;
+            document.getElementById('inspect-passive-text').innerText = card.passive.text;
+            passiveContainer.classList.remove('hidden');
+          } else {
+            passiveContainer.classList.add('hidden');
+          }
+
+          const abList = document.getElementById('inspect-abilities-list');
+          abList.innerHTML = '';
+          if (card.abilities) {
+            card.abilities.forEach(ab => {
+              const row = document.createElement('div');
+              row.className = 'p-2 bg-[#0c1211] border border-brand-200/10 rounded-xl text-xs space-y-0.5';
+              row.innerHTML = `
+                <div class="flex justify-between font-mono text-[10px] text-brand-200 font-bold">
+                  <span>⚡ ${ab.name}</span>
+                  <span>${ab.cost}</span>
+                </div>
+                <p class="text-slate-300 font-light leading-snug">${ab.text}</p>
+              `;
+              abList.appendChild(row);
+            });
+            abilitiesContainer.classList.remove('hidden');
+          } else {
+            abilitiesContainer.classList.add('hidden');
+          }
+
         } else {
           passiveContainer.classList.add('hidden');
-        }
-
-        const abList = document.getElementById('inspect-abilities-list');
-        abList.innerHTML = '';
-        if (card.abilities) {
-          card.abilities.forEach(ab => {
-            const row = document.createElement('div');
-            row.className = 'p-2 bg-[#0c1211] border border-brand-200/10 rounded-xl text-xs space-y-0.5';
-            row.innerHTML = `
-              <div class="flex justify-between font-mono text-[10px] text-brand-200 font-bold">
-                <span>⚡ ${ab.name}</span>
-                <span>${ab.cost}</span>
-              </div>
-              <p class="text-slate-300 font-light leading-snug">${ab.text}</p>
-            `;
-            abList.appendChild(row);
-          });
-          abilitiesContainer.classList.remove('hidden');
-        } else {
           abilitiesContainer.classList.add('hidden');
         }
 
-      } else {
-        passiveContainer.classList.add('hidden');
-        abilitiesContainer.classList.add('hidden');
-      }
-
-      if (card.creatorNotes) {
-        document.getElementById('inspect-lore').innerText = card.creatorNotes;
-        loreContainer.classList.remove('hidden');
-      } else {
-        loreContainer.classList.add('hidden');
+        if (card.creatorNotes) {
+          document.getElementById('inspect-lore').innerText = card.creatorNotes;
+          loreContainer.classList.remove('hidden');
+        } else {
+          loreContainer.classList.add('hidden');
+        }
       }
 
       const targetElement = document.getElementById('interactive-card-element');
       targetElement.className = `card-3d w-full h-full rounded-2xl bg-[#080d0c] border border-brand-200/35 flex flex-col justify-between shadow-2xl relative overflow-hidden select-none`;
 
-      // Render customized card previews optimized for design options or standard cards
+      // Render customized card previews optimised for design options or standard cards
       let cardInnerHtml = '';
       if (card.type === 'design-preview') {
         if (card.id === 'D-001') {
@@ -1676,7 +1693,7 @@
                 <span class="text-[11px] font-mono font-bold tracking-tight text-slate-100">${card.name}</span>
                 <span class="text-[8px] font-mono tracking-wider px-1.5 py-0.5 bg-brand-200/10 border border-brand-200/20 rounded text-brand-200 uppercase font-bold">FRAME 1</span>
               </div>
-              <div class="h-[120px] bg-brand-950/80 border border-brand-200/10 rounded flex items-center justify-center relative overflow-hidden">
+              <div class="h-[145px] bg-brand-950/80 border border-brand-200/10 rounded flex items-center justify-center relative overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
                 <span class="text-[8px] font-mono text-slate-500 uppercase tracking-widest relative z-10">Art Frame</span>
               </div>
@@ -1700,7 +1717,7 @@
                 <span class="text-[11px] font-mono font-bold tracking-tight text-slate-100">${card.name}</span>
                 <span class="text-[8px] font-mono tracking-wider px-1.5 py-0.5 bg-brand-300/10 border border-brand-300/20 rounded text-brand-300 uppercase font-bold">FRAME 2</span>
               </div>
-              <div class="h-[145px] bg-brand-950/60 border border-brand-200/5 rounded flex items-center justify-center relative overflow-hidden">
+              <div class="h-[175px] bg-brand-950/60 border border-brand-200/5 rounded flex items-center justify-center relative overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
                 <span class="text-[8px] font-mono text-slate-500 uppercase tracking-widest relative z-10">Expanded Art</span>
               </div>
@@ -1748,7 +1765,7 @@
               <span class="text-[8px] font-mono tracking-wider px-1.5 py-0.5 bg-brand-200/10 border border-brand-200/20 rounded text-brand-200 uppercase font-bold">${card.type}</span>
             </div>
 
-            <div class="h-[130px] bg-[#0c1211] border border-brand-200/15 rounded-xl relative overflow-hidden flex items-center justify-center">
+            <div class="h-[155px] bg-[#0c1211] border border-brand-200/15 rounded-xl relative overflow-hidden flex items-center justify-center">
               <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
               <div class="flex flex-col items-center justify-center p-2 text-center">
                 <span class="text-[8px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Art Frame</span>
