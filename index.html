@@ -762,9 +762,6 @@
           let liveArtists = [];
 
           rows.forEach((row) => {
-            // BUG RESOLUTION: Do NOT ignore rowIndex === 0 anymore!
-            // In Google Visualization API queries, rows are directly the data values.
-            // Excluding index 0 deleted the first suggested artist permanently on feed!
             if (row.c && row.c[0] && row.c[0].v) {
               const creatorTag = row.c[0].v.toString().trim().replace('@', '');
               const totalVotes = (row.c[1] && row.c[1].v !== null) ? parseInt(row.c[1].v) : 1;
@@ -839,7 +836,6 @@
       filtered.forEach((item, index) => {
         const isSuggested = submittedByMe.includes(item.name.toLowerCase());
         const isVoted = votedFor.includes(item.name.toLowerCase());
-        const cannotVote = isSuggested || isVoted;
 
         let actionHtml = '';
         if (isSuggested) {
@@ -912,7 +908,6 @@
 
           const isSuggested = submittedByMe.includes(item.name.toLowerCase());
           const isVoted = votedFor.includes(item.name.toLowerCase());
-          const cannotVote = isSuggested || isVoted;
 
           let voteButtonHtml = '';
           if (isSuggested) {
@@ -1013,54 +1008,65 @@
       }
     }
 
-    // Populate our scrolling track
+    // Helper to generate custom card components for the horizontal hand scroller
+    function createCardNode(card) {
+      const itemWrapper = document.createElement('div');
+      itemWrapper.className = "hand-card-item shrink-0 select-none relative cursor-pointer";
+      itemWrapper.onclick = () => inspectCard(card);
+
+      itemWrapper.innerHTML = `
+        <div class="w-[155px] sm:w-[170px] h-[217px] sm:h-[238px] bg-[#090d0c] border border-brand-200/15 rounded-2xl shadow-xl relative overflow-hidden transition-all duration-300 hover:border-brand-200/40">
+
+          <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+
+          <div class="hidden absolute inset-0 p-3 flex flex-col justify-between z-10">
+            <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-[0.03]"></div>
+
+            <div class="flex justify-between items-start gap-1">
+              <span class="text-[9px] sm:text-[10px] font-mono tracking-tight text-slate-100 font-bold truncate pr-1">${card.name}</span>
+              <span class="text-[7px] sm:text-[8px] font-mono tracking-wider px-1.5 bg-brand-200/5 border border-brand-200/20 rounded text-brand-200 uppercase shrink-0 font-bold">${card.type}</span>
+            </div>
+
+            <div class="h-[80px] sm:h-[105px] bg-[#0c1211] border border-brand-200/10 rounded-xl relative overflow-hidden flex items-center justify-center">
+              <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-10 filter blur-sm"></div>
+              <div class="flex flex-col items-center justify-center p-1 text-center">
+                <span class="text-[7px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Art Frame</span>
+                <span class="text-[6px] text-slate-500 mt-1 truncate max-w-[120px]">${card.id}.png</span>
+              </div>
+            </div>
+
+            <div class="text-[8px] sm:text-[9px] text-slate-300 font-light line-clamp-3 min-h-[36px] flex items-center bg-[#0d1312]/50 p-1.5 rounded-lg border border-brand-200/10 leading-snug">
+              ${card.effect}
+            </div>
+
+            <div class="flex justify-between items-center text-[7px] sm:text-[8px] font-mono text-slate-500 border-t border-brand-200/15 pt-1.5">
+              <span class="font-bold">${card.id}</span>
+              <div class="flex gap-0.5 text-accent-gold">
+                ${'★'.repeat(card.rarityDots)}
+              </div>
+            </div>
+          </div>
+
+          <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 pointer-events-none z-30"></div>
+        </div>
+      `;
+
+      return itemWrapper;
+    }
+
+    // Populate scrolling track with exact duplicated set for continuous scrolling loop
     function renderHandTrack() {
       const track = document.getElementById('hand-track-element');
       track.innerHTML = '';
 
+      // Set 1: Original Deck cards
       SAMPLE_CARDS.forEach((card) => {
-        const itemWrapper = document.createElement('div');
-        itemWrapper.className = "hand-card-item shrink-0 select-none relative";
-        itemWrapper.onclick = () => inspectCard(card);
+        track.appendChild(createCardNode(card));
+      });
 
-        itemWrapper.innerHTML = `
-          <div class="w-[155px] sm:w-[170px] h-[217px] sm:h-[238px] bg-[#090d0c] border border-brand-200/15 rounded-2xl shadow-xl relative overflow-hidden transition-all duration-300 hover:border-brand-200/40">
-
-            <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
-
-            <div class="hidden absolute inset-0 p-3 flex flex-col justify-between z-10">
-              <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-[0.03]"></div>
-
-              <div class="flex justify-between items-start gap-1">
-                <span class="text-[9px] sm:text-[10px] font-mono tracking-tight text-slate-100 font-bold truncate pr-1">${card.name}</span>
-                <span class="text-[7px] sm:text-[8px] font-mono tracking-wider px-1.5 bg-brand-200/5 border border-brand-200/20 rounded text-brand-200 uppercase shrink-0 font-bold">${card.type}</span>
-              </div>
-
-              <div class="h-[80px] sm:h-[105px] bg-[#0c1211] border border-brand-200/10 rounded-xl relative overflow-hidden flex items-center justify-center">
-                <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-10 filter blur-sm"></div>
-                <div class="flex flex-col items-center justify-center p-1 text-center">
-                  <span class="text-[7px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Art Frame</span>
-                  <span class="text-[6px] text-slate-500 mt-1 truncate max-w-[120px]">${card.id}.png</span>
-                </div>
-              </div>
-
-              <div class="text-[8px] sm:text-[9px] text-slate-300 font-light line-clamp-3 min-h-[36px] flex items-center bg-[#0d1312]/50 p-1.5 rounded-lg border border-brand-200/10 leading-snug">
-                ${card.effect}
-              </div>
-
-              <div class="flex justify-between items-center text-[7px] sm:text-[8px] font-mono text-slate-500 border-t border-brand-200/15 pt-1.5">
-                <span class="font-bold">${card.id}</span>
-                <div class="flex gap-0.5 text-accent-gold">
-                  ${'★'.repeat(card.rarityDots)}
-                </div>
-              </div>
-            </div>
-
-            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 pointer-events-none z-30"></div>
-          </div>
-        `;
-
-        track.appendChild(itemWrapper);
+      // Set 2: Loop Clones appended sequentially inside the CSS flexbox track
+      SAMPLE_CARDS.forEach((card) => {
+        track.appendChild(createCardNode(card));
       });
 
       const viewport = document.getElementById('hand-viewport-element');
@@ -1068,7 +1074,7 @@
       viewport.addEventListener('mouseleave', () => isHoveringTrack = false);
     }
 
-    // Hand track glide execution
+    // Hand track infinite looping transition loop logic
     function animateHandTrack() {
       const track = document.getElementById('hand-track-element');
       const viewport = document.getElementById('hand-viewport-element');
@@ -1076,13 +1082,14 @@
 
       const run = () => {
         if (!isHoveringTrack) {
-          const trackWidth = track.scrollWidth;
-          const viewportWidth = viewport.clientWidth;
-
-          if (trackWidth > viewportWidth) {
+          // Find the exact offset point where the cloned cards start
+          const firstClone = track.children[SAMPLE_CARDS.length];
+          if (firstClone) {
+            const resetOffsetPoint = firstClone.offsetLeft;
             trackXPos -= glideSpeed;
 
-            if (Math.abs(trackXPos) >= (trackWidth - viewportWidth)) {
+            // When scroll position reaches the start of the duplicated cards, seamlessly jump back to 0
+            if (Math.abs(trackXPos) >= resetOffsetPoint) {
               trackXPos = 0;
             }
 
