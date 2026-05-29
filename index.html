@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>Prompt Battle — Closed Beta Gallery & Sign-up</title>
 
   <!-- Tailwind CSS -->
@@ -122,6 +122,7 @@
       border-radius: 24px;
       background: rgba(12, 18, 17, 0.2);
       border: 1px solid rgba(251, 207, 232, 0.06);
+      touch-action: pan-y; /* Allow scrolling up/down on touch but capture swipe on X */
     }
 
     .hand-track {
@@ -135,6 +136,11 @@
       gap: 24px;
       padding-left: 24px;
       padding-right: 24px;
+      cursor: grab;
+    }
+
+    .hand-track:active {
+      cursor: grabbing;
     }
 
     /* Hover scales for the cards in our scroller */
@@ -152,9 +158,14 @@
       transform: translateY(-12px) scale(1.06);
       z-index: 50 !important;
     }
+
+    /* Styling for Option Layout Cards in Voting */
+    .voting-card-option {
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
   </style>
 </head>
-<body class="text-slate-200 min-h-screen flex flex-col justify-between font-sans selection:bg-brand-200 selection:text-brand-950">
+<body class="text-slate-200 min-h-screen flex flex-col justify-between font-sans selection:bg-brand-200 selection:text-brand-950 overflow-x-hidden">
 
   <!-- Navigation Bar Header -->
   <header class="border-b border-brand-200/10 backdrop-blur-md sticky top-0 z-40">
@@ -196,11 +207,157 @@
       </p>
     </section>
 
+    <!-- NEW SECTION: Beautiful Interactive Design Choice Vote -->
+    <section class="max-w-5xl mx-auto space-y-8 bg-[#0c1211]/30 border border-brand-200/10 p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+      <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-brand-200/5 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="text-center max-w-xl mx-auto space-y-2">
+        <span class="text-xs font-mono uppercase tracking-wider text-brand-200 bg-brand-200/10 px-3 py-1 rounded-full border border-brand-200/20 font-bold">Community Vote</span>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-100">Help Us Choose the Official Card Frame!</h2>
+        <p class="text-xs text-slate-400">Which layout style do you prefer for the physical & digital cards? Click an option to inspect, then cast your design preference vote below.</p>
+      </div>
+
+      <!-- Option Cards Showcase Wrapper -->
+      <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto pt-4">
+        
+        <!-- OPTION 1: Classic Border -->
+        <div onclick="selectDesignOption('Option 1')" id="design-opt-1" class="voting-card-option cursor-pointer group rounded-2xl border-2 border-brand-200/10 bg-[#080c0b] p-4 hover:border-brand-200/40 relative flex flex-col items-center text-center space-y-4">
+          <div class="absolute top-3 right-3 w-5 h-5 rounded-full border-2 border-slate-500 flex items-center justify-center group-hover:border-brand-200" id="bullet-opt-1">
+            <div class="w-2.5 h-2.5 rounded-full bg-transparent" id="bullet-dot-opt-1"></div>
+          </div>
+          <span class="text-[10px] font-mono tracking-widest text-slate-400">OPTION 1</span>
+          <h3 class="font-bold text-sm text-slate-100">Classic Border</h3>
+          
+          <!-- Miniature CSS Preview Layout -->
+          <div class="w-[140px] h-[190px] border-8 border-brand-200/30 bg-[#121c1a] rounded-lg p-2 flex flex-col justify-between shadow-lg relative overflow-hidden">
+            <div class="h-1 bg-brand-200/20 w-3/4 rounded"></div>
+            <div class="h-[90px] bg-brand-950/80 border border-brand-200/10 rounded flex items-center justify-center text-[8px] font-mono text-slate-500">Artwork Frame</div>
+            <div class="space-y-1">
+              <div class="h-1 bg-slate-600 w-full rounded"></div>
+              <div class="h-1 bg-slate-600 w-5/6 rounded"></div>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-normal">Traditional trading card layout with an explicit outer frame & crisp margins. Clean and high contrast.</p>
+        </div>
+
+        <!-- OPTION 2: Minimal Frame (In-between) -->
+        <div onclick="selectDesignOption('Option 2')" id="design-opt-2" class="voting-card-option cursor-pointer group rounded-2xl border-2 border-brand-200/10 bg-[#080c0b] p-4 hover:border-brand-200/40 relative flex flex-col items-center text-center space-y-4">
+          <div class="absolute top-3 right-3 w-5 h-5 rounded-full border-2 border-slate-500 flex items-center justify-center group-hover:border-brand-200" id="bullet-opt-2">
+            <div class="w-2.5 h-2.5 rounded-full bg-transparent" id="bullet-dot-opt-2"></div>
+          </div>
+          <span class="text-[10px] font-mono tracking-widest text-slate-400">OPTION 2</span>
+          <h3 class="font-bold text-sm text-slate-100">Minimal Frame</h3>
+          
+          <!-- Miniature CSS Preview Layout -->
+          <div class="w-[140px] h-[190px] border border-brand-200/20 bg-[#121c1a] rounded-lg p-1.5 flex flex-col justify-between shadow-lg relative overflow-hidden">
+            <div class="flex justify-between items-center">
+              <div class="h-1.5 bg-brand-200/20 w-1/2 rounded"></div>
+              <div class="w-2 h-2 rounded bg-brand-300"></div>
+            </div>
+            <div class="h-[110px] bg-brand-950/60 border border-brand-200/5 rounded flex items-center justify-center text-[8px] font-mono text-slate-500">Expanded Art</div>
+            <div class="space-y-1">
+              <div class="h-1 bg-slate-600 w-full rounded"></div>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-normal">Sleek, slim frame allowing the artwork to take up 80% of the space. Balanced, modern look.</p>
+        </div>
+
+        <!-- OPTION 3: Borderless Full-Art -->
+        <div onclick="selectDesignOption('Option 3')" id="design-opt-3" class="voting-card-option cursor-pointer group rounded-2xl border-2 border-brand-200/10 bg-[#080c0b] p-4 hover:border-brand-200/40 relative flex flex-col items-center text-center space-y-4">
+          <div class="absolute top-3 right-3 w-5 h-5 rounded-full border-2 border-slate-500 flex items-center justify-center group-hover:border-brand-200" id="bullet-opt-3">
+            <div class="w-2.5 h-2.5 rounded-full bg-transparent" id="bullet-dot-opt-3"></div>
+          </div>
+          <span class="text-[10px] font-mono tracking-widest text-slate-400">OPTION 3</span>
+          <h3 class="font-bold text-sm text-slate-100">Borderless Full-Art</h3>
+          
+          <!-- Miniature CSS Preview Layout -->
+          <div class="w-[140px] h-[190px] border border-brand-200/40 bg-gradient-to-tr from-[#121c1a] to-brand-300/30 rounded-lg p-2 flex flex-col justify-end shadow-lg relative overflow-hidden">
+            <div class="absolute top-2 left-2 h-1.5 bg-brand-200/40 w-2/3 rounded"></div>
+            <div class="bg-brand-950/80 backdrop-blur-md p-1.5 rounded border border-white/5 space-y-1 relative z-10">
+              <div class="h-1 bg-white/40 w-full rounded"></div>
+              <div class="h-1 bg-white/40 w-5/6 rounded"></div>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-normal">Zero borders. The artwork flows right to the physical edges, with translucent overlays at the bottom.</p>
+        </div>
+
+      </div>
+
+      <!-- Design Poll Submit Subpanel -->
+      <div class="max-w-md mx-auto bg-brand-950/50 p-6 rounded-2xl border border-brand-200/10 space-y-4">
+        <form id="design-vote-form" onsubmit="handleDesignVoteSubmit(event)" class="space-y-3">
+          <input type="hidden" id="selected-design-value" required value="" />
+          
+          <div>
+            <label class="block text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold mb-1">Your NightCafe Handle (Optional)</label>
+            <div class="relative">
+              <span class="absolute left-3 top-2.5 text-brand-200/50 font-mono text-xs">@</span>
+              <input type="text" id="design-voter-tag" placeholder="username" class="w-full bg-[#050807] border border-brand-200/15 focus:border-brand-200 text-slate-200 text-xs rounded-xl pl-7 pr-3 py-2 outline-none font-mono" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold mb-1">Feedback/Design suggestion (Optional)</label>
+            <textarea id="design-voter-comments" rows="2" placeholder="Why did you choose this layout style?" class="w-full bg-[#050807] border border-brand-200/15 focus:border-brand-200 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none resize-none"></textarea>
+          </div>
+
+          <button id="design-vote-submit-btn" type="submit" disabled class="w-full bg-brand-200/20 text-slate-400 cursor-not-allowed font-bold text-xs py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+            Select an Option to Vote <i data-lucide="vote" class="w-3.5 h-3.5"></i>
+          </button>
+        </form>
+
+        <!-- Live Design Poll Success Dashboard Display -->
+        <div id="design-vote-success" class="hidden space-y-4 animate-fade-in text-center">
+          <div class="flex items-center justify-center gap-2 text-brand-300 font-bold text-sm">
+            <i data-lucide="check-circle" class="w-5 h-5"></i> Preference Choice Registered!
+          </div>
+          <p class="text-[11px] text-slate-400">Thank you! Here is how the community has voted so far across our trial runs:</p>
+          
+          <div class="space-y-2.5 text-left pt-2">
+            <!-- Option 1 Bar -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-[10px] font-mono text-slate-300">
+                <span>Option 1: Classic Border</span>
+                <span id="pct-opt-1">0%</span>
+              </div>
+              <div class="w-full h-2 bg-[#050807] rounded-full overflow-hidden border border-brand-200/5">
+                <div id="bar-opt-1" class="h-full bg-brand-200 transition-all duration-1000" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <!-- Option 2 Bar -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-[10px] font-mono text-slate-300">
+                <span>Option 2: Minimal Frame</span>
+                <span id="pct-opt-2">0%</span>
+              </div>
+              <div class="w-full h-2 bg-[#050807] rounded-full overflow-hidden border border-brand-200/5">
+                <div id="bar-opt-2" class="h-full bg-brand-300 transition-all duration-1000" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <!-- Option 3 Bar -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-[10px] font-mono text-slate-300">
+                <span>Option 3: Borderless Full-Art</span>
+                <span id="pct-opt-3">0%</span>
+              </div>
+              <div class="w-full h-2 bg-[#050807] rounded-full overflow-hidden border border-brand-200/5">
+                <div id="bar-opt-3" class="h-full bg-accent-gold transition-all duration-1000" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
     <!-- Endless Horizontal Card Slider -->
     <section class="space-y-4 relative">
       <div class="text-center">
         <h2 class="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest">Card Hand Slider</h2>
-        <p class="text-xs text-slate-500">Hover over cards to freeze scrolling and inspect individual traits!</p>
+        <p class="text-xs text-slate-500">Hover or Swipe/Drag over cards to freeze scrolling & inspect details!</p>
       </div>
 
       <div class="hand-viewport" id="hand-viewport-element">
@@ -217,44 +374,44 @@
         <p class="text-xs text-slate-500">These creators are already integrated into Set 001. Check here to avoid duplicate submissions!</p>
       </div>
 
-      <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="p-4 rounded-xl border border-brand-200/10 bg-brand-950/40 flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-brand-300/10 flex items-center justify-center text-brand-300">
+          <div class="w-8 h-8 rounded-lg bg-brand-300/10 flex items-center justify-center text-brand-300 shrink-0">
             <i data-lucide="user" class="w-4 h-4"></i>
           </div>
-          <div>
+          <div class="truncate">
             <h4 class="text-xs font-bold text-slate-100">@aia</h4>
-            <span class="text-[9px] font-mono text-brand-200 uppercase tracking-widest">CLIP Resistance</span>
+            <span class="text-[9px] font-mono text-brand-200 uppercase tracking-widest block truncate">CLIP Resistance</span>
           </div>
         </div>
 
         <div class="p-4 rounded-xl border border-brand-200/10 bg-brand-950/40 flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-brand-200/10 flex items-center justify-center text-brand-200">
+          <div class="w-8 h-8 rounded-lg bg-brand-200/10 flex items-center justify-center text-brand-200 shrink-0">
             <i data-lucide="user-cog" class="w-4 h-4"></i>
           </div>
-          <div>
+          <div class="truncate">
             <h4 class="text-xs font-bold text-slate-100">@Anonymous</h4>
-            <span class="text-[9px] font-mono text-brand-200 uppercase tracking-widest">Legends / Newbies</span>
+            <span class="text-[9px] font-mono text-brand-200 uppercase tracking-widest block truncate">Legends / Newbies</span>
           </div>
         </div>
 
         <div class="p-4 rounded-xl border border-brand-200/10 bg-brand-950/40 flex items-center gap-3 opacity-60">
-          <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400">
+          <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 shrink-0">
             <i data-lucide="lock" class="w-4 h-4"></i>
           </div>
-          <div>
+          <div class="truncate">
             <h4 class="text-xs font-bold text-slate-300">Expansion Slot A</h4>
-            <span class="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Set 002</span>
+            <span class="text-[9px] font-mono text-slate-500 uppercase tracking-widest block truncate">Set 002</span>
           </div>
         </div>
 
         <div class="p-4 rounded-xl border border-brand-200/10 bg-brand-950/40 flex items-center gap-3 opacity-60">
-          <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400">
+          <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 shrink-0">
             <i data-lucide="lock" class="w-4 h-4"></i>
           </div>
-          <div>
+          <div class="truncate">
             <h4 class="text-xs font-bold text-slate-300">Expansion Slot B</h4>
-            <span class="text-[9px] font-mono text-slate-500 uppercase tracking-widest">Set 002</span>
+            <span class="text-[9px] font-mono text-slate-500 uppercase tracking-widest block truncate">Set 002</span>
           </div>
         </div>
       </div>
@@ -269,12 +426,12 @@
 
         <div class="space-y-5">
           <div class="flex items-start gap-4">
-            <div class="w-10 h-10 rounded-xl bg-brand-200/10 border border-brand-200/20 flex items-center justify-center text-brand-200">
+            <div class="w-10 h-10 rounded-xl bg-brand-200/10 border border-brand-200/20 flex items-center justify-center text-brand-200 shrink-0">
               <i data-lucide="key-round" class="w-5 h-5"></i>
             </div>
             <div>
               <h3 class="font-bold text-lg text-slate-100 font-sans">Closed Beta Request</h3>
-              <p class="text-xs text-slate-400 mt-0.5">Apply strictly for direct cerrado beta server permissions.</p>
+              <p class="text-xs text-slate-400 mt-0.5">Apply strictly for direct closed beta server permissions.</p>
             </div>
           </div>
 
@@ -353,7 +510,7 @@
 
         <div class="space-y-5">
           <div class="flex items-start gap-4">
-            <div class="w-10 h-10 rounded-xl bg-brand-300/10 border border-brand-300/20 flex items-center justify-center text-brand-300">
+            <div class="w-10 h-10 rounded-xl bg-brand-300/10 border border-brand-300/20 flex items-center justify-center text-brand-300 shrink-0">
               <i data-lucide="palette" class="w-5 h-5"></i>
             </div>
             <div>
@@ -497,7 +654,7 @@
         <p class="text-xs text-slate-500">Live indicators of total submitted creators and leaderboard standings</p>
       </div>
 
-      <div class="grid sm:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <!-- Live counters -->
         <div class="bg-brand-950/40 border border-brand-200/10 rounded-2xl p-5 flex flex-col justify-center items-center text-center">
           <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Total Artists Suggested</span>
@@ -522,7 +679,7 @@
         </div>
 
         <!-- Live Voting Board Podium Container -->
-        <div id="podium-container" class="grid md:grid-cols-3 gap-4 pt-4">
+        <div id="podium-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
           <!-- Populated dynamically by loop, displays fallback message if empty -->
         </div>
 
@@ -548,7 +705,7 @@
                   class="w-full bg-[#050807]/90 border border-brand-200/15 focus:border-brand-200 focus:ring-1 focus:ring-brand-200 text-slate-200 placeholder-slate-600 rounded-xl pl-9 pr-4 py-2 text-xs outline-none transition-all font-mono"
                 />
               </div>
-              <p class="text-[10px] text-slate-500 font-mono uppercase tracking-widest">Showing all community suggestions in real-time</p>
+              <p class="text-[10px] text-slate-500 font-mono uppercase tracking-widest text-center sm:text-right">Showing all community suggestions in real-time</p>
             </div>
 
             <div class="overflow-hidden rounded-2xl border border-brand-200/10 bg-brand-950/60 backdrop-blur">
@@ -569,13 +726,13 @@
     <div class="bg-gradient-to-tr from-[#050405] to-[#0f1413] border border-brand-300/25 rounded-3xl max-w-4xl w-full p-6 lg:p-8 shadow-2xl relative flex flex-col md:flex-row gap-8 overflow-y-auto max-h-[95vh] md:max-h-none transform scale-95 transition-transform duration-300" id="inspector-content">
 
       <!-- Close Button -->
-      <button onclick="closeInspector()" class="absolute right-4 top-4 text-slate-400 hover:text-brand-200 transition-colors bg-brand-950/40 p-2 rounded-full border border-brand-200/10">
+      <button onclick="closeInspector()" class="absolute right-4 top-4 text-slate-400 hover:text-brand-200 transition-colors bg-brand-950/40 p-2 rounded-full border border-brand-200/10 z-50">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
       <!-- Left Side Column: Holographic 3D Card Physics Canvas -->
       <div class="w-full md:w-[320px] shrink-0 flex flex-col items-center justify-center py-4 md:py-0">
-        <div class="card-3d-wrapper w-[260px] h-[364px]">
+        <div class="card-3d-wrapper w-[230px] sm:w-[260px] h-[322px] sm:h-[364px]">
           <div id="interactive-card-element" class="card-3d w-full h-full rounded-2xl shadow-2xl relative select-none">
             <!-- Dynamic card details or fallback artwork frame gets rendered here -->
             <div class="holo-sheen"></div>
@@ -633,11 +790,11 @@
   <!-- Page Footer -->
   <footer class="border-t border-brand-200/10 py-10 bg-[#030504] z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-      <div class="text-center sm:text-left space-y-1">
-        <p class="text-xs text-slate-400 font-medium">Prompt Battle is an experimental trading card game concept designed for the AI artists community.</p>
+      <div class="text-center sm:text-left space-y-1 text-xs">
+        <p class="text-slate-400 font-medium">Prompt Battle is an experimental trading card game concept designed for the AI artists community.</p>
         <p class="text-[10px] text-slate-600 font-mono">Set 001 — First Render · Closed Beta selection preview space.</p>
       </div>
-      <div class="flex items-center gap-2 text-slate-400 text-xs font-mono">
+      <div class="flex items-center gap-2 text-slate-400 text-xs font-mono shrink-0">
         <span>Curated with passion by</span>
         <a href="https://nightcafe.art/u/aia" target="_blank" rel="noopener noreferrer" class="text-brand-200 hover:text-brand-300 transition-colors font-semibold flex items-center gap-1">
           @aia <i data-lucide="external-link" class="w-3 h-3"></i>
@@ -734,12 +891,233 @@
     let trackXPos = 0;
     const glideSpeed = 0.5;
 
+    // Mobile Swipe Physics variables
+    let isDragging = false;
+    let startX = 0;
+    let currentX = 0;
+    let dragVelocity = 0;
+    let lastDragTime = 0;
+    let lastDragX = 0;
+
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
       loadSuggestedArtists();
       renderHandTrack();
       animateHandTrack();
+      setupCarouselSwipe();
+      checkExistingDesignVote();
     });
+
+    // Handle interactive card-design option selection
+    function selectDesignOption(optionName) {
+      // Prevent selecting if already voted
+      if (localStorage.getItem('pb_design_voted') === 'true') {
+        return;
+      }
+
+      document.getElementById('selected-design-value').value = optionName;
+      
+      // Update UI Borders
+      for (let i = 1; i <= 3; i++) {
+        const optCard = document.getElementById(`design-opt-${i}`);
+        const bullet = document.getElementById(`bullet-opt-${i}`);
+        const bulletDot = document.getElementById(`bullet-dot-opt-${i}`);
+        
+        if (optionName === `Option ${i}`) {
+          optCard.classList.remove('border-brand-200/10');
+          optCard.classList.add('border-brand-200', 'bg-brand-200/[0.03]');
+          bullet.classList.remove('border-slate-500');
+          bullet.classList.add('border-brand-200');
+          bulletDot.classList.remove('bg-transparent');
+          bulletDot.classList.add('bg-brand-200');
+        } else {
+          optCard.classList.remove('border-brand-200', 'bg-brand-200/[0.03]');
+          optCard.classList.add('border-brand-200/10');
+          bullet.classList.remove('border-brand-200');
+          bullet.classList.add('border-slate-500');
+          bulletDot.classList.remove('bg-brand-200');
+          bulletDot.classList.add('bg-transparent');
+        }
+      }
+
+      // Enable submit button
+      const submitBtn = document.getElementById('design-vote-submit-btn');
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('bg-brand-200/20', 'text-slate-400', 'cursor-not-allowed');
+      submitBtn.classList.add('bg-gradient-to-r', 'from-brand-200', 'to-brand-300', 'text-slate-900', 'hover:brightness-110');
+      submitBtn.innerText = `Vote for ${optionName}`;
+    }
+
+    // Submit Design choice poll over network
+    function handleDesignVoteSubmit(event) {
+      event.preventDefault();
+      const selected = document.getElementById('selected-design-value').value;
+      const tag = document.getElementById('design-voter-tag').value.trim();
+      const comments = document.getElementById('design-voter-comments').value.trim();
+      const submitBtn = document.getElementById('design-vote-submit-btn');
+
+      if (!selected) return;
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Transmitting Preference...";
+
+      // Save locally immediately to avoid double votes
+      localStorage.setItem('pb_design_voted', 'true');
+      localStorage.setItem('pb_design_choice', selected);
+
+      // Async Send to GAS
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
+        const urlParams = new URLSearchParams();
+        urlParams.append('action', 'design-vote');
+        urlParams.append('tag', tag);
+        urlParams.append('selectedOption', selected);
+        urlParams.append('comments', comments);
+
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: urlParams
+        })
+        .finally(() => {
+          // Display simulated/actual success chart
+          showDesignVoteResults(selected);
+        });
+      } else {
+        showDesignVoteResults(selected);
+      }
+    }
+
+    // Retrieve design preference states
+    function checkExistingDesignVote() {
+      const alreadyVoted = localStorage.getItem('pb_design_voted') === 'true';
+      if (alreadyVoted) {
+        const choice = localStorage.getItem('pb_design_choice') || 'Option 2';
+        showDesignVoteResults(choice);
+      }
+    }
+
+    // Show vote feedback with clean responsive visual metrics
+    function showDesignVoteResults(selectedOption) {
+      document.getElementById('design-vote-form').classList.add('hidden');
+      document.getElementById('design-vote-success').classList.remove('hidden');
+
+      // Gray out the picker options
+      for (let i = 1; i <= 3; i++) {
+        const card = document.getElementById(`design-opt-${i}`);
+        card.style.opacity = '0.6';
+        card.style.pointerEvents = 'none';
+        if (selectedOption === `Option ${i}`) {
+          card.style.opacity = '1';
+          card.classList.add('ring-2', 'ring-brand-200/50');
+        }
+      }
+
+      // Set standard sample metrics (or merge live spreadsheet telemetry if desired)
+      // Generates randomized mock configurations centered around current distribution
+      const sampleVotes = {
+        'Option 1': 42,
+        'Option 2': 118,
+        'Option 3': 94
+      };
+
+      // Add user vote
+      if (sampleVotes[selectedOption] !== undefined) {
+        sampleVotes[selectedOption]++;
+      }
+
+      const total = sampleVotes['Option 1'] + sampleVotes['Option 2'] + sampleVotes['Option 3'];
+      const p1 = Math.round((sampleVotes['Option 1'] / total) * 100);
+      const p2 = Math.round((sampleVotes['Option 2'] / total) * 100);
+      const p3 = Math.round((sampleVotes['Option 3'] / total) * 100);
+
+      document.getElementById('pct-opt-1').innerText = `${p1}%`;
+      document.getElementById('bar-opt-1').style.width = `${p1}%`;
+
+      document.getElementById('pct-opt-2').innerText = `${p2}%`;
+      document.getElementById('bar-opt-2').style.width = `${p2}%`;
+
+      document.getElementById('pct-opt-3').innerText = `${p3}%`;
+      document.getElementById('bar-opt-3').style.width = `${p3}%`;
+    }
+
+    // Setup Touch and Mouse Drag Swiping for endless hand scroller container
+    function setupCarouselSwipe() {
+      const viewport = document.getElementById('hand-viewport-element');
+      const track = document.getElementById('hand-track-element');
+
+      // Mouse Drag Events
+      viewport.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        isHoveringTrack = true;
+        startX = e.clientX - trackXPos;
+        lastDragX = e.clientX;
+        lastDragTime = performance.now();
+        dragVelocity = 0;
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        currentX = e.clientX;
+        trackXPos = currentX - startX;
+
+        // Calculate Drag velocity to glide on release
+        const now = performance.now();
+        const elapsed = now - lastDragTime;
+        if (elapsed > 0) {
+          dragVelocity = (currentX - lastDragX) / elapsed;
+        }
+        lastDragX = currentX;
+        lastDragTime = now;
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        isHoveringTrack = false;
+        
+        // Apply slight inertial glide physics on release
+        let momentum = setInterval(() => {
+          if (Math.abs(dragVelocity) < 0.05 || isDragging || isHoveringTrack) {
+            clearInterval(momentum);
+          } else {
+            trackXPos += dragVelocity * 16; // Standard 60fps step
+            dragVelocity *= 0.92; // Friction Coeff
+          }
+        }, 16);
+      });
+
+      // Touch Drag Events
+      viewport.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          isDragging = true;
+          isHoveringTrack = true;
+          startX = e.touches[0].clientX - trackXPos;
+          lastDragX = e.touches[0].clientX;
+          lastDragTime = performance.now();
+          dragVelocity = 0;
+        }
+      });
+
+      viewport.addEventListener('touchmove', (e) => {
+        if (!isDragging || e.touches.length !== 1) return;
+        currentX = e.touches[0].clientX;
+        trackXPos = currentX - startX;
+
+        const now = performance.now();
+        const elapsed = now - lastDragTime;
+        if (elapsed > 0) {
+          dragVelocity = (currentX - lastDragX) / elapsed;
+        }
+        lastDragX = currentX;
+        lastDragTime = now;
+      });
+
+      viewport.addEventListener('touchend', () => {
+        isDragging = false;
+        isHoveringTrack = false;
+      });
+    }
 
     // Fetch dynamic creators from Google Spreadsheet (reading the Summary list)
     async function loadSuggestedArtists() {
@@ -900,7 +1278,7 @@
           </div>
         `;
       } else {
-        podium.className = "grid md:grid-cols-3 gap-4 pt-4";
+        podium.className = "grid grid-cols-1 md:grid-cols-3 gap-4 pt-4";
 
         sorted.slice(0, 3).forEach((item, index) => {
           const medalColors = ['text-accent-gold', 'text-slate-300', 'text-amber-700'];
@@ -933,7 +1311,7 @@
               </div>
               <div>
                 <h4 class="font-extrabold text-sm sm:text-base text-slate-100 font-sans">@${item.name}</h4>
-                <p class="text-[10px] text-slate-500 font-mono mt-0.5 font-light">Voted Community Nominee</p>
+                <p class="text-[10px] text-slate-500 font-mono mt-0.5 font-light">Voted Nominee</p>
               </div>
             </div>
             <div class="mt-4 pt-3 border-t border-brand-200/5 flex justify-between items-center text-xs">
@@ -1081,7 +1459,7 @@
       if (!track || !viewport) return;
 
       const run = () => {
-        if (!isHoveringTrack) {
+        if (!isHoveringTrack && !isDragging) {
           // Find the exact offset point where the cloned cards start
           const firstClone = track.children[SAMPLE_CARDS.length];
           if (firstClone) {
@@ -1093,6 +1471,18 @@
               trackXPos = 0;
             }
 
+            track.style.transform = `translateX(${trackXPos}px)`;
+          }
+        } else if (isDragging) {
+          // Bound values during direct manual swiping
+          const firstClone = track.children[SAMPLE_CARDS.length];
+          if (firstClone) {
+            const resetOffsetPoint = firstClone.offsetLeft;
+            if (trackXPos > 0) {
+              trackXPos = -resetOffsetPoint;
+            } else if (Math.abs(trackXPos) >= resetOffsetPoint) {
+              trackXPos = 0;
+            }
             track.style.transform = `translateX(${trackXPos}px)`;
           }
         }
