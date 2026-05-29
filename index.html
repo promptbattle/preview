@@ -228,16 +228,25 @@
           <span class="text-[10px] font-mono tracking-widest text-slate-400">OPTION 1</span>
           <h3 class="font-bold text-sm text-slate-100">Classic Border</h3>
           
-          <!-- Miniature CSS Preview Layout -->
-          <div class="w-[140px] h-[190px] border-8 border-brand-200/30 bg-[#121c1a] rounded-lg p-2 flex flex-col justify-between shadow-lg relative overflow-hidden">
-            <div class="h-1 bg-brand-200/20 w-3/4 rounded"></div>
-            <div class="h-[90px] bg-brand-950/80 border border-brand-200/10 rounded flex items-center justify-center text-[8px] font-mono text-slate-500">Artwork Frame</div>
-            <div class="space-y-1">
-              <div class="h-1 bg-slate-600 w-full rounded"></div>
-              <div class="h-1 bg-slate-600 w-5/6 rounded"></div>
+          <!-- Miniature Image & Fallback Layout -->
+          <div class="w-[140px] h-[190px] rounded-lg shadow-lg relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+            <img src="images/cards/option1.png" alt="Option 1" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+            
+            <div class="hidden absolute inset-0 border-8 border-brand-200/30 bg-[#121c1a] p-2 flex flex-col justify-between shadow-inner">
+              <div class="h-1 bg-brand-200/20 w-3/4 rounded"></div>
+              <div class="h-[90px] bg-brand-950/80 border border-brand-200/10 rounded flex items-center justify-center text-[8px] font-mono text-slate-500">Artwork Frame</div>
+              <div class="space-y-1">
+                <div class="h-1 bg-slate-600 w-full rounded"></div>
+                <div class="h-1 bg-slate-600 w-5/6 rounded"></div>
+              </div>
             </div>
           </div>
+          
           <p class="text-[11px] text-slate-400 leading-normal">Traditional trading card layout with an explicit outer frame & crisp margins. Clean and high contrast.</p>
+          
+          <button onclick="event.stopPropagation(); inspectDesignOption('Option 1')" class="text-[10px] font-mono font-bold text-brand-200 bg-brand-200/10 hover:bg-brand-200/30 border border-brand-200/20 rounded px-2.5 py-1 flex items-center gap-1 transition-all">
+            <i data-lucide="zoom-in" class="w-3 h-3"></i> Inspect 3D
+          </button>
         </div>
 
         <!-- OPTION 2: Minimal Frame (In-between) -->
@@ -248,18 +257,27 @@
           <span class="text-[10px] font-mono tracking-widest text-slate-400">OPTION 2</span>
           <h3 class="font-bold text-sm text-slate-100">Minimal Frame</h3>
           
-          <!-- Miniature CSS Preview Layout -->
-          <div class="w-[140px] h-[190px] border border-brand-200/20 bg-[#121c1a] rounded-lg p-1.5 flex flex-col justify-between shadow-lg relative overflow-hidden">
-            <div class="flex justify-between items-center">
-              <div class="h-1.5 bg-brand-200/20 w-1/2 rounded"></div>
-              <div class="w-2 h-2 rounded bg-brand-300"></div>
-            </div>
-            <div class="h-[110px] bg-brand-950/60 border border-brand-200/5 rounded flex items-center justify-center text-[8px] font-mono text-slate-500">Expanded Art</div>
-            <div class="space-y-1">
-              <div class="h-1 bg-slate-600 w-full rounded"></div>
+          <!-- Miniature Image & Fallback Layout -->
+          <div class="w-[140px] h-[190px] rounded-lg shadow-lg relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+            <img src="images/cards/option2.png" alt="Option 2" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+
+            <div class="hidden absolute inset-0 border border-brand-200/20 bg-[#121c1a] p-1.5 flex flex-col justify-between shadow-inner">
+              <div class="flex justify-between items-center">
+                <div class="h-1.5 bg-brand-200/20 w-1/2 rounded"></div>
+                <div class="w-2 h-2 rounded bg-brand-300"></div>
+              </div>
+              <div class="h-[110px] bg-brand-950/60 border border-brand-200/5 rounded flex items-center justify-center text-[8px] font-mono text-slate-500">Expanded Art</div>
+              <div class="space-y-1">
+                <div class="h-1 bg-slate-600 w-full rounded"></div>
+              </div>
             </div>
           </div>
+          
           <p class="text-[11px] text-slate-400 leading-normal">Sleek, slim frame allowing the artwork to take up 80% of the space. Balanced, modern look.</p>
+
+          <button onclick="event.stopPropagation(); inspectDesignOption('Option 2')" class="text-[10px] font-mono font-bold text-brand-200 bg-brand-200/10 hover:bg-brand-200/30 border border-brand-200/20 rounded px-2.5 py-1 flex items-center gap-1 transition-all">
+            <i data-lucide="zoom-in" class="w-3 h-3"></i> Inspect 3D
+          </button>
         </div>
 
         <!-- OPTION 3: Borderless Full-Art -->
@@ -270,15 +288,24 @@
           <span class="text-[10px] font-mono tracking-widest text-slate-400">OPTION 3</span>
           <h3 class="font-bold text-sm text-slate-100">Borderless Full-Art</h3>
           
-          <!-- Miniature CSS Preview Layout -->
-          <div class="w-[140px] h-[190px] border border-brand-200/40 bg-gradient-to-tr from-[#121c1a] to-brand-300/30 rounded-lg p-2 flex flex-col justify-end shadow-lg relative overflow-hidden">
-            <div class="absolute top-2 left-2 h-1.5 bg-brand-200/40 w-2/3 rounded"></div>
-            <div class="bg-brand-950/80 backdrop-blur-md p-1.5 rounded border border-white/5 space-y-1 relative z-10">
-              <div class="h-1 bg-white/40 w-full rounded"></div>
-              <div class="h-1 bg-white/40 w-5/6 rounded"></div>
+          <!-- Miniature Image & Fallback Layout -->
+          <div class="w-[140px] h-[190px] rounded-lg shadow-lg relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+            <img src="images/cards/option3.png" alt="Option 3" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+
+            <div class="hidden absolute inset-0 border border-brand-200/40 bg-gradient-to-tr from-[#121c1a] to-brand-300/30 p-2 flex flex-col justify-end shadow-inner">
+              <div class="absolute top-2 left-2 h-1.5 bg-brand-200/40 w-2/3 rounded"></div>
+              <div class="bg-brand-950/80 backdrop-blur-md p-1.5 rounded border border-white/5 space-y-1 relative z-10">
+                <div class="h-1 bg-white/40 w-full rounded"></div>
+                <div class="h-1 bg-white/40 w-5/6 rounded"></div>
+              </div>
             </div>
           </div>
+          
           <p class="text-[11px] text-slate-400 leading-normal">Zero borders. The artwork flows right to the physical edges, with translucent overlays at the bottom.</p>
+
+          <button onclick="event.stopPropagation(); inspectDesignOption('Option 3')" class="text-[10px] font-mono font-bold text-brand-200 bg-brand-200/10 hover:bg-brand-200/30 border border-brand-200/20 rounded px-2.5 py-1 flex items-center gap-1 transition-all">
+            <i data-lucide="zoom-in" class="w-3 h-3"></i> Inspect 3D
+          </button>
         </div>
 
       </div>
@@ -808,6 +835,46 @@
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdE5-CePIwz6vUNtJydUhgrFsVEsHZtUHRYL5E1JAx6t6GULrNrcmZL2sxMsXyNbHW/exec';
     const SPREADSHEET_ID = '1CBEIN3Al02f7HGXpxwCkZI5EjVP00VvaXKyb5GFeZNg';
 
+    // Design layout mock cards configuration for interactive 3D inspection
+    const DESIGN_OPTIONS_CARDS = {
+      'Option 1': {
+        id: 'D-001',
+        name: 'Classic Border Frame',
+        type: 'design-preview',
+        rarity: 'rare',
+        rarityDots: 3,
+        subtype: 'Traditional TCG Layout',
+        colorTheme: 'from-brand-200 to-slate-800',
+        image: 'images/cards/option1.png',
+        effect: 'Traditional trading card layout with an explicit outer frame & crisp margins. Clean and high contrast.',
+        creatorNotes: 'Favoured by physical deck purists. Offers pristine layout structure and beautiful margin framing.'
+      },
+      'Option 2': {
+        id: 'D-002',
+        name: 'Minimal Frame',
+        type: 'design-preview',
+        rarity: 'epic',
+        rarityDots: 4,
+        subtype: 'Modern Clean Standard',
+        colorTheme: 'from-brand-300 to-slate-800',
+        image: 'images/cards/option2.png',
+        effect: 'Sleek, slim frame allowing the artwork to take up 80% of the space. Balanced, modern look.',
+        creatorNotes: 'A premium modern standard. Accentuates wider composition aspects while preserving frame metadata cleanly.'
+      },
+      'Option 3': {
+        id: 'D-003',
+        name: 'Borderless Full-Art',
+        type: 'design-preview',
+        rarity: 'mythic',
+        rarityDots: 5,
+        subtype: 'Immersive Full-Bleed',
+        colorTheme: 'from-accent-gold to-slate-800',
+        image: 'images/cards/option3.png',
+        effect: 'Zero borders. The artwork flows right to the physical edges, with translucent overlays at the bottom.',
+        creatorNotes: 'Maximum immersion. Ideal for expansive character rendering and full-bleed artwork illustrations.'
+      }
+    };
+
     // Our default card list
     const SAMPLE_CARDS = [
       {
@@ -946,6 +1013,14 @@
       submitBtn.classList.remove('bg-brand-200/20', 'text-slate-400', 'cursor-not-allowed');
       submitBtn.classList.add('bg-gradient-to-r', 'from-brand-200', 'to-brand-300', 'text-slate-900', 'hover:brightness-110');
       submitBtn.innerText = `Vote for ${optionName}`;
+    }
+
+    // Opens 3D preview specifically optimized to showcase frame voting options
+    function inspectDesignOption(optionName) {
+      const designCard = DESIGN_OPTIONS_CARDS[optionName];
+      if (designCard) {
+        inspectCard(designCard);
+      }
     }
 
     // Submit Design choice poll over network
@@ -1552,38 +1627,115 @@
       const targetElement = document.getElementById('interactive-card-element');
       targetElement.className = `card-3d w-full h-full rounded-2xl bg-[#080d0c] border border-brand-200/35 flex flex-col justify-between shadow-2xl relative overflow-hidden select-none`;
 
-      targetElement.innerHTML = `
-        <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+      // Render customized card previews optimized for design options or standard cards
+      let cardInnerHtml = '';
+      if (card.type === 'design-preview') {
+        if (card.id === 'D-001') {
+          // OPTION 1: Classic Border style preview frame in CSS
+          cardInnerHtml = `
+            <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+            <div class="hidden absolute inset-0 border-[12px] border-brand-200/20 bg-[#080d0c] p-3 flex flex-col justify-between z-10">
+              <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-10"></div>
+              <div class="holo-sheen"></div>
+              <div class="relative z-10 flex justify-between items-start">
+                <span class="text-[11px] font-mono font-bold tracking-tight text-slate-100">${card.name}</span>
+                <span class="text-[8px] font-mono tracking-wider px-1.5 py-0.5 bg-brand-200/10 border border-brand-200/20 rounded text-brand-200 uppercase font-bold">FRAME 1</span>
+              </div>
+              <div class="h-[120px] bg-brand-950/80 border border-brand-200/10 rounded flex items-center justify-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
+                <span class="text-[8px] font-mono text-slate-500 uppercase tracking-widest relative z-10">Art Frame</span>
+              </div>
+              <div class="text-[10px] text-slate-200 font-light bg-[#0d1312]/60 p-2 rounded border border-brand-200/10 relative z-10 leading-normal">
+                ${card.effect}
+              </div>
+              <div class="relative z-10 flex justify-between items-center text-[8px] font-mono text-slate-500 border-t border-brand-200/15 pt-2">
+                <span>${card.id}</span>
+                <div class="flex gap-0.5 text-accent-gold">★ ★ ★</div>
+              </div>
+            </div>
+          `;
+        } else if (card.id === 'D-002') {
+          // OPTION 2: Minimal Frame style preview frame in CSS
+          cardInnerHtml = `
+            <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+            <div class="hidden absolute inset-0 border border-brand-200/25 bg-[#080d0c] p-3.5 flex flex-col justify-between z-10">
+              <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-10"></div>
+              <div class="holo-sheen"></div>
+              <div class="relative z-10 flex justify-between items-center">
+                <span class="text-[11px] font-mono font-bold tracking-tight text-slate-100">${card.name}</span>
+                <span class="text-[8px] font-mono tracking-wider px-1.5 py-0.5 bg-brand-300/10 border border-brand-300/20 rounded text-brand-300 uppercase font-bold">FRAME 2</span>
+              </div>
+              <div class="h-[145px] bg-brand-950/60 border border-brand-200/5 rounded flex items-center justify-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
+                <span class="text-[8px] font-mono text-slate-500 uppercase tracking-widest relative z-10">Expanded Art</span>
+              </div>
+              <div class="text-[10px] text-slate-200 font-light bg-[#0d1312]/60 p-2 rounded border border-brand-200/10 relative z-10 leading-normal">
+                ${card.effect}
+              </div>
+              <div class="relative z-10 flex justify-between items-center text-[8px] font-mono text-slate-500 border-t border-brand-200/15 pt-1.5">
+                <span>${card.id}</span>
+                <div class="flex gap-0.5 text-accent-gold">★ ★ ★ ★</div>
+              </div>
+            </div>
+          `;
+        } else if (card.id === 'D-003') {
+          // OPTION 3: Borderless style preview frame in CSS
+          cardInnerHtml = `
+            <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+            <div class="hidden absolute inset-0 bg-gradient-to-b from-[#080d0c] via-[#080d0c] to-brand-300/10 p-4 flex flex-col justify-between z-10">
+              <div class="holo-sheen"></div>
+              <div class="relative z-10 flex justify-between items-start">
+                <span class="text-[11px] font-mono font-bold tracking-tight text-slate-100">${card.name}</span>
+                <span class="text-[8px] font-mono tracking-wider px-1.5 py-0.5 bg-accent-gold/10 border border-accent-gold/20 rounded text-accent-gold uppercase font-bold">FRAME 3</span>
+              </div>
+              <div class="flex-grow"></div>
+              <div class="bg-brand-950/80 backdrop-blur-md p-2.5 rounded-xl border border-white/10 relative z-10 space-y-1">
+                <p class="text-[10px] text-slate-200 font-light leading-normal">${card.effect}</p>
+              </div>
+              <div class="relative z-10 flex justify-between items-center text-[8px] font-mono text-slate-500 pt-2">
+                <span>${card.id}</span>
+                <div class="flex gap-0.5 text-accent-gold">★ ★ ★ ★ ★</div>
+              </div>
+            </div>
+          `;
+        }
+      } else {
+        // Standard game card templates
+        cardInnerHtml = `
+          <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
 
-        <div class="hidden absolute inset-0 p-5 flex flex-col justify-between z-10">
-          <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-10"></div>
-          <div class="holo-sheen"></div>
+          <div class="hidden absolute inset-0 p-5 flex flex-col justify-between z-10">
+            <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-10"></div>
+            <div class="holo-sheen"></div>
 
-          <div class="relative z-10 flex justify-between items-start">
-            <span class="text-[11px] font-mono font-bold tracking-tight text-slate-100">${card.name}</span>
-            <span class="text-[8px] font-mono tracking-wider px-1.5 py-0.5 bg-brand-200/10 border border-brand-200/20 rounded text-brand-200 uppercase font-bold">${card.type}</span>
-          </div>
+            <div class="relative z-10 flex justify-between items-start">
+              <span class="text-[11px] font-mono font-bold tracking-tight text-slate-100">${card.name}</span>
+              <span class="text-[8px] font-mono tracking-wider px-1.5 py-0.5 bg-brand-200/10 border border-brand-200/20 rounded text-brand-200 uppercase font-bold">${card.type}</span>
+            </div>
 
-          <div class="h-[130px] bg-[#0c1211] border border-brand-200/15 rounded-xl relative overflow-hidden flex items-center justify-center">
-            <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
-            <div class="flex flex-col items-center justify-center p-2 text-center">
-              <span class="text-[8px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Art Frame</span>
-              <span class="text-[7px] text-slate-500 mt-1 truncate max-w-full">${card.id}.png</span>
+            <div class="h-[130px] bg-[#0c1211] border border-brand-200/15 rounded-xl relative overflow-hidden flex items-center justify-center">
+              <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
+              <div class="flex flex-col items-center justify-center p-2 text-center">
+                <span class="text-[8px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Art Frame</span>
+                <span class="text-[7px] text-slate-500 mt-1 truncate max-w-full">${card.id}.png</span>
+              </div>
+            </div>
+
+            <div class="text-[10px] text-slate-200 font-light bg-[#0d1312]/60 p-2.5 rounded-lg border border-brand-200/10 relative z-10 leading-normal">
+              ${card.effect}
+            </div>
+
+            <div class="relative z-10 flex justify-between items-center text-[8px] font-mono text-slate-500 border-t border-brand-200/15 pt-2">
+              <span>${card.id}</span>
+              <div class="flex gap-0.5 text-accent-gold">
+                ${'★'.repeat(card.rarityDots)}
+              </div>
             </div>
           </div>
+        `;
+      }
 
-          <div class="text-[10px] text-slate-200 font-light bg-[#0d1312]/60 p-2.5 rounded-lg border border-brand-200/10 relative z-10 leading-normal">
-            ${card.effect}
-          </div>
-
-          <div class="relative z-10 flex justify-between items-center text-[8px] font-mono text-slate-500 border-t border-brand-200/15 pt-2">
-            <span>${card.id}</span>
-            <div class="flex gap-0.5 text-accent-gold">
-              ${'★'.repeat(card.rarityDots)}
-            </div>
-          </div>
-        </div>
-      `;
+      targetElement.innerHTML = cardInnerHtml;
 
       const wrapper = targetElement.parentElement;
       const card3D = targetElement;
@@ -1769,6 +1921,7 @@
       }
     }
 
+    // Show success feedback panel for nominee submission
     function showArtistSuccessScreen(tag) {
       renderPodiumAndStats();
       document.getElementById('artistSuccessTag').innerText = `@${tag}`;
