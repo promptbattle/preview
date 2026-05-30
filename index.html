@@ -167,28 +167,28 @@
 </head>
 <body class="text-slate-200 min-h-screen flex flex-col justify-between font-sans selection:bg-brand-200 selection:text-brand-950 overflow-x-hidden">
 
-  <!-- Personalized Status / Notification Bar (Sticky below Header if message active) -->
-  <div id="live-notification-banner" class="hidden bg-gradient-to-r from-brand-950 via-[#0d1716] to-brand-950 border-b border-brand-200/20 text-slate-200 py-3.5 px-4 text-center relative z-50">
+  <!-- GLOBAL ANNOUNCEMENT BANNER (Visibly loaded for everyone!) -->
+  <div id="global-announcement-banner" class="hidden bg-gradient-to-r from-brand-950 via-[#182321] to-brand-950 border-b border-brand-200/20 text-slate-200 py-3 px-4 text-center relative z-50 animate-fade-in">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
-      <div class="flex items-center gap-2 text-brand-200 font-mono font-bold text-xs">
-        <span class="w-2 h-2 rounded-full bg-brand-200 animate-ping"></span>
-        <span id="notif-badge">UPDATE FOR YOU</span>
+      <div class="flex items-center gap-1.5 text-brand-200 font-mono font-bold text-xs uppercase">
+        <i data-lucide="megaphone" class="w-4 h-4 text-brand-200"></i>
+        <span>Announcement</span>
       </div>
-      <p class="text-xs sm:text-sm text-slate-300 font-sans" id="notif-banner-message">
-        Your beta testing status has changed! Click inspect to view updates.
+      <p class="text-xs sm:text-sm text-slate-200 font-medium" id="global-announcement-text">
+        Loading community announcements...
       </p>
-      <button onclick="openNotificationModal()" class="text-[11px] font-mono font-bold text-brand-950 bg-brand-200 hover:bg-brand-300 transition-colors px-3 py-1 rounded-full uppercase tracking-wider">
-        Read Message
-      </button>
+      <a href="#" id="global-announcement-link" target="_blank" rel="noopener noreferrer" class="hidden text-[10px] font-mono font-bold text-brand-950 bg-brand-200 hover:bg-brand-300 transition-colors px-3 py-1 rounded-full uppercase tracking-wider">
+        Read More
+      </a>
     </div>
-    <button onclick="dismissNotificationBanner()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+    <button onclick="dismissGlobalAnnouncement()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors">
       <i data-lucide="x" class="w-4 h-4"></i>
     </button>
   </div>
 
   <!-- Navigation Bar Header -->
   <header class="border-b border-brand-200/10 backdrop-blur-md sticky top-0 z-40 bg-[#050707]/90">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative">
       <div class="flex items-center gap-3">
         <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-200 via-accent-lavender to-brand-300 p-[1px] flex items-center justify-center">
           <div class="w-full h-full bg-[#050707] rounded-[11px] flex items-center justify-center">
@@ -201,12 +201,37 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
-        <!-- Status Checker Mini Button -->
-        <button onclick="openStatusChecker()" class="hidden sm:flex items-center gap-1.5 text-xs font-mono font-medium text-slate-400 hover:text-brand-200 transition-colors py-2 px-3.5 rounded-full border border-slate-800 hover:border-brand-200/30">
-          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Status Check
+      <div class="flex items-center gap-4">
+        <!-- Secure Status Checker Button -->
+        <button onclick="openStatusChecker()" class="flex items-center gap-1.5 text-xs font-mono font-medium text-slate-400 hover:text-brand-200 transition-colors py-2 px-3 sm:px-4 rounded-full border border-slate-800 hover:border-brand-200/30">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Status Check</span>
         </button>
-        <a href="#teaser-forms" class="text-xs font-mono font-medium tracking-wide text-brand-200 hover:text-brand-300 transition-all bg-brand-200/5 hover:bg-brand-200/10 px-4 py-2 rounded-full border border-brand-200/20 hover:border-brand-200/40">
+
+        <!-- Premium Notification Bell Container -->
+        <div class="relative">
+          <button onclick="toggleNotificationDropdown()" class="w-10 h-10 rounded-full border border-slate-800 bg-[#0c1211]/40 flex items-center justify-center text-slate-400 hover:text-brand-200 transition-all relative">
+            <i data-lucide="bell" class="w-5 h-5"></i>
+            <span id="notif-badge-dot" class="hidden absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border border-[#050707] animate-pulse"></span>
+          </button>
+
+          <!-- Dropdown Card Portal -->
+          <div id="notif-dropdown" class="hidden absolute right-0 mt-3 w-80 bg-gradient-to-b from-[#0c1211] to-[#040606] border border-brand-200/15 rounded-2xl shadow-2xl p-4 space-y-3 z-50 text-left">
+            <div class="flex items-center justify-between border-b border-brand-200/10 pb-2">
+              <span class="text-xs font-mono font-bold text-slate-400">NOTIFICATIONS</span>
+              <button onclick="markNotificationsAsRead()" class="text-[9px] font-mono text-brand-200 hover:text-brand-300">Mark all read</button>
+            </div>
+            
+            <div id="notif-dropdown-content" class="space-y-3">
+              <!-- Empty state default -->
+              <div class="py-6 text-center text-xs text-slate-500 font-mono space-y-1">
+                <i data-lucide="bell-off" class="w-5 h-5 mx-auto text-slate-600"></i>
+                <p>No new notifications available.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <a href="#teaser-forms" class="hidden sm:inline-block text-xs font-mono font-medium tracking-wide text-brand-200 hover:text-brand-300 transition-all bg-brand-200/5 hover:bg-brand-200/10 px-4 py-2 rounded-full border border-brand-200/20 hover:border-brand-200/40">
           Get Invited
         </a>
       </div>
@@ -474,15 +499,15 @@
       <div class="bg-gradient-to-b from-[#0c1211] to-[#040606] rounded-2xl border border-brand-200/10 p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden group flex flex-col justify-between">
         <div class="absolute -right-12 -top-12 w-32 h-32 bg-brand-200/5 rounded-full blur-2xl pointer-events-none"></div>
 
-        <div class="space-y-5">
+        <div class="space-y-5 w-full" id="beta-form-container">
           <div class="flex items-start gap-4">
             <div class="w-10 h-10 rounded-xl bg-brand-200/10 border border-brand-200/20 flex items-center justify-center text-brand-200 shrink-0">
               <i data-lucide="key-round" class="w-5 h-5"></i>
             </div>
             <div>
-              <div class="flex justify-between items-start">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                 <h3 class="font-bold text-lg text-slate-100 font-sans">Closed Beta Request</h3>
-                <span id="client-device-tag" class="text-[9px] font-mono bg-brand-200/10 text-brand-200 px-2 py-0.5 rounded border border-brand-200/20 uppercase tracking-widest">Device: ...</span>
+                <span id="client-device-tag" class="text-[9px] font-mono bg-brand-200/10 text-brand-200 px-2 py-0.5 rounded border border-brand-200/20 uppercase tracking-widest self-start sm:self-center">Device: ...</span>
               </div>
               <p class="text-xs text-slate-400 mt-0.5">Apply if you want to be one of the first to see the whole thing! Just one thing tho, I'm finishing the card art on the rest of the cards, so it may be a few days until they're done (using ChatGPT, and with a free account the limits are quite slow lol), but I'll put a banner on this web to let people know I'm accepting requests as soon as I'm done. Thanks for stopping by!</p>
             </div>
@@ -494,12 +519,6 @@
             onsubmit="handleBetaSubmit(event)"
             class="space-y-4"
           >
-            <!-- Application Warning Block -->
-            <div id="beta-warning-box" class="hidden text-xs text-brand-200 bg-brand-950/60 border border-brand-200/20 p-3.5 rounded-xl flex items-start gap-2.5">
-              <i data-lucide="info" class="w-4 h-4 shrink-0 mt-0.5 text-brand-200"></i>
-              <span id="beta-warning-text">You have already submitted an application request on this device. Duplicate submissions are protected. Check your status anytime at the top of the page!</span>
-            </div>
-
             <div class="space-y-1.5">
               <label class="block text-xs font-mono tracking-wider text-slate-300 font-semibold uppercase">Your NightCafe Handle <span class="text-brand-200">*</span></label>
               <div class="relative">
@@ -547,23 +566,22 @@
           </form>
         </div>
 
-        <!-- Success overlay page replacement -->
-        <div id="betaSuccess" class="hidden absolute inset-0 bg-[#050807] p-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in z-20">
-          <div class="w-12 h-12 rounded-full bg-brand-200/10 border border-brand-200/30 flex items-center justify-center text-brand-200">
-            <i data-lucide="check" class="w-6 h-6"></i>
+        <!-- Physically Locked Dashboard Card once they applied -->
+        <div id="betaSuccessLocked" class="hidden space-y-6 py-4 w-full text-center">
+          <div class="w-14 h-14 rounded-full bg-brand-200/10 border border-brand-200/30 flex items-center justify-center text-brand-200 mx-auto">
+            <i data-lucide="lock" class="w-6 h-6"></i>
           </div>
-          <div class="space-y-1">
-            <h4 class="font-bold text-slate-100 text-lg">Application Transmitted!</h4>
-            <p class="text-xs text-brand-200 font-mono" id="betaSuccessTag">@username</p>
+          <div class="space-y-2">
+            <h4 class="font-extrabold text-slate-100 text-xl tracking-tight">Closed Beta Application Locked</h4>
+            <p class="text-xs text-brand-200 font-mono bg-brand-200/10 px-3 py-1.5 rounded-xl border border-brand-200/20 inline-block" id="locked-username-tag">@username</p>
           </div>
-          <p class="text-xs text-slate-400 max-w-sm">
-            Closed preview registration parameter locked in. Keep your eyes on your NightCafe chat notifications!
+          <p class="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
+            Your application was successfully transmitted and registered to your device identifier. Duplicate submissions are strictly blocked for security and integrity.
           </p>
-          <div class="flex flex-col items-center gap-2 pt-2">
-            <button onclick="openStatusChecker()" class="text-xs font-mono text-brand-200 hover:text-brand-300 bg-brand-200/5 border border-brand-200/20 hover:border-brand-200/40 px-4 py-2 rounded-xl transition-all flex items-center gap-1.5">
-              <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Check Registration Status
+          <div class="pt-4 border-t border-brand-200/5 flex flex-col items-center gap-2">
+            <button onclick="openStatusChecker()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-brand-200 hover:bg-brand-300 text-brand-950 text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 uppercase tracking-wide">
+              <i data-lucide="shield-check" class="w-4 h-4"></i> Check Application Status
             </button>
-            <button onclick="resetBetaForm()" class="text-[10px] text-slate-500 hover:text-brand-200 underline font-mono">Submit another response</button>
           </div>
         </div>
       </div>
@@ -805,7 +823,7 @@
         <p class="text-[10px] font-mono text-slate-500 mt-4 text-center">Move cursor or drag card to view holographic sheen reflections</p>
       </div>
 
-      <!-- Right Side Column: Mechanical and Rules detail layout (Can be completely hidden) -->
+      <!-- Right Side Column: Mechanical and Rules detail layout -->
       <div class="flex-grow space-y-6 self-center text-left transition-all duration-300" id="inspect-details-panel">
         <div>
           <span id="inspect-tag" class="text-[10px] font-mono tracking-widest text-brand-200 uppercase px-2.5 py-0.5 bg-brand-200/10 border border-brand-200/20 rounded font-bold">Card Info</span>
@@ -820,13 +838,13 @@
             <p id="inspect-effect" class="text-sm text-slate-300 leading-relaxed font-light">The card's active gaming rules...</p>
           </div>
 
-          <!-- Passive Ability block, only displayed for Creator types -->
+          <!-- Passive Ability block -->
           <div id="inspect-passive-container" class="space-y-1 hidden bg-brand-200/5 p-3.5 rounded-2xl border border-brand-200/10">
             <h4 id="inspect-passive-label" class="text-[10px] font-mono uppercase tracking-widest text-brand-200 font-semibold">Passive Ability</h4>
             <p id="inspect-passive-text" class="text-xs text-slate-300 font-light leading-relaxed">Passive text...</p>
           </div>
 
-          <!-- Active Traits list, only displayed for Creator types -->
+          <!-- Active Traits list -->
           <div id="inspect-abilities-container" class="space-y-2 hidden">
             <h4 class="text-[10px] font-mono uppercase tracking-widest text-brand-200/70 font-semibold">Additional Traits</h4>
             <div id="inspect-abilities-list" class="space-y-2 max-h-[140px] overflow-y-auto pr-1">
@@ -851,60 +869,27 @@
     </div>
   </div>
 
-  <!-- Real-time Personal Notification Inbox Dialog Modal -->
-  <div id="notification-modal" class="fixed inset-0 bg-black/95 backdrop-blur-lg z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
-    <div class="bg-gradient-to-tr from-[#050405] to-[#0f1413] border border-brand-200/25 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative transform scale-95 transition-transform duration-300" id="notification-content">
-      <button onclick="closeNotificationModal()" class="absolute right-4 top-4 text-slate-500 hover:text-slate-300 transition-colors">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-
-      <div class="space-y-6 text-center">
-        <div class="w-12 h-12 rounded-full bg-brand-200/10 border border-brand-200/30 flex items-center justify-center text-brand-200 mx-auto">
-          <i data-lucide="message-square" class="w-6 h-6"></i>
-        </div>
-        
-        <div class="space-y-2">
-          <div class="inline-block bg-brand-200/10 text-brand-200 text-[10px] font-mono px-2.5 py-1 rounded border border-brand-200/20 uppercase tracking-widest" id="notif-modal-status">
-            Status: Approved
-          </div>
-          <h3 class="text-xl font-black text-slate-100 font-sans tracking-tight" id="notif-modal-title">Your Beta Invitation</h3>
-          <p class="text-xs text-slate-400 font-mono" id="notif-modal-recipient">Recipient: @username</p>
-        </div>
-
-        <div class="bg-brand-950/60 rounded-2xl p-4 border border-brand-200/10">
-          <p class="text-sm text-slate-200 leading-relaxed font-light font-sans whitespace-pre-line" id="notif-modal-body">
-            No active custom announcement loaded. Submit your Closed Beta request to bind device configurations!
-          </p>
-        </div>
-
-        <button onclick="closeNotificationModal()" class="w-full bg-brand-200 hover:bg-brand-300 text-slate-900 font-bold text-xs py-3 px-4 rounded-xl transition-all uppercase tracking-wider">
-          Got it
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Manual Closed Beta Status Checker Overlay Modal -->
+  <!-- Secure Closed Beta Status Checker Overlay Modal -->
   <div id="status-checker-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
     <div class="bg-gradient-to-tr from-[#050405] to-[#0f1413] border border-brand-200/25 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative transform scale-95 transition-transform duration-300" id="status-checker-content">
       <button onclick="closeStatusChecker()" class="absolute right-4 top-4 text-slate-500 hover:text-slate-300 transition-colors">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <div class="space-y-5">
+      <div class="space-y-5 text-left">
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-xl bg-brand-200/10 border border-brand-200/20 flex items-center justify-center text-brand-200">
             <i data-lucide="shield-check" class="w-5 h-5"></i>
           </div>
           <div>
             <h3 class="font-extrabold text-base text-slate-100">Check Your Invite Status</h3>
-            <p class="text-[10px] text-slate-500 font-mono">Live synchronization with Spreadsheet</p>
+            <p class="text-[10px] text-slate-500 font-mono">Secure Server-Side Synchronization</p>
           </div>
         </div>
 
         <div class="space-y-3">
           <p class="text-xs text-slate-300 leading-relaxed">
-            Lost your local device settings? Enter your registered NightCafe username below to search for live invite approvals or administrator comments.
+            Enter your registered NightCafe username to securely check live status updates. To protect your privacy, this must match the <strong>Device ID</strong> used during application.
           </p>
           <div class="relative">
             <span class="absolute left-3 top-2.5 text-brand-200/50 font-mono text-sm pointer-events-none">@</span>
@@ -915,92 +900,46 @@
               class="w-full bg-[#050807] border border-brand-200/15 focus:border-brand-200 text-slate-200 text-sm rounded-xl pl-8 pr-3 py-2 outline-none font-mono"
             />
           </div>
-          <button onclick="searchLiveStatus()" id="statusSearchBtn" class="w-full bg-brand-200/10 hover:bg-brand-200 text-brand-200 hover:text-slate-950 border border-brand-200/30 hover:border-transparent font-bold text-xs py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 font-mono uppercase tracking-wider">
-            Check Database <i data-lucide="search" class="w-3.5 h-3.5"></i>
+          <button onclick="searchLiveStatus()" id="statusSearchBtn" class="w-full bg-brand-200 text-slate-950 hover:bg-brand-300 font-bold text-xs py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 font-mono uppercase tracking-wider">
+            Check Status <i data-lucide="search" class="w-3.5 h-3.5"></i>
           </button>
         </div>
 
         <!-- Search Status Results Interface -->
-        <div id="status-results-box" class="hidden animate-fade-in space-y-3 pt-3 border-t border-brand-200/10">
+        <div id="status-results-box" class="hidden animate-fade-in space-y-4 pt-3 border-t border-brand-200/10">
           <div class="flex justify-between items-center bg-brand-950/40 p-3 rounded-xl border border-brand-200/10">
-            <span class="text-[11px] text-slate-400 font-mono">Account Status:</span>
+            <span class="text-[11px] text-slate-400 font-mono">Invite Status:</span>
             <span id="res-status-badge" class="text-xs font-mono font-bold text-brand-200 bg-brand-200/10 px-2.5 py-1 rounded border border-brand-200/20">WAITLIST</span>
           </div>
           
-          <div id="res-announcement-box" class="bg-brand-950/60 p-3.5 rounded-xl border border-brand-200/5 space-y-1">
-            <h4 class="text-[9px] font-mono uppercase tracking-wider text-slate-500 font-bold" id="res-announcement-title">System Announcement</h4>
-            <p class="text-xs text-slate-300 font-sans leading-relaxed whitespace-pre-line" id="res-announcement-body">Your submission has been cataloged! Once approved, we will leave a DM on your profile.</p>
+          <div id="res-announcement-box" class="bg-brand-950/60 p-4 rounded-xl border border-brand-200/5 space-y-3">
+            <div class="space-y-1">
+              <h4 class="text-[10px] font-mono uppercase tracking-wider text-brand-200 font-bold" id="res-announcement-title">System Announcement</h4>
+              <p class="text-xs text-slate-300 font-sans leading-relaxed whitespace-pre-line" id="res-announcement-body">Your submission has been cataloged! Once approved, we will leave a DM on your profile.</p>
+            </div>
+
+            <!-- Redirection Portal Link -->
+            <div id="res-link-container" class="hidden">
+              <a href="#" id="res-link-btn" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-brand-200 to-brand-300 text-slate-950 font-mono font-bold text-xs flex items-center justify-center gap-2 hover:brightness-110 transition-all uppercase tracking-wide">
+                <span>Access Beta Server</span> <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Page Footer -->
-  <footer class="border-t border-brand-200/10 py-10 bg-[#030504] z-30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-      <div class="text-center sm:text-left space-y-1 text-xs">
-        <p class="text-slate-400 font-medium">Prompt Battle is an experimental trading card game concept designed for the AI artists community.</p>
-        <p class="text-[10px] text-slate-600 font-mono">Set 001 — First Render · Closed Beta selection preview space.</p>
-      </div>
-      <div class="flex items-center gap-2 text-slate-400 text-xs font-mono shrink-0">
-        <span>Curated with passion by</span>
-        <a href="https://nightcafe.art/u/aia" target="_blank" rel="noopener noreferrer" class="text-brand-200 hover:text-brand-300 transition-colors font-semibold flex items-center gap-1">
-          @aia <i data-lucide="external-link" class="w-3 h-3"></i>
-        </a>
-      </div>
-    </div>
-  </footer>
-
   <script>
     // Configuration
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdE5-CePIwz6vUNtJydUhgrFsVEsHZtUHRYL5E1JAx6t6GULrNrcmZL2sxMsXyNbHW/exec';
     const SPREADSHEET_ID = '1CBEIN3Al02f7HGXpxwCkZI5EjVP00VvaXKyb5GFeZNg';
 
-    // Personal Notification Context
-    let ACTIVE_NOTIFICATION = null;
+    // State Variables
+    let CURRENT_SERVER_NOTIF = null;
+    let GLOBAL_ANNOUNCEMENT_KEY = '';
 
-    // Design layout mock cards configuration for interactive 3D inspection
-    const DESIGN_OPTIONS_CARDS = {
-      'Option 1': {
-        id: 'D-001',
-        name: 'Classic Border Frame',
-        type: 'design-preview',
-        rarity: 'rare',
-        rarityDots: 3,
-        subtype: 'Traditional TCG Layout',
-        colorTheme: 'from-brand-200 to-slate-800',
-        image: 'images/cards/option1.png',
-        effect: 'Traditional trading card layout with an explicit outer frame & crisp margins. Clean and high contrast.',
-        creatorNotes: 'Favoured by physical deck purists. Offers pristine layout structure and beautiful margin framing.'
-      },
-      'Option 2': {
-        id: 'D-002',
-        name: 'Minimal Frame',
-        type: 'design-preview',
-        rarity: 'epic',
-        rarityDots: 4,
-        subtype: 'Modern Clean Standard',
-        colorTheme: 'from-brand-300 to-slate-800',
-        image: 'images/cards/option2.png',
-        effect: 'Sleek, slim frame allowing the artwork to take up 80% of the space. Balanced, modern look.',
-        creatorNotes: 'A premium modern standard. Accentuates wider composition aspects while preserving frame metadata cleanly.'
-      },
-      'Option 3': {
-        id: 'D-003',
-        name: 'Borderless Full-Art',
-        type: 'design-preview',
-        rarity: 'mythic',
-        rarityDots: 5,
-        subtype: 'Immersive Full-Bleed',
-        colorTheme: 'from-accent-gold to-slate-800',
-        image: 'images/cards/option3.png',
-        effect: 'Zero borders. The artwork flows right to the physical edges, with translucent overlays at the bottom.',
-        creatorNotes: 'Maximum immersion. Ideal for expansive character rendering and full-bleed artwork illustrations.'
-      }
-    };
-
-    // Our default card list (Updated M-001 with corrected horizontal properties)
+    // Default card database
     const SAMPLE_CARDS = [
       {
         id: 'C-001', name: 'Aia', type: 'creator', rarity: 'rare', rarityDots: 3,
@@ -1100,14 +1039,14 @@
       setupCarouselSwipe();
       checkExistingDesignVote();
       checkExistingClosedBetaApplication();
-      loadLiveNotifications();
+      synchronizeNotificationsFromServer();
+      loadGlobalAnnouncements(); // Pull global broadcast announcements for everyone
     });
 
-    // 1. Generate/Load Unique Device Fingerprint
+    // Generate/Load Unique Device Fingerprint
     function initializeDeviceFingerprint() {
       let fingerprint = localStorage.getItem('pb_device_id');
       if (!fingerprint) {
-        // Generate a random ID with prefix (e.g. PB-X48DA)
         const randomString = Math.random().toString(36).substring(2, 7).toUpperCase();
         fingerprint = `PB-${randomString}`;
         localStorage.setItem('pb_device_id', fingerprint);
@@ -1119,95 +1058,333 @@
       }
     }
 
-    // Load Live Custom Spreadsheet notifications for current user
-    async function loadLiveNotifications() {
-      const deviceId = localStorage.getItem('pb_device_id');
-      const savedUser = localStorage.getItem('pb_applied_username') || '';
-      
+    // Load Global Broadcast Announcements for everyone (from Google Sheet "Announcements")
+    async function loadGlobalAnnouncements() {
       if (!SPREADSHEET_ID || SPREADSHEET_ID.trim() === '') return;
 
       try {
-        // Fetch raw sheet records from "Beta Requests" to scan for device ID or username
-        const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Beta%20Requests`;
+        const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Announcements`;
         const response = await fetch(url);
         const text = await response.text();
         const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
         const rows = cleanJson.table.rows;
 
         if (rows && rows.length > 0) {
-          // Scan spreadsheet columns:
-          // Col 0: Username, Col 1: Motivation, Col 2: Comments, Col 3: Timestamp
-          // Col 4: Device ID, Col 5: Status, Col 6: Notification Title, Col 7: Notification Body
-          let foundRow = null;
+          // Announcements layout columns:
+          // Row 0: Message, Row 1: Button Text, Row 2: Button Link, Row 3: Is Active (TRUE/FALSE)
+          // Find the last row with active set to TRUE
+          let activeAnnouncement = null;
 
-          for (let i = 0; i < rows.length; i++) {
+          for (let i = rows.length - 1; i >= 0; i--) {
             const row = rows[i];
             if (!row.c) continue;
 
-            const rowUsername = row.c[0] ? row.c[0].v.toString().trim().replace('@', '').toLowerCase() : '';
-            const rowDeviceId = row.c[4] ? row.c[4].v.toString().trim() : '';
-
-            // Match priority: Match device ID first, then saved username fallback
-            if (deviceId && rowDeviceId === deviceId) {
-              foundRow = row;
+            const isActiveVal = row.c[3] ? row.c[3].v.toString().toUpperCase() : 'FALSE';
+            if (isActiveVal === 'TRUE') {
+              activeAnnouncement = {
+                message: row.c[0] ? row.c[0].v.toString() : '',
+                btnText: row.c[1] ? row.c[1].v.toString() : '',
+                btnLink: row.c[2] ? row.c[2].v.toString() : ''
+              };
               break;
-            } else if (savedUser && rowUsername === savedUser.toLowerCase()) {
-              foundRow = row;
             }
           }
 
-          if (foundRow && foundRow.c) {
-            const statusVal = foundRow.c[5] ? foundRow.c[5].v.toString() : '';
-            const titleVal = foundRow.c[6] ? foundRow.c[6].v.toString() : '';
-            const bodyVal = foundRow.c[7] ? foundRow.c[7].v.toString() : '';
+          if (activeAnnouncement && activeAnnouncement.message.trim() !== '') {
+            // Check dynamic dismissal key matching this specific message
+            GLOBAL_ANNOUNCEMENT_KEY = `ann_dismissed_${activeAnnouncement.message.replace(/\s+/g, '_')}`;
+            const isDismissed = localStorage.getItem(GLOBAL_ANNOUNCEMENT_KEY) === 'true';
 
-            // If a custom notification has been written by the admin, display it immediately!
-            if (bodyVal.trim() !== '' || statusVal.trim() !== '') {
-              ACTIVE_NOTIFICATION = {
-                username: foundRow.c[0] ? foundRow.c[0].v.toString() : 'User',
-                status: statusVal || 'Waitlisted',
-                title: titleVal || 'Closed Beta System Update',
-                body: bodyVal || 'Your registration has been logged! Check back for updates shortly.'
-              };
-
-              // Paint to browser sticky banner
-              document.getElementById('notif-banner-message').innerText = `Update for @${ACTIVE_NOTIFICATION.username}: "${ACTIVE_NOTIFICATION.title}"`;
-              document.getElementById('live-notification-banner').classList.remove('hidden');
+            if (!isDismissed) {
+              document.getElementById('global-announcement-text').innerText = activeAnnouncement.message;
+              
+              const linkBtn = document.getElementById('global-announcement-link');
+              if (activeAnnouncement.btnLink.trim() !== '') {
+                linkBtn.href = activeAnnouncement.btnLink;
+                linkBtn.innerText = activeAnnouncement.btnText || 'Go';
+                linkBtn.classList.remove('hidden');
+              } else {
+                linkBtn.classList.add('hidden');
+              }
+              
+              document.getElementById('global-announcement-banner').classList.remove('hidden');
             }
           }
         }
       } catch (err) {
-        console.error("Live notification checking protocol failed gracefully", err);
+        console.error("Failed to query global announcements, offline simulation bypass.", err);
       }
     }
 
-    // Modal control for custom notifications
-    function openNotificationModal() {
-      if (!ACTIVE_NOTIFICATION) return;
-
-      document.getElementById('notif-modal-recipient').innerText = `Recipient: @${ACTIVE_NOTIFICATION.username}`;
-      document.getElementById('notif-modal-status').innerText = `Status: ${ACTIVE_NOTIFICATION.status.toUpperCase()}`;
-      document.getElementById('notif-modal-title').innerText = ACTIVE_NOTIFICATION.title;
-      document.getElementById('notif-modal-body').innerText = ACTIVE_NOTIFICATION.body;
-
-      const modal = document.getElementById('notification-modal');
-      const content = document.getElementById('notification-content');
-      modal.classList.remove('pointer-events-none', 'opacity-0');
-      content.classList.remove('scale-95');
+    // Dismiss Announcement banner locally
+    function dismissGlobalAnnouncement() {
+      if (GLOBAL_ANNOUNCEMENT_KEY) {
+        localStorage.setItem(GLOBAL_ANNOUNCEMENT_KEY, 'true');
+      }
+      document.getElementById('global-announcement-banner').classList.add('hidden');
     }
 
-    function closeNotificationModal() {
-      const modal = document.getElementById('notification-modal');
-      const content = document.getElementById('notification-content');
+    // Securely query personal status & notification updates from Google Sheet
+    async function synchronizeNotificationsFromServer() {
+      const savedUser = localStorage.getItem('pb_applied_username') || '';
+      const deviceId = localStorage.getItem('pb_device_id') || '';
+
+      if (!savedUser || !deviceId || !APPS_SCRIPT_URL) return;
+
+      try {
+        const urlParams = new URLSearchParams();
+        urlParams.append('action', 'check-status');
+        urlParams.append('tag', savedUser);
+        urlParams.append('deviceId', deviceId);
+
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: urlParams
+        });
+        const result = await response.json();
+
+        if (result && result.status === 'success') {
+          CURRENT_SERVER_NOTIF = result.data;
+          renderNotificationBellUI();
+        }
+      } catch (err) {
+        console.error("Notifications synchronizer link failed gracefully", err);
+      }
+    }
+
+    // Paint dynamic notification elements under the Header Dropdown Menu
+    function renderNotificationBellUI() {
+      const dot = document.getElementById('notif-badge-dot');
+      const dropdownContent = document.getElementById('notif-dropdown-content');
+
+      if (!CURRENT_SERVER_NOTIF) {
+        dot.classList.add('hidden');
+        return;
+      }
+
+      const currentMessageKey = `msg_${CURRENT_SERVER_NOTIF.status}_${CURRENT_SERVER_NOTIF.title}_${CURRENT_SERVER_NOTIF.message}`;
+      const hasBeenRead = localStorage.getItem(currentMessageKey) === 'read';
+
+      if (!hasBeenRead) {
+        dot.classList.remove('hidden'); // Show red pulsing badge!
+      } else {
+        dot.classList.add('hidden');
+      }
+
+      let badgeClass = "text-accent-gold bg-accent-gold/10 border-accent-gold/20";
+      if (CURRENT_SERVER_NOTIF.status.toLowerCase().includes('approve')) {
+        badgeClass = "text-brand-300 bg-brand-300/10 border-brand-300/20";
+      } else if (CURRENT_SERVER_NOTIF.status.toLowerCase().includes('reject')) {
+        badgeClass = "text-red-400 bg-red-400/10 border-red-400/20";
+      }
+
+      let linkBtnHtml = '';
+      if (CURRENT_SERVER_NOTIF.link && CURRENT_SERVER_NOTIF.link.trim() !== '') {
+        linkBtnHtml = `
+          <a href="${CURRENT_SERVER_NOTIF.link}" target="_blank" rel="noopener noreferrer" class="mt-2 text-center py-2 px-3 rounded-xl bg-brand-200 hover:bg-brand-300 text-slate-950 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-all">
+            Join Beta Server <i data-lucide="external-link" class="w-3 h-3"></i>
+          </a>
+        `;
+      }
+
+      dropdownContent.innerHTML = `
+        <div class="space-y-2 p-1">
+          <div class="flex items-center justify-between">
+            <span class="text-[9px] font-mono text-slate-500">Status Update</span>
+            <span class="text-[8px] font-mono font-bold tracking-widest uppercase px-2 py-0.5 rounded border ${badgeClass}">
+              ${CURRENT_SERVER_NOTIF.status}
+            </span>
+          </div>
+          <h4 class="text-xs font-bold text-slate-100 font-sans">${CURRENT_SERVER_NOTIF.title}</h4>
+          <p class="text-[11px] text-slate-300 leading-relaxed font-sans font-light">${CURRENT_SERVER_NOTIF.message}</p>
+          ${linkBtnHtml}
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    // Toggle Notifications Dropdown Box
+    function toggleNotificationDropdown() {
+      const dropdown = document.getElementById('notif-dropdown');
+      dropdown.classList.toggle('hidden');
+
+      if (!dropdown.classList.contains('hidden')) {
+        markNotificationsAsRead();
+      }
+    }
+
+    function markNotificationsAsRead() {
+      if (CURRENT_SERVER_NOTIF) {
+        const currentMessageKey = `msg_${CURRENT_SERVER_NOTIF.status}_${CURRENT_SERVER_NOTIF.title}_${CURRENT_SERVER_NOTIF.message}`;
+        localStorage.setItem(currentMessageKey, 'read');
+      }
+      document.getElementById('notif-badge-dot').classList.add('hidden');
+    }
+
+    // Lock application form panel dynamically
+    function checkExistingClosedBetaApplication() {
+      const hasApplied = localStorage.getItem('pb_beta_applied') === 'true';
+      const savedUser = localStorage.getItem('pb_applied_username') || '';
+      
+      if (hasApplied) {
+        document.getElementById('beta-form-container').classList.add('hidden');
+        document.getElementById('locked-username-tag').innerText = `@${savedUser}`;
+        document.getElementById('betaSuccessLocked').classList.remove('hidden');
+      }
+    }
+
+    // Handle Closed Beta requests locally & register submission securely
+    function handleBetaSubmit(event) {
+      event.preventDefault();
+
+      if (localStorage.getItem('pb_beta_applied') === 'true') {
+        showLocalWarning("You have already submitted an invite application on this device!");
+        return;
+      }
+
+      const tag = document.getElementById('betaTag').value.trim().replace('@', '');
+      const reason = document.getElementById('betaReason').value.trim();
+      const comments = document.getElementById('betaComments').value.trim();
+      const submitBtn = document.getElementById('betaSubmitBtn');
+      const deviceId = localStorage.getItem('pb_device_id') || 'PB-UNKNOWN';
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Transmitting Details...";
+
+      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
+        const urlParams = new URLSearchParams();
+        urlParams.append('action', 'beta-request');
+        urlParams.append('tag', tag);
+        urlParams.append('motivation', reason);
+        urlParams.append('comments', comments);
+        urlParams.append('deviceId', deviceId);
+
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: urlParams
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.status === 'error') {
+            showLocalWarning(data.message);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>';
+          } else {
+            localStorage.setItem('pb_beta_applied', 'true');
+            localStorage.setItem('pb_applied_username', tag);
+            checkExistingClosedBetaApplication();
+            synchronizeNotificationsFromServer();
+          }
+        })
+        .catch(err => {
+          console.error("Direct connection failed. Logging locally.", err);
+          localStorage.setItem('pb_beta_applied', 'true');
+          localStorage.setItem('pb_applied_username', tag);
+          checkExistingClosedBetaApplication();
+        });
+      } else {
+        localStorage.setItem('pb_beta_applied', 'true');
+        localStorage.setItem('pb_applied_username', tag);
+        checkExistingClosedBetaApplication();
+      }
+    }
+
+    // Modal status search logic with server-side validation
+    async function searchLiveStatus() {
+      const queryTag = document.getElementById('statusSearchTag').value.trim().replace('@', '').toLowerCase();
+      const searchBtn = document.getElementById('statusSearchBtn');
+      const deviceId = localStorage.getItem('pb_device_id') || '';
+      
+      if (!queryTag) {
+        showLocalWarning("Please provide a valid NightCafe username!");
+        return;
+      }
+
+      searchBtn.disabled = true;
+      searchBtn.innerHTML = 'Querying Server... <i class="animate-spin" data-lucide="loader-2"></i>';
+      lucide.createIcons();
+
+      const resultsBox = document.getElementById('status-results-box');
+      resultsBox.classList.add('hidden');
+
+      try {
+        const urlParams = new URLSearchParams();
+        urlParams.append('action', 'check-status');
+        urlParams.append('tag', queryTag);
+        urlParams.append('deviceId', deviceId);
+
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: urlParams
+        });
+        const result = await response.json();
+
+        if (result && result.status === 'success') {
+          const rowData = result.data;
+
+          const badge = document.getElementById('res-status-badge');
+          badge.innerText = rowData.status.toUpperCase();
+
+          if (rowData.status.toLowerCase().includes('approve')) {
+            badge.className = "text-xs font-mono font-bold text-brand-300 bg-brand-300/10 px-2.5 py-1 rounded border border-brand-300/20";
+          } else if (rowData.status.toLowerCase().includes('reject')) {
+            badge.className = "text-xs font-mono font-bold text-red-400 bg-red-400/10 px-2.5 py-1 rounded border border-red-400/20";
+          } else {
+            badge.className = "text-xs font-mono font-bold text-accent-gold bg-accent-gold/10 px-2.5 py-1 rounded border border-accent-gold/20";
+          }
+
+          document.getElementById('res-announcement-title').innerText = rowData.title;
+          document.getElementById('res-announcement-body').innerText = rowData.message;
+
+          const linkContainer = document.getElementById('res-link-container');
+          const linkBtn = document.getElementById('res-link-btn');
+          
+          if (rowData.link && rowData.link.trim() !== '') {
+            linkBtn.href = rowData.link;
+            linkContainer.classList.remove('hidden');
+          } else {
+            linkContainer.classList.add('hidden');
+          }
+
+          resultsBox.classList.remove('hidden');
+        } else {
+          showLocalWarning(result.message || "Credential verification failed.");
+        }
+
+      } catch (err) {
+        console.error("Live status lookups failed", err);
+        showLocalWarning("Access Denied: Device ID verification mismatch!");
+      } finally {
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = 'Check Status <i data-lucide="search" class="w-3.5 h-3.5"></i>';
+        lucide.createIcons();
+      }
+    }
+
+    // Modal controls
+    function openStatusChecker() {
+      const modal = document.getElementById('status-checker-modal');
+      const content = document.getElementById('status-checker-content');
+      modal.classList.remove('pointer-events-none', 'opacity-0');
+      content.classList.remove('scale-95');
+
+      const savedUser = localStorage.getItem('pb_applied_username') || '';
+      if (savedUser) {
+        document.getElementById('statusSearchTag').value = savedUser;
+      }
+    }
+
+    function closeStatusChecker() {
+      const modal = document.getElementById('status-checker-modal');
+      const content = document.getElementById('status-checker-content');
       modal.classList.add('pointer-events-none', 'opacity-0');
       content.classList.add('scale-95');
     }
 
-    function dismissNotificationBanner() {
-      document.getElementById('live-notification-banner').classList.add('hidden');
-    }
-
-    // Handle interactive card-design option selection
+    // Selection helper logic for Card frame voting
     function selectDesignOption(optionName) {
       if (localStorage.getItem('pb_design_voted') === 'true') {
         return;
@@ -1215,7 +1392,6 @@
 
       document.getElementById('selected-design-value').value = optionName;
       
-      // Update UI Borders
       for (let i = 1; i <= 3; i++) {
         const optCard = document.getElementById(`design-opt-${i}`);
         const bullet = document.getElementById(`bullet-opt-${i}`);
@@ -1238,7 +1414,6 @@
         }
       }
 
-      // Enable submit button
       const submitBtn = document.getElementById('design-vote-submit-btn');
       submitBtn.disabled = false;
       submitBtn.classList.remove('bg-brand-200/20', 'text-slate-400', 'cursor-not-allowed');
@@ -1246,7 +1421,6 @@
       submitBtn.innerText = `Vote for ${optionName}`;
     }
 
-    // Opens 3D preview specifically optimised to showcase frame voting options
     function inspectDesignOption(optionName) {
       const designCard = DESIGN_OPTIONS_CARDS[optionName];
       if (designCard) {
@@ -1254,7 +1428,6 @@
       }
     }
 
-    // Dynamic fetch of raw votes recorded on the Google Sheets database tab
     async function fetchLiveDesignVotes() {
       let counts = { 'Option 1': 0, 'Option 2': 0, 'Option 3': 0 };
       let total = 0;
@@ -1265,7 +1438,6 @@
           const response = await fetch(url);
           const text = await response.text();
           
-          // Unseal Google Viz wrapper securely
           const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
           const rows = cleanJson.table.rows;
 
@@ -1281,7 +1453,7 @@
             });
           }
         } catch (error) {
-          console.error("Live Design Votes fetch failed. Reverting to base defaults.", error);
+          console.error("Live Design Votes fetch failed.", error);
           counts = { 'Option 1': 14, 'Option 2': 42, 'Option 3': 31 };
           total = 87;
         }
@@ -1289,7 +1461,6 @@
       return { counts, total };
     }
 
-    // Submit Design choice poll over network
     function handleDesignVoteSubmit(event) {
       event.preventDefault();
       const selected = document.getElementById('selected-design-value').value;
@@ -1326,7 +1497,6 @@
       }
     }
 
-    // Retrieve local design preference states and adjust layouts dynamically
     async function checkExistingDesignVote() {
       const alreadyVoted = localStorage.getItem('pb_design_voted') === 'true';
       if (alreadyVoted) {
@@ -1334,7 +1504,6 @@
       }
     }
 
-    // Show vote feedback with real-time spreadsheet calculations and hide selection grid
     async function showDesignVoteResults() {
       document.getElementById('design-options-grid').classList.add('hidden');
       document.getElementById('design-vote-form').classList.add('hidden');
@@ -1349,7 +1518,6 @@
       displayDesignVoteStats(data.counts, data.total);
     }
 
-    // Dynamically paint calculated percentage bars using accurate sheet inputs
     function displayDesignVoteStats(counts, total) {
       const localChoice = localStorage.getItem('pb_design_choice');
       if (total === 0) {
@@ -1375,12 +1543,10 @@
       document.getElementById('bar-opt-3').style.width = `${p3}%`;
     }
 
-    // Setup Touch and Mouse Drag Swiping for endless hand scroller container
     function setupCarouselSwipe() {
       const viewport = document.getElementById('hand-viewport-element');
       const track = document.getElementById('hand-track-element');
 
-      // Mouse Drag Events
       viewport.addEventListener('mousedown', (e) => {
         isDragging = true;
         isHoveringTrack = true;
@@ -1443,7 +1609,6 @@
         }, 16);
       });
 
-      // Touch Drag Events
       viewport.addEventListener('touchstart', (e) => {
         if (e.touches.length === 1) {
           isDragging = true;
@@ -1487,7 +1652,6 @@
       });
     }
 
-    // Fetch dynamic creators from Google Spreadsheet
     async function loadSuggestedArtists() {
       const cached = localStorage.getItem('pb_suggested_artists');
 
@@ -1531,14 +1695,13 @@
           }
 
         } catch (error) {
-          console.error("Spreadsheet fetch failed. Reverting to cached Local Storage simulation mode.", error);
+          console.error("Spreadsheet fetch failed.", error);
         }
       }
 
       renderPodiumAndStats();
     }
 
-    // Toggle Nominees Full list
     function toggleNomineesPanel() {
       const panel = document.getElementById('nominees-panel');
       const arrow = document.getElementById('toggle-arrow');
@@ -1556,7 +1719,6 @@
       }
     }
 
-    // Render Searchable Complete List of nominated artists
     function renderFullNomineesList() {
       const container = document.getElementById('full-nominees-list');
       const query = document.getElementById('nomineeSearch').value.toLowerCase().trim();
@@ -1617,12 +1779,10 @@
       });
     }
 
-    // Filter nominations list helper
     function filterNominees() {
       renderFullNomineesList();
     }
 
-    // Paint the community leaderboard podium
     function renderPodiumAndStats() {
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
       const votedFor = JSON.parse(localStorage.getItem('pb_voted_artists') || '[]');
@@ -1703,7 +1863,6 @@
       lucide.createIcons();
     }
 
-    // Upvote trigger with validation rules
     function voteForArtist(name) {
       const votedFor = JSON.parse(localStorage.getItem('pb_voted_artists') || '[]');
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
@@ -1733,7 +1892,6 @@
 
         fetch(APPS_SCRIPT_URL, {
           method: 'POST',
-          mode: 'no-cors',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           },
@@ -1746,7 +1904,6 @@
       }
     }
 
-    // Helper to generate custom card components for the horizontal hand scroller
     function createCardNode(card) {
       const isModel = card.type === 'model';
       const itemWrapper = document.createElement('div');
@@ -1812,7 +1969,6 @@
       return itemWrapper;
     }
 
-    // Populate scrolling track with exact duplicated set for continuous scrolling loop
     function renderHandTrack() {
       const track = document.getElementById('hand-track-element');
       track.innerHTML = '';
@@ -1830,7 +1986,6 @@
       viewport.addEventListener('mouseleave', () => isHoveringTrack = false);
     }
 
-    // Hand track infinite looping transition loop logic
     function animateHandTrack() {
       const track = document.getElementById('hand-track-element');
       const viewport = document.getElementById('hand-viewport-element');
@@ -1861,7 +2016,6 @@
       requestAnimationFrame(run);
     }
 
-    // Inspect Card modal detailing 3D Holographic physics
     function inspectCard(card) {
       const modal = document.getElementById('inspector-modal');
       const content = document.getElementById('inspector-content');
@@ -2134,99 +2288,6 @@
       }
     });
 
-    // 2. Client-side Check: Block Duplicates in Session
-    function checkExistingClosedBetaApplication() {
-      const hasApplied = localStorage.getItem('pb_beta_applied') === 'true';
-      const savedUser = localStorage.getItem('pb_applied_username') || '';
-      
-      if (hasApplied) {
-        // Automatically collapse the active form UI and present success panel
-        document.getElementById('betaSuccessTag').innerText = `@${savedUser}`;
-        document.getElementById('betaSuccess').classList.remove('hidden');
-        document.getElementById('beta-warning-box').classList.remove('hidden');
-      }
-    }
-
-    // Handle Closed Beta requests locally & register submission
-    function handleBetaSubmit(event) {
-      event.preventDefault();
-
-      // Check client-side blocking prior to sending payload
-      if (localStorage.getItem('pb_beta_applied') === 'true') {
-        showLocalWarning("You have already submitted an invite application on this device!");
-        return;
-      }
-
-      const tag = document.getElementById('betaTag').value.trim().replace('@', '');
-      const reason = document.getElementById('betaReason').value.trim();
-      const comments = document.getElementById('betaComments').value.trim();
-      const submitBtn = document.getElementById('betaSubmitBtn');
-      const deviceId = localStorage.getItem('pb_device_id') || 'PB-UNKNOWN';
-
-      submitBtn.disabled = true;
-      submitBtn.innerText = "Transmitting Details...";
-
-      if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        const urlParams = new URLSearchParams();
-        urlParams.append('action', 'beta-request');
-        urlParams.append('tag', tag);
-        urlParams.append('motivation', reason);
-        urlParams.append('comments', comments);
-        urlParams.append('deviceId', deviceId); // Key parameter to bind device identity records on sheet!
-
-        fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: urlParams
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data && data.status === 'error') {
-            // Server detected a database duplicate write restriction!
-            showLocalWarning(data.message);
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>';
-          } else {
-            // Lock invite records
-            localStorage.setItem('pb_beta_applied', 'true');
-            localStorage.setItem('pb_applied_username', tag);
-            showBetaSuccessScreen(tag);
-            loadLiveNotifications(); // Attempt direct reload
-          }
-        })
-        .catch(err => {
-          console.error("Direct connection failed. Emulating offline storage success path.", err);
-          localStorage.setItem('pb_beta_applied', 'true');
-          localStorage.setItem('pb_applied_username', tag);
-          showBetaSuccessScreen(tag);
-        });
-      } else {
-        localStorage.setItem('pb_beta_applied', 'true');
-        localStorage.setItem('pb_applied_username', tag);
-        showBetaSuccessScreen(tag);
-      }
-    }
-
-    function showBetaSuccessScreen(tag) {
-      document.getElementById('betaSuccessTag').innerText = `@${tag}`;
-      document.getElementById('betaSuccess').classList.remove('hidden');
-      document.getElementById('beta-warning-box').classList.remove('hidden');
-      const submitBtn = document.getElementById('betaSubmitBtn');
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = 'Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>';
-      lucide.createIcons();
-    }
-
-    function resetBetaForm() {
-      // Allow users to force-bypass local blocking rules if they want to resubmit under another account
-      localStorage.removeItem('pb_beta_applied');
-      localStorage.removeItem('pb_applied_username');
-      document.getElementById('betaForm').reset();
-      document.getElementById('betaSuccess').classList.add('hidden');
-      document.getElementById('beta-warning-box').classList.add('hidden');
-    }
-
-    // Submit creator suggestion (ensuring it appends unique user metadata records every time)
     function handleArtistSubmit(event) {
       event.preventDefault();
 
@@ -2289,7 +2350,6 @@
       }
     }
 
-    // Show success feedback panel for nominee submission
     function showArtistSuccessScreen(tag) {
       renderPodiumAndStats();
       document.getElementById('artistSuccessTag').innerText = `@${tag}`;
@@ -2300,123 +2360,12 @@
       lucide.createIcons();
     }
 
-    // Reset suggest creator card form
     function resetArtistForm() {
       document.getElementById('artistForm').reset();
       document.getElementById('artistSuccess').classList.add('hidden');
       document.getElementById('local-warning-box').classList.add('hidden');
     }
 
-    // Manual Invite Status Checker Modal Control
-    function openStatusChecker() {
-      const modal = document.getElementById('status-checker-modal');
-      const content = document.getElementById('status-checker-content');
-      modal.classList.remove('pointer-events-none', 'opacity-0');
-      content.classList.remove('scale-95');
-
-      // Autofill local username records if available
-      const savedUser = localStorage.getItem('pb_applied_username') || '';
-      if (savedUser) {
-        document.getElementById('statusSearchTag').value = savedUser;
-      }
-    }
-
-    function closeStatusChecker() {
-      const modal = document.getElementById('status-checker-modal');
-      const content = document.getElementById('status-checker-content');
-      modal.classList.add('pointer-events-none', 'opacity-0');
-      content.classList.add('scale-95');
-    }
-
-    // Search Live Spreadsheet Database records dynamically on-demand
-    async function searchLiveStatus() {
-      const queryTag = document.getElementById('statusSearchTag').value.trim().replace('@', '').toLowerCase();
-      const searchBtn = document.getElementById('statusSearchBtn');
-      
-      if (!queryTag) {
-        showLocalWarning("Please provide a valid NightCafe username to search!");
-        return;
-      }
-
-      searchBtn.disabled = true;
-      searchBtn.innerHTML = 'Searching Database... <i class="animate-spin" data-lucide="loader-2"></i>';
-      lucide.createIcons();
-
-      const resultsBox = document.getElementById('status-results-box');
-      resultsBox.classList.add('hidden');
-
-      if (!SPREADSHEET_ID || SPREADSHEET_ID.trim() === '') {
-        showLocalWarning("Database offline. Re-attempt search shortly!");
-        searchBtn.disabled = false;
-        searchBtn.innerHTML = 'Check Database <i data-lucide="search" class="w-3.5 h-3.5"></i>';
-        lucide.createIcons();
-        return;
-      }
-
-      try {
-        const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Beta%20Requests`;
-        const response = await fetch(url);
-        const text = await response.text();
-        const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
-        const rows = cleanJson.table.rows;
-
-        let matchFound = false;
-
-        if (rows && rows.length > 0) {
-          for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-            if (!row.c) continue;
-
-            const rowUsername = row.c[0] ? row.c[0].v.toString().trim().replace('@', '').toLowerCase() : '';
-            
-            if (rowUsername === queryTag) {
-              matchFound = true;
-              const statusVal = row.c[5] ? row.c[5].v.toString() : 'WAITLIST';
-              const titleVal = row.c[6] ? row.c[6].v.toString() : 'System Message';
-              const bodyVal = row.c[7] ? row.c[7].v.toString() : 'Your closed beta tester application is queued for administrator review! DMs will be dispatched directly on NightCafe once accepted.';
-
-              // Paint search results interface
-              const badge = document.getElementById('res-status-badge');
-              badge.innerText = statusVal.toUpperCase();
-
-              // Style status color classes dynamically
-              if (statusVal.toLowerCase().includes('approve')) {
-                badge.className = "text-xs font-mono font-bold text-brand-300 bg-brand-300/10 px-2.5 py-1 rounded border border-brand-300/20";
-              } else if (statusVal.toLowerCase().includes('reject') || statusVal.toLowerCase().includes('deny')) {
-                badge.className = "text-xs font-mono font-bold text-red-400 bg-red-400/10 px-2.5 py-1 rounded border border-red-400/20";
-              } else {
-                badge.className = "text-xs font-mono font-bold text-accent-gold bg-accent-gold/10 px-2.5 py-1 rounded border border-accent-gold/20";
-              }
-
-              document.getElementById('res-announcement-title').innerText = titleVal;
-              document.getElementById('res-announcement-body').innerText = bodyVal;
-              resultsBox.classList.remove('hidden');
-              break;
-            }
-          }
-        }
-
-        if (!matchFound) {
-          // No user registered in active sheet rows
-          const badge = document.getElementById('res-status-badge');
-          badge.innerText = "NOT FOUND";
-          badge.className = "text-xs font-mono font-bold text-slate-500 bg-slate-500/10 px-2.5 py-1 rounded border border-slate-500/20";
-          document.getElementById('res-announcement-title').innerText = "Application Unregistered";
-          document.getElementById('res-announcement-body').innerText = "We couldn't locate this NightCafe handle inside our active registration logs. Fill out the request form below to submit an entry!";
-          resultsBox.classList.remove('hidden');
-        }
-
-      } catch (err) {
-        console.error("Live lookup searching failed", err);
-        showLocalWarning("Network query interrupted. Try again later!");
-      } finally {
-        searchBtn.disabled = false;
-        searchBtn.innerHTML = 'Check Database <i data-lucide="search" class="w-3.5 h-3.5"></i>';
-        lucide.createIcons();
-      }
-    }
-
-    // Little utility function to pop up warning alerts in custom UI rather than window.alert
     function showLocalWarning(message) {
       const warningBox = document.getElementById('local-warning-box');
       const warningText = document.getElementById('warning-text');
