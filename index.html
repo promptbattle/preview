@@ -207,7 +207,7 @@
       </p>
     </section>
 
-    <!-- NEW SECTION: Beautiful Interactive Design Choice Vote -->
+    <!-- Beautiful Interactive Design Choice Vote -->
     <section class="max-w-5xl mx-auto space-y-8 bg-[#0c1211]/30 border border-brand-200/10 p-6 sm:p-8 rounded-3xl relative overflow-hidden">
       <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-brand-200/5 rounded-full blur-3xl pointer-events-none"></div>
       
@@ -757,7 +757,7 @@
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <!-- Left Side Column: Holographic 3D Card Physics Canvas (Aligned perfectly to 2:3 aspect ratio) -->
+      <!-- Left Side Column: Holographic 3D Card Physics Canvas -->
       <div class="w-full shrink-0 flex flex-col items-center justify-center py-4 md:py-0 transition-all duration-300" id="inspect-left-column">
         <div class="card-3d-wrapper w-[240px] sm:w-[300px] h-[360px] sm:h-[450px]">
           <div id="interactive-card-element" class="card-3d w-full h-full rounded-2xl shadow-2xl relative select-none">
@@ -875,7 +875,7 @@
       }
     };
 
-    // Our default card list
+    // Our default card list (Updated M-001 with corrected horizontal properties)
     const SAMPLE_CARDS = [
       {
         id: 'C-001', name: 'Aia', type: 'creator', rarity: 'rare', rarityDots: 3,
@@ -1171,6 +1171,19 @@
         currentX = e.clientX;
         trackXPos = currentX - startX;
 
+        // Infinite drag seamless wrap correction to left and right boundaries
+        const firstClone = track.children[SAMPLE_CARDS.length];
+        if (firstClone) {
+          const resetOffsetPoint = firstClone.offsetLeft;
+          if (trackXPos > 0) {
+            trackXPos -= resetOffsetPoint;
+            startX += resetOffsetPoint; // Compensate mouse anchor coordinate dynamically
+          } else if (Math.abs(trackXPos) >= resetOffsetPoint) {
+            trackXPos += resetOffsetPoint;
+            startX -= resetOffsetPoint; // Compensate mouse anchor coordinate dynamically
+          }
+        }
+
         // Calculate Drag velocity to glide on release
         const now = performance.now();
         const elapsed = now - lastDragTime;
@@ -1192,7 +1205,20 @@
             clearInterval(momentum);
           } else {
             trackXPos += dragVelocity * 16; // Standard 60fps step
+            
+            // Reapply wrapping boundaries during inertial glide
+            const firstClone = track.children[SAMPLE_CARDS.length];
+            if (firstClone) {
+              const resetOffsetPoint = firstClone.offsetLeft;
+              if (trackXPos > 0) {
+                trackXPos -= resetOffsetPoint;
+              } else if (Math.abs(trackXPos) >= resetOffsetPoint) {
+                trackXPos += resetOffsetPoint;
+              }
+            }
+
             dragVelocity *= 0.92; // Friction Coeff
+            track.style.transform = `translateX(${trackXPos}px)`;
           }
         }, 16);
       });
@@ -1213,6 +1239,19 @@
         if (!isDragging || e.touches.length !== 1) return;
         currentX = e.touches[0].clientX;
         trackXPos = currentX - startX;
+
+        // Infinite drag seamless wrap correction for touch events
+        const firstClone = track.children[SAMPLE_CARDS.length];
+        if (firstClone) {
+          const resetOffsetPoint = firstClone.offsetLeft;
+          if (trackXPos > 0) {
+            trackXPos -= resetOffsetPoint;
+            startX += resetOffsetPoint; // Compensate touch anchor dynamically
+          } else if (Math.abs(trackXPos) >= resetOffsetPoint) {
+            trackXPos += resetOffsetPoint;
+            startX -= resetOffsetPoint; // Compensate touch anchor dynamically
+          }
+        }
 
         const now = performance.now();
         const elapsed = now - lastDragTime;
@@ -1496,14 +1535,19 @@
       }
     }
 
-    // Helper to generate custom card components for the horizontal hand scroller (exact 2:3 aspect ratio)
+    // Helper to generate custom card components for the horizontal hand scroller (exact 2:3 aspect ratio, 3:2 landscape for Models)
     function createCardNode(card) {
+      const isModel = card.type === 'model';
       const itemWrapper = document.createElement('div');
       itemWrapper.className = "hand-card-item shrink-0 select-none relative cursor-pointer";
       itemWrapper.onclick = () => inspectCard(card);
 
+      const dimensionsClass = isModel 
+        ? "w-[225px] sm:w-[255px] h-[150px] sm:h-[170px]" 
+        : "w-[150px] sm:w-[170px] h-[225px] sm:h-[255px]";
+
       itemWrapper.innerHTML = `
-        <div class="w-[150px] sm:w-[170px] h-[225px] sm:h-[255px] bg-[#090d0c] border border-brand-200/15 rounded-2xl shadow-xl relative overflow-hidden transition-all duration-300 hover:border-brand-200/40">
+        <div class="${dimensionsClass} bg-[#090d0c] border border-brand-200/15 rounded-2xl shadow-xl relative overflow-hidden transition-all duration-300 hover:border-brand-200/40">
 
           <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
 
@@ -1515,19 +1559,34 @@
               <span class="text-[7px] sm:text-[8px] font-mono tracking-wider px-1.5 bg-brand-200/5 border border-brand-200/20 rounded text-brand-200 uppercase shrink-0 font-bold">${card.type}</span>
             </div>
 
-            <div class="h-[90px] sm:h-[110px] bg-[#0c1211] border border-brand-200/10 rounded-xl relative overflow-hidden flex items-center justify-center">
-              <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-10 filter blur-sm"></div>
-              <div class="flex flex-col items-center justify-center p-1 text-center">
-                <span class="text-[7px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Art Frame</span>
-                <span class="text-[6px] text-slate-500 mt-1 truncate max-w-[120px]">${card.id}.png</span>
+            ${isModel ? `
+              <div class="flex gap-2 items-center flex-grow py-1">
+                <div class="w-[80px] h-[65px] sm:h-[75px] bg-[#0c1211] border border-brand-200/10 rounded-xl relative overflow-hidden flex items-center justify-center shrink-0">
+                  <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-10 filter blur-sm"></div>
+                  <div class="flex flex-col items-center justify-center p-1 text-center">
+                    <span class="text-[6px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Model Frame</span>
+                    <span class="text-[5px] text-slate-500 mt-0.5 truncate max-w-[70px]">${card.id}.png</span>
+                  </div>
+                </div>
+                <div class="text-[8px] text-slate-300 font-light flex-grow bg-[#0d1312]/50 p-2 rounded-lg border border-brand-200/10 leading-snug h-[65px] sm:h-[75px] overflow-hidden flex items-center">
+                  ${card.effect}
+                </div>
               </div>
-            </div>
+            ` : `
+              <div class="h-[90px] sm:h-[110px] bg-[#0c1211] border border-brand-200/10 rounded-xl relative overflow-hidden flex items-center justify-center">
+                <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-10 filter blur-sm"></div>
+                <div class="flex flex-col items-center justify-center p-1 text-center">
+                  <span class="text-[7px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Art Frame</span>
+                  <span class="text-[6px] text-slate-500 mt-1 truncate max-w-[120px]">${card.id}.png</span>
+                </div>
+              </div>
 
-            <div class="text-[8px] sm:text-[9px] text-slate-300 font-light line-clamp-3 min-h-[36px] flex items-center bg-[#0d1312]/50 p-1.5 rounded-lg border border-brand-200/10 leading-snug">
-              ${card.effect}
-            </div>
+              <div class="text-[8px] sm:text-[9px] text-slate-300 font-light line-clamp-3 min-h-[36px] flex items-center bg-[#0d1312]/50 p-1.5 rounded-lg border border-brand-200/10 leading-snug">
+                ${card.effect}
+              </div>
+            `}
 
-            <div class="flex justify-between items-center text-[7px] sm:text-[8px] font-mono text-slate-500 border-t border-brand-200/15 pt-1.5">
+            <div class="flex justify-between items-center text-[7px] sm:text-[8px] font-mono text-slate-500 border-t border-brand-200/15 pt-1">
               <span class="font-bold">${card.id}</span>
               <div class="flex gap-0.5 text-accent-gold">
                 ${'★'.repeat(card.rarityDots)}
@@ -1584,15 +1643,10 @@
             track.style.transform = `translateX(${trackXPos}px)`;
           }
         } else if (isDragging) {
-          // Bound values during direct manual swiping
+          // Ensure coordinates remain wrapped within boundaries when dragging actively
           const firstClone = track.children[SAMPLE_CARDS.length];
           if (firstClone) {
             const resetOffsetPoint = firstClone.offsetLeft;
-            if (trackXPos > 0) {
-              trackXPos = -resetOffsetPoint;
-            } else if (Math.abs(trackXPos) >= resetOffsetPoint) {
-              trackXPos = 0;
-            }
             track.style.transform = `translateX(${trackXPos}px)`;
           }
         }
@@ -1608,6 +1662,7 @@
       const content = document.getElementById('inspector-content');
       const detailsPanel = document.getElementById('inspect-details-panel');
       const leftColumn = document.getElementById('inspect-left-column');
+      const isModel = card.type === 'model';
 
       // Adjust UI layout structure based on card type to hide text on Option Vote templates
       if (card.type === 'design-preview') {
@@ -1674,6 +1729,14 @@
         } else {
           loreContainer.classList.add('hidden');
         }
+      }
+
+      // Configure dimensions of 3D wrapper depending on layout style (Portrait vs Landscape)
+      const wrapperElement = document.querySelector('#inspect-left-column .card-3d-wrapper');
+      if (isModel) {
+        wrapperElement.className = "card-3d-wrapper w-[240px] h-[160px] sm:w-[300px] sm:h-[200px]";
+      } else {
+        wrapperElement.className = "card-3d-wrapper w-[240px] sm:w-[300px] h-[360px] sm:h-[450px]";
       }
 
       const targetElement = document.getElementById('interactive-card-element');
@@ -1752,7 +1815,7 @@
           `;
         }
       } else {
-        // Standard game card templates
+        // Standard vertical or horizontal game card templates
         cardInnerHtml = `
           <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
 
@@ -1761,21 +1824,36 @@
             <div class="holo-sheen"></div>
 
             <div class="relative z-10 flex justify-between items-start">
-              <span class="text-[11px] font-mono font-bold tracking-tight text-slate-100">${card.name}</span>
+              <span class="text-[11px] sm:text-xs font-mono font-bold tracking-tight text-slate-100">${card.name}</span>
               <span class="text-[8px] font-mono tracking-wider px-1.5 py-0.5 bg-brand-200/10 border border-brand-200/20 rounded text-brand-200 uppercase font-bold">${card.type}</span>
             </div>
 
-            <div class="h-[155px] bg-[#0c1211] border border-brand-200/15 rounded-xl relative overflow-hidden flex items-center justify-center">
-              <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
-              <div class="flex flex-col items-center justify-center p-2 text-center">
-                <span class="text-[8px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Art Frame</span>
-                <span class="text-[7px] text-slate-500 mt-1 truncate max-w-full">${card.id}.png</span>
+            ${isModel ? `
+              <div class="flex gap-4 items-center flex-grow py-2">
+                <div class="w-[120px] h-[90px] bg-[#0c1211] border border-brand-200/15 rounded-xl relative overflow-hidden flex items-center justify-center shrink-0">
+                  <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
+                  <div class="flex flex-col items-center justify-center p-2 text-center">
+                    <span class="text-[8px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Model Frame</span>
+                    <span class="text-[7px] text-slate-500 mt-1 truncate max-w-full">${card.id}.png</span>
+                  </div>
+                </div>
+                <div class="text-xs text-slate-200 font-light bg-[#0d1312]/60 p-3.5 rounded-lg border border-brand-200/10 flex-grow h-[90px] overflow-y-auto leading-relaxed">
+                  ${card.effect}
+                </div>
               </div>
-            </div>
+            ` : `
+              <div class="h-[155px] bg-[#0c1211] border border-brand-200/15 rounded-xl relative overflow-hidden flex items-center justify-center">
+                <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
+                <div class="flex flex-col items-center justify-center p-2 text-center">
+                  <span class="text-[8px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Art Frame</span>
+                  <span class="text-[7px] text-slate-500 mt-1 truncate max-w-full">${card.id}.png</span>
+                </div>
+              </div>
 
-            <div class="text-[10px] text-slate-200 font-light bg-[#0d1312]/60 p-2.5 rounded-lg border border-brand-200/10 relative z-10 leading-normal">
-              ${card.effect}
-            </div>
+              <div class="text-[10px] text-slate-200 font-light bg-[#0d1312]/60 p-2.5 rounded-lg border border-brand-200/10 relative z-10 leading-normal">
+                ${card.effect}
+              </div>
+            `}
 
             <div class="relative z-10 flex justify-between items-center text-[8px] font-mono text-slate-500 border-t border-brand-200/15 pt-2">
               <span>${card.id}</span>
@@ -1984,6 +2062,7 @@
       lucide.createIcons();
     }
 
+    // Reset suggest creator card form
     function resetArtistForm() {
       document.getElementById('artistForm').reset();
       document.getElementById('artistSuccess').classList.add('hidden');
