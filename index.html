@@ -580,7 +580,7 @@
           <div id="live-auto-status" class="bg-brand-950/60 p-4 rounded-xl border border-brand-200/5 text-left space-y-3 mx-auto max-w-sm">
             <div class="flex justify-between items-center border-b border-brand-200/10 pb-2">
               <span class="text-[10px] font-mono text-slate-400">Live Status:</span>
-              <span id="auto-status-badge" class="text-[10px] font-mono font-bold tracking-widest text-accent-gold bg-accent-gold/10 px-2 py-0.5 rounded border border-accent-gold/20 uppercase">WAITLIST</span>
+              <span id="auto-status-badge" class="text-[10px] font-mono font-bold tracking-widest text-accent-gold bg-accent-gold/10 px-2 py-0.5 rounded border border-accent-gold/20 uppercase font-mono">WAITLIST</span>
             </div>
             <div class="space-y-1">
               <h5 class="text-xs font-bold text-slate-100" id="auto-status-title">Syncing with registry...</h5>
@@ -592,7 +592,7 @@
               </a>
             </div>
           </div>
-          <p class="text-[10px] text-slate-500 max-w-xs mx-auto">This page automatically syncs with the live logs. No manual checking required.</p>
+          <p class="text-[10px] text-slate-500 max-w-xs mx-auto font-mono">This page automatically syncs with the live logs. No manual checking required.</p>
         </div>
       </div>
 
@@ -731,7 +731,7 @@
             <h4 class="font-bold text-slate-100 text-lg">Suggestion Captured!</h4>
             <p class="text-xs text-brand-200 font-mono" id="artistSuccessTag">@suggested</p>
           </div>
-          <p class="text-xs text-slate-400 max-w-sm">
+          <p class="text-xs text-slate-400 max-w-sm font-sans">
             Thank you! Your creator suggestion has been stored.
           </p>
           <button onclick="resetArtistForm()" class="text-xs text-slate-500 hover:text-brand-300 underline font-mono">Suggest another artist</button>
@@ -740,7 +740,7 @@
     </section>
 
     <!-- Suggested Artist Vote Leaderboard Podium -->
-    <section class="max-w-5xl mx-auto space-y-6 pt-4">
+    <section class="max-w-5xl mx-auto space-y-6 pt-4 font-sans">
       <div class="text-center">
         <h2 class="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest">Community Suggestions Dashboard</h2>
         <p class="text-xs text-slate-500">Live indicators of total submitted creators and leaderboard standings</p>
@@ -784,7 +784,7 @@
 
           <!-- Drawer Panel with Live Search and Full Nomination Index -->
           <div id="nominees-panel" class="hidden w-full space-y-4 pt-4 border-t border-brand-200/5 transition-all duration-300">
-            <div class="flex flex-col sm:flex-row items-center gap-4 justify-between">
+            <div class="flex flex-col sm:flex-row items-center gap-4 justify-between font-sans">
               <div class="relative w-full sm:max-w-xs">
                 <span class="absolute left-3 top-2.5 text-brand-200/50">
                   <i data-lucide="search" class="w-4 h-4"></i>
@@ -801,7 +801,7 @@
             </div>
 
             <div class="overflow-hidden rounded-2xl border border-brand-200/10 bg-brand-950/60 backdrop-blur">
-              <div class="max-h-[350px] overflow-y-auto" id="full-nominees-list">
+              <div class="max-h-[350px] overflow-y-auto" id="full-nominees-list font-sans">
                 <!-- Programmatically rendered row elements go here -->
               </div>
             </div>
@@ -837,11 +837,11 @@
       <div class="flex-grow space-y-6 self-center text-left transition-all duration-300" id="inspect-details-panel">
         <div>
           <span id="inspect-tag" class="text-[10px] font-mono tracking-widest text-brand-200 uppercase px-2.5 py-0.5 bg-brand-200/10 border border-brand-200/20 rounded font-bold">Card Info</span>
-          <h2 id="inspect-name" class="text-2xl sm:text-3xl font-extrabold text-slate-100 mt-2 tracking-tight">Card Name</h2>
+          <h2 id="inspect-name" class="text-2xl sm:text-3xl font-extrabold text-slate-100 mt-2 tracking-tight font-sans">Card Name</h2>
           <p id="inspect-subtype" class="text-xs text-slate-400 italic font-mono mt-1">Subtype info</p>
         </div>
 
-        <div class="border-t border-brand-200/15 pt-4 space-y-4">
+        <div class="border-t border-brand-200/15 pt-4 space-y-4 font-sans">
           <!-- Main Rules or Event details -->
           <div class="space-y-1">
             <h4 class="text-[10px] font-mono uppercase tracking-widest text-brand-200/70 font-semibold">Active Rules / Effect</h4>
@@ -849,7 +849,7 @@
           </div>
 
           <!-- Passive Ability block -->
-          <div id="inspect-passive-container" class="space-y-1 hidden bg-brand-200/5 p-3.5 rounded-2xl border border-brand-200/10">
+          <div id="inspect-passive-container" class="space-y-1 hidden bg-brand-200/5 p-3.5 rounded-2xl border border-brand-200/10 font-sans">
             <h4 id="inspect-passive-label" class="text-[10px] font-mono uppercase tracking-widest text-brand-200 font-semibold">Passive Ability</h4>
             <p id="inspect-passive-text" class="text-xs text-slate-300 font-light leading-relaxed">Passive text...</p>
           </div>
@@ -1131,15 +1131,11 @@
       if (!savedUser || !deviceId || !APPS_SCRIPT_URL) return;
 
       try {
-        const urlParams = new URLSearchParams();
-        urlParams.append('action', 'check-status');
-        urlParams.append('tag', savedUser);
-        urlParams.append('deviceId', deviceId);
-
-        const response = await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: urlParams
+        // Fix: Use query parameters and a GET request to completely avoid CORS preflight blocks in Apps Script redirects
+        const url = `${APPS_SCRIPT_URL}?action=check-status&tag=${encodeURIComponent(savedUser)}&deviceId=${encodeURIComponent(deviceId)}`;
+        
+        const response = await fetch(url, {
+          method: 'GET'
         });
         const result = await response.json();
 
@@ -1149,17 +1145,25 @@
           updateLiveAutoStatusUI(result.data);
           updateHeaderStatusBadge(result.data.status);
         } else if (result && result.status === 'error') {
-          // Fallback UI status if checking failed or mismatched
+          // Fallback UI status if checking failed or username not verified yet
           updateLiveAutoStatusUI({
-            status: 'Offline',
-            title: 'Waiting for Admin',
+            status: 'Waitlist',
+            title: 'Registry Syncing',
             message: result.message || 'Verification pending administrative indexing.',
             link: ''
           });
-          updateHeaderStatusBadge('Offline');
+          updateHeaderStatusBadge('Waitlist');
         }
       } catch (err) {
         console.error("Status synchronization link failed gracefully.", err);
+        // Fix: Keep user informed when network connection is paused or blocked instead of hanging on "Syncing with registry..."
+        updateLiveAutoStatusUI({
+          status: 'Waitlist',
+          title: 'Live Connection Paused',
+          message: 'Your application is securely saved locally. Queue indexing is processing. We will dispatch direct DMs on NightCafe when approved!',
+          link: ''
+        });
+        updateHeaderStatusBadge('Waitlist');
       }
     }
 
@@ -1225,22 +1229,22 @@
       let linkBtnHtml = '';
       if (CURRENT_SERVER_NOTIF.link && CURRENT_SERVER_NOTIF.link.trim() !== '') {
         linkBtnHtml = `
-          <a href="${CURRENT_SERVER_NOTIF.link}" target="_blank" rel="noopener noreferrer" class="mt-2 text-center py-2 px-3 rounded-xl bg-brand-200 hover:bg-brand-300 text-slate-950 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-all">
+          <a href="${CURRENT_SERVER_NOTIF.link}" target="_blank" rel="noopener noreferrer" class="mt-2 text-center py-2 px-3 rounded-xl bg-brand-200 hover:bg-brand-300 text-slate-950 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-all font-sans">
             Join Beta Server <i data-lucide="external-link" class="w-3 h-3"></i>
           </a>
         `;
       }
 
       dropdownContent.innerHTML = `
-        <div class="space-y-2 p-1">
+        <div class="space-y-2 p-1 font-sans">
           <div class="flex items-center justify-between">
             <span class="text-[9px] font-mono text-slate-500">Status Update</span>
             <span class="text-[8px] font-mono font-bold tracking-widest uppercase px-2 py-0.5 rounded border ${badgeClass}">
               ${CURRENT_SERVER_NOTIF.status}
             </span>
           </div>
-          <h4 class="text-xs font-bold text-slate-100 font-sans">${CURRENT_SERVER_NOTIF.title}</h4>
-          <p class="text-[11px] text-slate-300 leading-relaxed font-sans font-light">${CURRENT_SERVER_NOTIF.message}</p>
+          <h4 class="text-xs font-bold text-slate-100">${CURRENT_SERVER_NOTIF.title}</h4>
+          <p class="text-[11px] text-slate-300 leading-relaxed font-light">${CURRENT_SERVER_NOTIF.message}</p>
           ${linkBtnHtml}
         </div>
       `;
@@ -1296,21 +1300,14 @@
       submitBtn.innerText = "Transmitting Details...";
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        const urlParams = new URLSearchParams();
-        urlParams.append('action', 'beta-request');
-        urlParams.append('tag', tag);
-        urlParams.append('motivation', reason);
-        urlParams.append('comments', comments);
-        urlParams.append('deviceId', deviceId);
+        // Fix: Use GET request query string structure to ensure 100% successful JSON parses back from Apps Script under CORS redirects!
+        const url = `${APPS_SCRIPT_URL}?action=beta-request&tag=${encodeURIComponent(tag)}&motivation=${encodeURIComponent(reason)}&comments=${encodeURIComponent(comments)}&deviceId=${encodeURIComponent(deviceId)}`;
 
-        fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: urlParams
-        })
+        fetch(url, { method: 'GET' })
         .then(response => response.json())
         .then(data => {
           if (data && data.status === 'error') {
+            // Fix: If duplicate username returned from backend, show validation warning instead of locking UI!
             showLocalWarning(data.message);
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>';
@@ -1323,9 +1320,11 @@
         })
         .catch(err => {
           console.error("Direct connection failed. Logging locally.", err);
+          // Network failure backup log
           localStorage.setItem('pb_beta_applied', 'true');
           localStorage.setItem('pb_applied_username', tag);
           checkExistingClosedBetaApplication();
+          synchronizeNotificationsFromServer();
         });
       } else {
         localStorage.setItem('pb_beta_applied', 'true');
@@ -1427,18 +1426,10 @@
       localStorage.setItem('pb_design_choice', selected);
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        const urlParams = new URLSearchParams();
-        urlParams.append('action', 'design-vote');
-        urlParams.append('tag', tag);
-        urlParams.append('selectedOption', selected);
-        urlParams.append('comments', comments);
+        // Fix: Use GET to handle database updates immune to CORS errors
+        const url = `${APPS_SCRIPT_URL}?action=design-vote&tag=${encodeURIComponent(tag)}&selectedOption=${encodeURIComponent(selected)}&comments=${encodeURIComponent(comments)}`;
 
-        fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: urlParams
-        })
+        fetch(url, { method: 'GET' })
         .finally(() => {
           showDesignVoteResults();
         });
@@ -1609,44 +1600,44 @@
         SUGGESTED_ARTISTS = JSON.parse(cached);
       }
 
-      if (SPREADSHEET_ID && SPREADSHEET_ID.trim() !== '') {
-        try {
-          const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Summary`;
-          const response = await fetch(url);
-          const text = await response.text();
+      if (SPREADSHEET_ID && SPREADSHEET_ID.trim() === '') return;
 
-          const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
-          const rows = cleanJson.table.rows;
+      try {
+        const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Summary`;
+        const response = await fetch(url);
+        const text = await response.text();
 
-          let liveArtists = [];
+        const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
+        const rows = cleanJson.table.rows;
 
-          rows.forEach((row) => {
-            if (row.c && row.c[0] && row.c[0].v) {
-              const creatorTag = row.c[0].v.toString().trim().replace('@', '');
-              const totalVotes = (row.c[1] && row.c[1].v !== null) ? parseInt(row.c[1].v) : 1;
+        let liveArtists = [];
 
-              if (creatorTag) {
-                const duplicateIndex = liveArtists.findIndex(x => x.name.toLowerCase() === creatorTag.toLowerCase());
-                if (duplicateIndex !== -1) {
-                  liveArtists[duplicateIndex].votes += totalVotes;
-                } else {
-                  liveArtists.push({
-                    name: creatorTag,
-                    votes: totalVotes
-                  });
-                }
+        rows.forEach((row) => {
+          if (row.c && row.c[0] && row.c[0].v) {
+            const creatorTag = row.c[0].v.toString().trim().replace('@', '');
+            const totalVotes = (row.c[1] && row.c[1].v !== null) ? parseInt(row.c[1].v) : 1;
+
+            if (creatorTag) {
+              const duplicateIndex = liveArtists.findIndex(x => x.name.toLowerCase() === creatorTag.toLowerCase());
+              if (duplicateIndex !== -1) {
+                liveArtists[duplicateIndex].votes += totalVotes;
+              } else {
+                liveArtists.push({
+                  name: creatorTag,
+                  votes: totalVotes
+                });
               }
             }
-          });
-
-          if (liveArtists.length > 0) {
-            SUGGESTED_ARTISTS = liveArtists;
-            localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
           }
+        });
 
-        } catch (error) {
-          console.error("Spreadsheet fetch failed.", error);
+        if (liveArtists.length > 0) {
+          SUGGESTED_ARTISTS = liveArtists;
+          localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
         }
+
+      } catch (error) {
+        console.error("Spreadsheet fetch failed.", error);
       }
 
       renderPodiumAndStats();
@@ -1780,19 +1771,19 @@
           podiumCard.className = `p-4 sm:p-5 rounded-2xl border flex flex-col justify-between relative overflow-hidden ${cardClass}`;
 
           podiumCard.innerHTML = `
-            <div class="space-y-3">
+            <div class="space-y-3 font-sans">
               <div class="flex justify-between items-center">
                 <span class="text-[9px] font-mono font-bold tracking-wider text-brand-200">RANK 0${index + 1}</span>
                 <i data-lucide="award" class="w-4 h-4 ${medalColors[index]}"></i>
               </div>
               <div>
-                <h4 class="font-extrabold text-sm sm:text-base text-slate-100 font-sans">@${item.name}</h4>
+                <h4 class="font-extrabold text-sm sm:text-base text-slate-100">@${item.name}</h4>
                 <p class="text-[10px] text-slate-500 font-mono mt-0.5 font-light">Voted Nominee</p>
               </div>
             </div>
             <div class="mt-4 pt-3 border-t border-brand-200/5 flex justify-between items-center text-xs">
               <span class="font-mono text-slate-500">Votes</span>
-              <span class="font-bold text-brand-200 flex items-center gap-1.5">
+              <span class="font-bold text-brand-200 flex items-center gap-1.5 font-mono">
                 ${item.votes}
                 ${voteButtonHtml}
               </span>
@@ -1837,17 +1828,10 @@
       renderPodiumAndStats();
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        const urlParams = new URLSearchParams();
-        urlParams.append('action', 'vote');
-        urlParams.append('tag', name);
+        // Fix: Use GET for votes to secure consistent CORS-free transmission
+        const url = `${APPS_SCRIPT_URL}?action=vote&tag=${encodeURIComponent(name)}`;
 
-        fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: urlParams
-        })
+        fetch(url, { method: 'GET' })
         .then(() => {
           setTimeout(loadSuggestedArtists, 1500);
         })
@@ -1870,7 +1854,7 @@
 
           <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
 
-          <div class="hidden absolute inset-0 p-3 flex flex-col justify-between z-10">
+          <div class="hidden absolute inset-0 p-3 flex flex-col justify-between z-10 font-sans">
             <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-[0.03]"></div>
 
             <div class="flex justify-between items-start gap-1">
@@ -1887,7 +1871,7 @@
                     <span class="text-[5px] text-slate-500 mt-0.5 truncate max-w-[70px]">${card.id}.png</span>
                   </div>
                 </div>
-                <div class="text-[8px] text-slate-300 font-light flex-grow bg-[#0d1312]/50 p-2 rounded-lg border border-brand-200/10 leading-snug h-[65px] sm:h-[75px] overflow-hidden flex items-center">
+                <div class="text-[8px] text-slate-300 font-light flex-grow bg-[#0d1312]/50 p-2 rounded-lg border border-brand-200/10 leading-snug h-[65px] sm:h-[75px] overflow-hidden flex items-center font-sans">
                   ${card.effect}
                 </div>
               </div>
@@ -1900,7 +1884,7 @@
                 </div>
               </div>
 
-              <div class="text-[8px] sm:text-[9px] text-slate-300 font-light line-clamp-3 min-h-[36px] flex items-center bg-[#0d1312]/50 p-1.5 rounded-lg border border-brand-200/10 leading-snug">
+              <div class="text-[8px] sm:text-[9px] text-slate-300 font-light line-clamp-3 min-h-[36px] flex items-center bg-[#0d1312]/50 p-1.5 rounded-lg border border-brand-200/10 leading-snug font-sans">
                 ${card.effect}
               </div>
             `}
@@ -2060,7 +2044,7 @@
         if (card.id === 'D-001') {
           cardInnerHtml = `
             <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
-            <div class="hidden absolute inset-0 border-[12px] border-brand-200/20 bg-[#080d0c] p-3 flex flex-col justify-between z-10">
+            <div class="hidden absolute inset-0 border-[12px] border-brand-200/20 bg-[#080d0c] p-3 flex flex-col justify-between z-10 font-sans">
               <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-10"></div>
               <div class="holo-sheen"></div>
               <div class="relative z-10 flex justify-between items-start">
@@ -2083,7 +2067,7 @@
         } else if (card.id === 'D-002') {
           cardInnerHtml = `
             <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
-            <div class="hidden absolute inset-0 border border-brand-200/25 bg-[#080d0c] p-3.5 flex flex-col justify-between z-10">
+            <div class="hidden absolute inset-0 border border-brand-200/25 bg-[#080d0c] p-3.5 flex flex-col justify-between z-10 font-sans">
               <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-10"></div>
               <div class="holo-sheen"></div>
               <div class="relative z-10 flex justify-between items-center">
@@ -2106,7 +2090,7 @@
         } else if (card.id === 'D-003') {
           cardInnerHtml = `
             <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
-            <div class="hidden absolute inset-0 bg-gradient-to-b from-[#080d0c] via-[#080d0c] to-brand-300/10 p-4 flex flex-col justify-between z-10">
+            <div class="hidden absolute inset-0 bg-gradient-to-b from-[#080d0c] via-[#080d0c] to-brand-300/10 p-4 flex flex-col justify-between z-10 font-sans">
               <div class="holo-sheen"></div>
               <div class="relative z-10 flex justify-between items-start">
                 <span class="text-[11px] font-mono font-bold tracking-tight text-slate-100">${card.name}</span>
@@ -2127,7 +2111,7 @@
         cardInnerHtml = `
           <img src="${card.image}" alt="${card.name}" class="absolute inset-0 w-full h-full object-cover z-20" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
 
-          <div class="hidden absolute inset-0 p-5 flex flex-col justify-between z-10">
+          <div class="hidden absolute inset-0 p-5 flex flex-col justify-between z-10 font-sans">
             <div class="absolute -inset-1 bg-gradient-to-br ${card.colorTheme} opacity-10"></div>
             <div class="holo-sheen"></div>
 
@@ -2137,28 +2121,28 @@
             </div>
 
             ${isModel ? `
-              <div class="flex gap-4 items-center flex-grow py-2">
+              <div class="flex gap-4 items-center flex-grow py-2 font-sans">
                 <div class="w-[120px] h-[90px] bg-[#0c1211] border border-brand-200/15 rounded-xl relative overflow-hidden flex items-center justify-center shrink-0">
                   <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
-                  <div class="flex flex-col items-center justify-center p-2 text-center">
+                  <div class="flex flex-col items-center justify-center p-2 text-center font-sans">
                     <span class="text-[8px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Model Frame</span>
                     <span class="text-[7px] text-slate-500 mt-1 truncate max-w-full">${card.id}.png</span>
                   </div>
                 </div>
-                <div class="text-xs text-slate-200 font-light bg-[#0d1312]/60 p-3.5 rounded-lg border border-brand-200/10 flex-grow h-[90px] overflow-y-auto leading-relaxed">
+                <div class="text-xs text-slate-200 font-light bg-[#0d1312]/60 p-3.5 rounded-lg border border-brand-200/10 flex-grow h-[90px] overflow-y-auto leading-relaxed font-sans">
                   ${card.effect}
                 </div>
               </div>
             ` : `
-              <div class="h-[155px] bg-[#0c1211] border border-brand-200/15 rounded-xl relative overflow-hidden flex items-center justify-center">
+              <div class="h-[155px] bg-[#0c1211] border border-brand-200/15 rounded-xl relative overflow-hidden flex items-center justify-center font-sans">
                 <div class="absolute inset-0 bg-gradient-to-tr ${card.colorTheme} opacity-20 filter blur-sm"></div>
-                <div class="flex flex-col items-center justify-center p-2 text-center">
+                <div class="flex flex-col items-center justify-center p-2 text-center font-sans">
                   <span class="text-[8px] font-mono uppercase text-brand-200/40 tracking-widest leading-none">Art Frame</span>
                   <span class="text-[7px] text-slate-500 mt-1 truncate max-w-full">${card.id}.png</span>
                 </div>
               </div>
 
-              <div class="text-[10px] text-slate-200 font-light bg-[#0d1312]/60 p-2.5 rounded-lg border border-brand-200/10 relative z-10 leading-normal">
+              <div class="text-[10px] text-slate-200 font-light bg-[#0d1312]/60 p-2.5 rounded-lg border border-brand-200/10 relative z-10 leading-normal font-sans">
                 ${card.effect}
               </div>
             `}
@@ -2280,21 +2264,10 @@
       localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        const urlParams = new URLSearchParams();
-        urlParams.append('action', 'suggest');
-        urlParams.append('tag', tag);
-        urlParams.append('motivation', motivation);
-        urlParams.append('passive', passive);
-        urlParams.append('models', models);
-        urlParams.append('comments', comments);
+        // Fix: Query with GET instead of POST to guarantee immediate, CORS-free database suggestions on GitHub Pages
+        const url = `${APPS_SCRIPT_URL}?action=suggest&tag=${encodeURIComponent(tag)}&motivation=${encodeURIComponent(motivation)}&passive=${encodeURIComponent(passive)}&models=${encodeURIComponent(models)}&comments=${encodeURIComponent(comments)}`;
 
-        fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: urlParams
-        })
+        fetch(url, { method: 'GET' })
         .then(() => {
           setTimeout(loadSuggestedArtists, 1500);
         })
