@@ -556,6 +556,12 @@
               ></textarea>
             </div>
 
+            <!-- Dedicated Closed Beta Local Warning Box -->
+            <div id="beta-warning-box" class="hidden text-xs text-red-300 bg-red-500/10 border border-red-500/20 p-3 rounded-lg flex items-center gap-2 animate-fade-in">
+              <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+              <span id="beta-warning-text">This username has already applied!</span>
+            </div>
+
             <button
               type="submit"
               id="betaSubmitBtn"
@@ -1021,6 +1027,7 @@
     });
 
     // Generate/Load Unique Identifier & Initial status
+    // Generate/Load Unique Identifier & Initial status
     function initializeUserIdentifier() {
       let fingerprint = localStorage.getItem('pb_device_id');
       if (!fingerprint) {
@@ -1286,7 +1293,7 @@
       event.preventDefault();
 
       if (localStorage.getItem('pb_beta_applied') === 'true') {
-        showLocalWarning("You have already submitted an invite application on this device!");
+        showBetaWarning("You have already submitted an invite application on this device!");
         return;
       }
 
@@ -1307,8 +1314,8 @@
         .then(response => response.json())
         .then(data => {
           if (data && data.status === 'error') {
-            // Fix: If duplicate username returned from backend, show validation warning instead of locking UI!
-            showLocalWarning(data.message);
+            // Fix: Show warning box in the Closed Beta card, and do NOT lock local storage!
+            showBetaWarning(data.message);
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>';
           } else {
@@ -1381,31 +1388,31 @@
       let counts = { 'Option 1': 0, 'Option 2': 0, 'Option 3': 0 };
       let total = 0;
 
-      if (SPREADSHEET_ID && SPREADSHEET_ID.trim() !== '') {
-        try {
-          const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Design%20Votes`;
-          const response = await fetch(url);
-          const text = await response.text();
-          
-          const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
-          const rows = cleanJson.table.rows;
+      if (SPREADSHEET_ID && SPREADSHEET_ID.trim() === '') return counts;
 
-          if (rows && rows.length > 0) {
-            rows.forEach((row) => {
-              if (row.c && row.c[1] && row.c[1].v) {
-                const choice = row.c[1].v.toString().trim();
-                if (counts.hasOwnProperty(choice)) {
-                  counts[choice]++;
-                  total++;
-                }
+      try {
+        const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Design%20Votes`;
+        const response = await fetch(url);
+        const text = await response.text();
+        
+        const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
+        const rows = cleanJson.table.rows;
+
+        if (rows && rows.length > 0) {
+          rows.forEach((row) => {
+            if (row.c && row.c[1] && row.c[1].v) {
+              const choice = row.c[1].v.toString().trim();
+              if (counts.hasOwnProperty(choice)) {
+                counts[choice]++;
+                total++;
               }
-            });
-          }
-        } catch (error) {
-          console.error("Live Design Votes fetch failed.", error);
-          counts = { 'Option 1': 14, 'Option 2': 42, 'Option 3': 31 };
-          total = 87;
+            }
+          });
         }
+      } catch (error) {
+        console.error("Live Design Votes fetch failed.", error);
+        counts = { 'Option 1': 14, 'Option 2': 42, 'Option 3': 31 };
+        total = 87;
       }
       return { counts, total };
     }
@@ -2299,11 +2306,26 @@
     function showLocalWarning(message) {
       const warningBox = document.getElementById('local-warning-box');
       const warningText = document.getElementById('warning-text');
-      warningText.innerText = message;
-      warningBox.classList.remove('hidden');
-      setTimeout(() => {
-        warningBox.classList.add('hidden');
-      }, 5000);
+      if (warningBox && warningText) {
+        warningText.innerText = message;
+        warningBox.classList.remove('hidden');
+        setTimeout(() => {
+          warningBox.classList.add('hidden');
+        }, 5000);
+      }
+    }
+
+    // Dedicated function to display errors inside the Beta request card
+    function showBetaWarning(message) {
+      const warningBox = document.getElementById('beta-warning-box');
+      const warningText = document.getElementById('beta-warning-text');
+      if (warningBox && warningText) {
+        warningText.innerText = message;
+        warningBox.classList.remove('hidden');
+        setTimeout(() => {
+          warningBox.classList.add('hidden');
+        }, 6000);
+      }
     }
   </script>
 </body>
