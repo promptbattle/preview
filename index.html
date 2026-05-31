@@ -806,7 +806,7 @@
               <p class="text-[10px] text-slate-500 font-mono uppercase tracking-widest text-center sm:text-right">Showing all community suggestions in real-time</p>
             </div>
 
-            <div class="overflow-hidden rounded-2xl border border-brand-200/10 bg-brand-950/60 backdrop-blur">
+            <div class="overflow-hidden rounded-2xl border border-brand-200/10 bg-brand-950/60 backdrop-blur border-slate-800">
               <div class="max-h-[350px] overflow-y-auto font-sans" id="full-nominees-list">
                 <!-- Programmatically rendered row elements go here -->
               </div>
@@ -1038,8 +1038,7 @@
       
       const tagElement = document.getElementById('client-device-tag');
       if (tagElement) {
-        const hasApplied = localStorage.getItem('pb_beta_applied') === 'true';
-        updateHeaderStatusBadge(hasApplied ? 'Waitlist' : 'Unapplied');
+        updateHeaderStatusBadge('Unapplied');
       }
     }
 
@@ -1287,7 +1286,7 @@
       }
     }
 
-    // Handle Closed Beta requests locally & register submission securely
+    // Handle Closed Beta requests locally & register submission securely (Using non-preflight AJAX POST payload)
     function handleBetaSubmit(event) {
       event.preventDefault();
 
@@ -1316,9 +1315,19 @@
       submitBtn.innerText = "Transmitting Details...";
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        const url = `${APPS_SCRIPT_URL}?action=beta-request&tag=${encodeURIComponent(tag)}&motivation=${encodeURIComponent(reason)}&comments=${encodeURIComponent(comments)}&deviceId=${encodeURIComponent(deviceId)}`;
+        const payload = {
+          action: 'beta-request',
+          tag: tag,
+          motivation: reason,
+          comments: comments,
+          deviceId: deviceId
+        };
 
-        fetch(url, { method: 'GET' })
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' }, // Avoids broken CORS preflight checks
+          body: JSON.stringify(payload)
+        })
         .then(response => {
           if (!response.ok) {
             throw new Error("HTTP error " + response.status);
@@ -1433,6 +1442,7 @@
       return { counts, total };
     }
 
+    // Handles layout votes via a non-preflight AJAX POST body submission to avoid URL limits
     function handleDesignVoteSubmit(event) {
       event.preventDefault();
       const selected = document.getElementById('selected-design-value').value;
@@ -1452,9 +1462,18 @@
       showDesignVoteResults(true);
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        const url = `${APPS_SCRIPT_URL}?action=design-vote&tag=${encodeURIComponent(tag)}&selectedOption=${encodeURIComponent(selected)}&comments=${encodeURIComponent(comments)}`;
+        const payload = {
+          action: 'design-vote',
+          tag: tag,
+          selectedOption: selected,
+          comments: comments
+        };
 
-        fetch(url, { method: 'GET' })
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(payload)
+        })
         .finally(() => {
           // Re-fetch the live server counts in background without blocking
           fetchLiveDesignVotes().then(data => {
@@ -1493,7 +1512,7 @@
       }
     }
 
-    function displayDesignVoteStats(counts, total) {
+    displayDesignVoteStats = function(counts, total) {
       const localChoice = localStorage.getItem('pb_design_choice');
       if (total === 0) {
         if (localChoice && counts.hasOwnProperty(localChoice)) {
@@ -1770,13 +1789,13 @@
         const row = document.createElement('div');
         row.className = `flex justify-between items-center px-4 py-3 border-b border-brand-200/5 hover:bg-brand-200/[0.02] transition-colors`;
         row.innerHTML = `
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 font-sans">
             <span class="text-[10px] font-mono text-slate-500 w-6">#${index + 1}</span>
             <div>
               <h4 class="font-bold text-xs sm:text-sm text-slate-200">@${item.name}</h4>
             </div>
           </div>
-          <div class="flex items-center gap-6">
+          <div class="flex items-center gap-6 font-sans">
             <div class="text-right">
               <span class="text-[10px] text-slate-500 block font-mono">Score</span>
               <span class="text-xs font-mono font-bold text-brand-200">${item.votes}</span>
@@ -1875,6 +1894,7 @@
       lucide.createIcons();
     }
 
+    // Handles voting actions using safe POST requests to avoid parameter length issues on complex queries
     function voteForArtist(name) {
       const votedFor = JSON.parse(localStorage.getItem('pb_voted_artists') || '[]');
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
@@ -1899,9 +1919,16 @@
       renderPodiumAndStats();
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        const url = `${APPS_SCRIPT_URL}?action=vote&tag=${encodeURIComponent(name)}`;
+        const payload = {
+          action: 'vote',
+          tag: name
+        };
 
-        fetch(url, { method: 'GET' })
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(payload)
+        })
         .then(() => {
           setTimeout(loadSuggestedArtists, 1500);
         })
@@ -2298,6 +2325,7 @@
       }
     });
 
+    // Submits artist suggestions using non-preflight AJAX POST body to prevent 414 URL too long errors
     function handleArtistSubmit(event) {
       event.preventDefault();
 
@@ -2336,9 +2364,20 @@
       renderPodiumAndStats();
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        const url = `${APPS_SCRIPT_URL}?action=suggest&tag=${encodeURIComponent(tag)}&motivation=${encodeURIComponent(motivation)}&passive=${encodeURIComponent(passive)}&models=${encodeURIComponent(models)}&comments=${encodeURIComponent(comments)}`;
+        const payload = {
+          action: 'suggest',
+          tag: tag,
+          motivation: motivation,
+          passive: passive,
+          models: models,
+          comments: comments
+        };
 
-        fetch(url, { method: 'GET' })
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(payload)
+        })
         .then(() => {
           setTimeout(loadSuggestedArtists, 1500);
         })
