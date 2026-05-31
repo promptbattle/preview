@@ -893,7 +893,7 @@
     // State Variables
     let CURRENT_SERVER_NOTIF = null;
     let GLOBAL_ANNOUNCEMENT_KEY = '';
-    let SESSION_REGISTERED_BETA_TAGS = new Set(); // In-memory cache of already registered beta usernames (silent lookup, no persistence)
+    let IS_CHECKING_DUPLICATE = false;
 
     // Card Design Vote Option cards for interactive 3D inspection
     const DESIGN_OPTIONS_CARDS = {
@@ -1025,8 +1025,6 @@
       checkExistingClosedBetaApplication();
       synchronizeNotificationsFromServer();
       loadGlobalAnnouncements();
-      silentlyPreloadBetaTags(); // Fetch registered beta usernames instantly
-      setupLiveBetaInputListener(); // Wire real-time keystroke lookups
     });
 
     // Generate/Load Unique Identifier & Initial status
@@ -1055,7 +1053,6 @@
       const badgeContainer = document.getElementById('header-status-badge');
       if (!badgeContainer) return;
       
-      // Clear status specific style overrides
       badgeContainer.className = "flex items-center gap-1.5 text-xs font-mono font-medium py-2 px-3 sm:px-4 rounded-full border bg-[#0c1211]/30 transition-all duration-300";
       
       const lowerStatus = status.toLowerCase();
@@ -1120,7 +1117,7 @@
           }
         }
       } catch (err) {
-        // Silently catch exceptions to respect quiet visual environment
+        // Handled silently
       }
     }
 
@@ -1132,40 +1129,6 @@
       document.getElementById('global-announcement-banner').classList.add('hidden');
     }
 
-    // Quietly Fetch and Preload Registered Tags on Page Load (No Console Logs)
-    async function silentlyPreloadBetaTags() {
-      if (!APPS_SCRIPT_URL) return;
-      try {
-        const url = `${APPS_SCRIPT_URL}?action=get-beta-tags`;
-        const response = await fetch(url, { method: 'GET' });
-        const result = await response.json();
-        if (result && result.status === 'success' && Array.isArray(result.tags)) {
-          SESSION_REGISTERED_BETA_TAGS = new Set(result.tags.map(tag => tag.toLowerCase()));
-        }
-      } catch (err) {
-        // Quiet failure to satisfy user's preference for no logs
-      }
-    }
-
-    // Live Intercept Listener on Form Input to alert duplicates as you type
-    function setupLiveBetaInputListener() {
-      const input = document.getElementById('betaTag');
-      if (!input) return;
-
-      input.addEventListener('input', (e) => {
-        const cleanedVal = e.target.value.trim().replace(/^@+/, '').toLowerCase();
-        if (SESSION_REGISTERED_BETA_TAGS.has(cleanedVal)) {
-          showBetaWarning("This username has already requested beta access! Duplicate requests are restricted.");
-          document.getElementById('betaSubmitBtn').disabled = true;
-          document.getElementById('betaSubmitBtn').classList.add('opacity-55', 'cursor-not-allowed');
-        } else {
-          document.getElementById('beta-warning-box').classList.add('hidden');
-          document.getElementById('betaSubmitBtn').disabled = false;
-          document.getElementById('betaSubmitBtn').classList.remove('opacity-55', 'cursor-not-allowed');
-        }
-      });
-    }
-
     // Securely query status & notification updates from database automatically
     async function synchronizeNotificationsFromServer() {
       const savedUser = localStorage.getItem('pb_applied_username') || '';
@@ -1175,7 +1138,6 @@
 
       try {
         const url = `${APPS_SCRIPT_URL}?action=check-status&tag=${encodeURIComponent(savedUser)}&deviceId=${encodeURIComponent(deviceId)}`;
-        
         const response = await fetch(url, { method: 'GET' });
         const result = await response.json();
 
@@ -1185,7 +1147,6 @@
           updateLiveAutoStatusUI(result.data);
           updateHeaderStatusBadge(result.data.status);
         } else if (result && result.status === 'error') {
-          // Fallback UI status if checking failed or username not verified yet
           updateLiveAutoStatusUI({
             status: 'Waitlist',
             title: 'Registry Syncing',
@@ -1195,7 +1156,6 @@
           updateHeaderStatusBadge('Waitlist');
         }
       } catch (err) {
-        // Keep user informed when network connection is paused or blocked instead of hanging on "Syncing with registry..."
         updateLiveAutoStatusUI({
           status: 'Waitlist',
           title: 'Live Connection Paused',
@@ -1218,7 +1178,6 @@
 
       badge.innerText = data.status.toUpperCase();
       
-      // Dynamic badge coloring
       if (data.status.toLowerCase().includes('approve')) {
         badge.className = "text-[10px] font-mono font-bold tracking-widest text-brand-300 bg-brand-300/10 px-2 py-0.5 rounded border border-brand-300/20 uppercase";
       } else if (data.status.toLowerCase().includes('reject')) {
@@ -1321,16 +1280,23 @@
     }
 
     // Handle Closed Beta requests locally & register submission securely
+    // Now optimizes checks immediately on submission, resolving CORS preflights and preserving alphanumeric name logic
     function handleBetaSubmit(event) {
       event.preventDefault();
 
-      const rawTag = document.getElementById('betaTag').value;
-      const tag = rawTag.trim().replace(/^@+/, '').trim();
-      const normalizedInputTag = tag.toLowerCase();
+      if (IS_CHECKING_DUPLICATE) return;
 
-      // Double-guard: check again in-memory cache set to prevent fast bypasses
-      if (SESSION_REGISTERED_BETA_TAGS.has(normalizedInputTag) || localStorage.getItem('pb_beta_applied') === 'true') {
-        showBetaWarning("This username has already applied! Duplicate requests are restricted.");
+      const rawTag = document.getElementById('betaTag').value;
+      // Cleans only leading '@' indicators. Retains lowercase, uppercase, digits and underscores
+      const tag = rawTag.trim().replace(/^@+/, '').trim();
+      
+      if (!tag) {
+        showBetaWarning("Please specify a valid username.");
+        return;
+      }
+
+      if (localStorage.getItem('pb_beta_applied') === 'true') {
+        showBetaWarning("You have already submitted an invite application on this device!");
         return;
       }
 
@@ -1339,39 +1305,46 @@
       const submitBtn = document.getElementById('betaSubmitBtn');
       const deviceId = localStorage.getItem('pb_device_id') || 'PB-UNKNOWN';
 
+      IS_CHECKING_DUPLICATE = true;
       submitBtn.disabled = true;
       submitBtn.innerText = "Transmitting Details...";
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
+        // We let the backend securely verify duplicates within 'beta-request' write cycle
         const url = `${APPS_SCRIPT_URL}?action=beta-request&tag=${encodeURIComponent(tag)}&motivation=${encodeURIComponent(reason)}&comments=${encodeURIComponent(comments)}&deviceId=${encodeURIComponent(deviceId)}`;
 
         fetch(url, { method: 'GET' })
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("HTTP error " + response.status);
+          }
+          return response.json();
+        })
         .then(data => {
+          IS_CHECKING_DUPLICATE = false;
           if (data && data.status === 'error') {
-            // Cleanly reset button and show backend duplicate error message
             showBetaWarning(data.message);
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>';
           } else {
-            // Success: Securely write status to localStorage and swap views
+            // Success registration
             localStorage.setItem('pb_beta_applied', 'true');
             localStorage.setItem('pb_applied_username', tag);
-            SESSION_REGISTERED_BETA_TAGS.add(normalizedInputTag); // Update volatile memory immediately
             checkExistingClosedBetaApplication();
             synchronizeNotificationsFromServer();
           }
         })
         .catch(err => {
-          // Never bypass server check on error. Print fallback notification instead of faking success.
-          showBetaWarning("Connection delay. Could not reach registry database. Please try again in a moment.");
+          IS_CHECKING_DUPLICATE = false;
+          // Cleanly catch CORS blocks and connection errors, and display real troubleshooting
+          showBetaWarning("Unable to connect to Google Sheets backend. Verify your script URL has been deployed as a Web App with access set to 'Anyone'.");
           submitBtn.disabled = false;
           submitBtn.innerHTML = 'Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>';
         });
       } else {
+        IS_CHECKING_DUPLICATE = false;
         localStorage.setItem('pb_beta_applied', 'true');
         localStorage.setItem('pb_applied_username', tag);
-        SESSION_REGISTERED_BETA_TAGS.add(normalizedInputTag);
         checkExistingClosedBetaApplication();
       }
     }
@@ -1678,7 +1651,7 @@
         }
 
       } catch (error) {
-        // Quiet validation failure logic
+        // Validation handled silently
       }
 
       renderPodiumAndStats();
@@ -1961,6 +1934,7 @@
       viewport.addEventListener('mouseleave', () => isHoveringTrack = false);
     }
 
+    // Continuous marquee glide logic
     function animateHandTrack() {
       const track = document.getElementById('hand-track-element');
       const viewport = document.getElementById('hand-viewport-element');
@@ -2000,7 +1974,6 @@
       const isModel = card.type === 'model';
 
       if (card.type === 'design-preview') {
-        // Center only the 3D card layout in large size, and hide text panel details
         detailsPanel.classList.add('hidden');
         content.classList.remove('max-w-4xl');
         content.classList.add('max-w-md'); // Fit snugly around the card
@@ -2070,7 +2043,6 @@
       if (isModel) {
         wrapperElement.className = "card-3d-wrapper w-[240px] h-[160px] sm:w-[300px] sm:h-[200px]";
       } else if (card.type === 'design-preview') {
-        // Enlarge presentation matrix of voting frame options!
         wrapperElement.className = "card-3d-wrapper w-[280px] h-[420px] sm:w-[340px] sm:h-[510px]";
       } else {
         wrapperElement.className = "card-3d-wrapper w-[240px] sm:w-[300px] h-[360px] sm:h-[450px]";
