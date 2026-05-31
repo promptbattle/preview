@@ -1072,7 +1072,8 @@
       if (!SPREADSHEET_ID || SPREADSHEET_ID.trim() === '') return;
 
       try {
-        const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Announcements`;
+        // Enforce &headers=1 parameter to let Google know that the first row is a header
+        const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Announcements&headers=1`;
         const response = await fetch(url);
         const text = await response.text();
         const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
@@ -1083,12 +1084,16 @@
 
           for (let i = rows.length - 1; i >= 0; i--) {
             const row = rows[i];
-            if (!row.c) continue;
+            if (!row || !row.c) continue;
+
+            const msgVal = row.c[0] ? row.c[0].v.toString() : '';
+            // Robust check to avoid treating headers as live announcement suggestions
+            if (msgVal.toLowerCase().trim() === 'announcement text' || msgVal.toLowerCase().trim() === 'message') continue;
 
             const isActiveVal = row.c[3] ? row.c[3].v.toString().toUpperCase() : 'FALSE';
             if (isActiveVal === 'TRUE') {
               activeAnnouncement = {
-                message: row.c[0] ? row.c[0].v.toString() : '',
+                message: msgVal,
                 btnText: row.c[1] ? row.c[1].v.toString() : '',
                 btnLink: row.c[2] ? row.c[2].v.toString() : ''
               };
@@ -1280,14 +1285,12 @@
     }
 
     // Handle Closed Beta requests locally & register submission securely
-    // Now optimizes checks immediately on submission, resolving CORS preflights and preserving alphanumeric name logic
     function handleBetaSubmit(event) {
       event.preventDefault();
 
       if (IS_CHECKING_DUPLICATE) return;
 
       const rawTag = document.getElementById('betaTag').value;
-      // Cleans only leading '@' indicators. Retains lowercase, uppercase, digits and underscores
       const tag = rawTag.trim().replace(/^@+/, '').trim();
       
       if (!tag) {
@@ -1310,7 +1313,6 @@
       submitBtn.innerText = "Transmitting Details...";
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        // We let the backend securely verify duplicates within 'beta-request' write cycle
         const url = `${APPS_SCRIPT_URL}?action=beta-request&tag=${encodeURIComponent(tag)}&motivation=${encodeURIComponent(reason)}&comments=${encodeURIComponent(comments)}&deviceId=${encodeURIComponent(deviceId)}`;
 
         fetch(url, { method: 'GET' })
@@ -1327,7 +1329,6 @@
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>';
           } else {
-            // Success registration
             localStorage.setItem('pb_beta_applied', 'true');
             localStorage.setItem('pb_applied_username', tag);
             checkExistingClosedBetaApplication();
@@ -1336,7 +1337,6 @@
         })
         .catch(err => {
           IS_CHECKING_DUPLICATE = false;
-          // Cleanly catch CORS blocks and connection errors, and display real troubleshooting
           showBetaWarning("Unable to connect to Google Sheets backend. Verify your script URL has been deployed as a Web App with access set to 'Anyone'.");
           submitBtn.disabled = false;
           submitBtn.innerHTML = 'Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>';
@@ -1400,7 +1400,8 @@
       if (SPREADSHEET_ID && SPREADSHEET_ID.trim() === '') return counts;
 
       try {
-        const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Design%20Votes`;
+        // Enforce &headers=1 parameter to let Google Visualization API parse headers properly
+        const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Design%20Votes&headers=1`;
         const response = await fetch(url);
         const text = await response.text();
         
@@ -1409,12 +1410,15 @@
 
         if (rows && rows.length > 0) {
           rows.forEach((row) => {
-            if (row.c && row.c[1] && row.c[1].v) {
-              const choice = row.c[1].v.toString().trim();
-              if (counts.hasOwnProperty(choice)) {
-                counts[choice]++;
-                total++;
-              }
+            if (!row || !row.c || !row.c[1] || row.c[1].v === null) return;
+            const choice = row.c[1].v.toString().trim();
+            
+            // Content-based protection to make sure header never leaks through
+            if (choice.toLowerCase() === 'selected option') return;
+
+            if (counts.hasOwnProperty(choice)) {
+              counts[choice]++;
+              total++;
             }
           });
         }
@@ -1617,7 +1621,8 @@
       if (SPREADSHEET_ID && SPREADSHEET_ID.trim() === '') return;
 
       try {
-        const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Summary`;
+        // Enforce &headers=1 parameter to let Google Visualization API parse headers properly
+        const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Summary&headers=1`;
         const response = await fetch(url);
         const text = await response.text();
 
@@ -1626,29 +1631,31 @@
 
         let liveArtists = [];
 
-        rows.forEach((row) => {
-          if (row.c && row.c[0] && row.c[0].v) {
-            const creatorTag = row.c[0].v.toString().trim().replace('@', '');
+        if (rows && rows.length > 0) {
+          rows.forEach((row) => {
+            if (!row || !row.c || !row.c[0] || row.c[0].v === null) return;
+            const creatorTag = row.c[0].v.toString().trim().replace(/^@+/, '');
+            
+            // Safe guard against headers leaking as suggestions (such as "Creator Tag", "Total Votes")
+            const lowerTag = creatorTag.toLowerCase();
+            if (lowerTag === '' || lowerTag === 'creator tag' || lowerTag === 'total votes' || lowerTag === 'last updated') return;
+
             const totalVotes = (row.c[1] && row.c[1].v !== null) ? parseInt(row.c[1].v) : 1;
 
-            if (creatorTag) {
-              const duplicateIndex = liveArtists.findIndex(x => x.name.toLowerCase() === creatorTag.toLowerCase());
-              if (duplicateIndex !== -1) {
-                liveArtists[duplicateIndex].votes += totalVotes;
-              } else {
-                liveArtists.push({
-                  name: creatorTag,
-                  votes: totalVotes
-                });
-              }
+            const duplicateIndex = liveArtists.findIndex(x => x.name.toLowerCase() === creatorTag.toLowerCase());
+            if (duplicateIndex !== -1) {
+              liveArtists[duplicateIndex].votes += totalVotes;
+            } else {
+              liveArtists.push({
+                name: creatorTag,
+                votes: totalVotes
+              });
             }
-          }
-        });
+          });
+        }
 
         if (liveArtists.length > 0) {
           // --- SMART CO-EXISTENCE MERGE LOGIC ---
-          // Prevent newly submitted suggestions or newly cast votes from getting erased 
-          // by the Google Visualization API cache delay.
           const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
           const votedFor = JSON.parse(localStorage.getItem('pb_voted_artists') || '[]');
 
@@ -1683,7 +1690,7 @@
             mergedArtists.push(serverArtist);
           });
 
-          // Reconstruction Fallback: Ensure any local records ever entered on this client are always represented
+          // Reconstruction Fallback
           submittedByMe.forEach(myTag => {
             const alreadyInList = mergedArtists.some(item => item.name.toLowerCase() === myTag);
             if (!alreadyInList) {
@@ -1791,6 +1798,7 @@
       renderFullNomineesList();
     }
 
+    // Displays the podium cleanly
     function renderPodiumAndStats() {
       const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
       const votedFor = JSON.parse(localStorage.getItem('pb_voted_artists') || '[]');
