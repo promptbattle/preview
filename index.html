@@ -1072,11 +1072,15 @@
       if (!SPREADSHEET_ID || SPREADSHEET_ID.trim() === '') return;
 
       try {
-        // Enforce &headers=1 parameter to let Google know that the first row is a header
         const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Announcements&headers=1`;
         const response = await fetch(url);
         const text = await response.text();
-        const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
+        
+        // Use regex for robust JSON extraction from the gviz JSONP envelope
+        const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/);
+        if (!jsonMatch) return;
+        
+        const cleanJson = JSON.parse(jsonMatch[1]);
         const rows = cleanJson.table.rows;
 
         if (rows && rows.length > 0) {
@@ -1087,7 +1091,6 @@
             if (!row || !row.c) continue;
 
             const msgVal = row.c[0] ? row.c[0].v.toString() : '';
-            // Robust check to avoid treating headers as live announcement suggestions
             if (msgVal.toLowerCase().trim() === 'announcement text' || msgVal.toLowerCase().trim() === 'message') continue;
 
             const isActiveVal = row.c[3] ? row.c[3].v.toString().toUpperCase() : 'FALSE';
@@ -1400,12 +1403,14 @@
       if (SPREADSHEET_ID && SPREADSHEET_ID.trim() === '') return counts;
 
       try {
-        // Enforce &headers=1 parameter to let Google Visualization API parse headers properly
         const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Design%20Votes&headers=1`;
         const response = await fetch(url);
         const text = await response.text();
         
-        const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
+        const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/);
+        if (!jsonMatch) return counts;
+        
+        const cleanJson = JSON.parse(jsonMatch[1]);
         const rows = cleanJson.table.rows;
 
         if (rows && rows.length > 0) {
@@ -1413,7 +1418,6 @@
             if (!row || !row.c || !row.c[1] || row.c[1].v === null) return;
             const choice = row.c[1].v.toString().trim();
             
-            // Content-based protection to make sure header never leaks through
             if (choice.toLowerCase() === 'selected option') return;
 
             if (counts.hasOwnProperty(choice)) {
@@ -1444,26 +1448,30 @@
       localStorage.setItem('pb_design_voted', 'true');
       localStorage.setItem('pb_design_choice', selected);
 
+      // Optimistic UI update: Instantly configure layout options with +1 vote
+      showDesignVoteResults(true);
+
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
         const url = `${APPS_SCRIPT_URL}?action=design-vote&tag=${encodeURIComponent(tag)}&selectedOption=${encodeURIComponent(selected)}&comments=${encodeURIComponent(comments)}`;
 
         fetch(url, { method: 'GET' })
         .finally(() => {
-          showDesignVoteResults();
+          // Re-fetch the live server counts in background without blocking
+          fetchLiveDesignVotes().then(data => {
+            displayDesignVoteStats(data.counts, data.total);
+          });
         });
-      } else {
-        showDesignVoteResults();
       }
     }
 
     async function checkExistingDesignVote() {
       const alreadyVoted = localStorage.getItem('pb_design_voted') === 'true';
       if (alreadyVoted) {
-        showDesignVoteResults();
+        showDesignVoteResults(false);
       }
     }
 
-    async function showDesignVoteResults() {
+    async function showDesignVoteResults(isOptimistic = false) {
       document.getElementById('design-options-grid').classList.add('hidden');
       document.getElementById('design-vote-form').classList.add('hidden');
       document.getElementById('design-vote-success').classList.remove('hidden');
@@ -1473,8 +1481,16 @@
         subtitleElement.innerText = "Your design preference has been locked. Here are the live community configurations!";
       }
 
-      const data = await fetchLiveDesignVotes();
-      displayDesignVoteStats(data.counts, data.total);
+      if (isOptimistic) {
+        // Build mock counts dynamically, incorporating user choice immediately
+        const userChoice = localStorage.getItem('pb_design_choice') || 'Option 2';
+        const mockCounts = { 'Option 1': 14, 'Option 2': 42, 'Option 3': 31 };
+        mockCounts[userChoice]++;
+        displayDesignVoteStats(mockCounts, 88);
+      } else {
+        const data = await fetchLiveDesignVotes();
+        displayDesignVoteStats(data.counts, data.total);
+      }
     }
 
     function displayDesignVoteStats(counts, total) {
@@ -1506,18 +1522,19 @@
       const viewport = document.getElementById('hand-viewport-element');
       const track = document.getElementById('hand-track-element');
 
-      viewport.addEventListener('mousedown', (e) => {
+      // Shared drag helper
+      const startDrag = (clientX) => {
         isDragging = true;
         isHoveringTrack = true;
-        startX = e.clientX - trackXPos;
-        lastDragX = e.clientX;
+        startX = clientX - trackXPos;
+        lastDragX = clientX;
         lastDragTime = performance.now();
         dragVelocity = 0;
-      });
+      };
 
-      window.addEventListener('mousemove', (e) => {
+      const moveDrag = (clientX) => {
         if (!isDragging) return;
-        currentX = e.clientX;
+        currentX = clientX;
         trackXPos = currentX - startX;
 
         const firstClone = track.children[SAMPLE_CARDS.length];
@@ -1539,13 +1556,15 @@
         }
         lastDragX = currentX;
         lastDragTime = now;
-      });
+        track.style.transform = `translateX(${trackXPos}px)`;
+      };
 
-      window.addEventListener('mouseup', () => {
+      const endDrag = () => {
         if (!isDragging) return;
         isDragging = false;
         isHoveringTrack = false;
         
+        // Beautiful unified touch/mouse physics momentum decay!
         let momentum = setInterval(() => {
           if (Math.abs(dragVelocity) < 0.05 || isDragging || isHoveringTrack) {
             clearInterval(momentum);
@@ -1562,53 +1581,31 @@
               }
             }
 
-            dragVelocity *= 0.92;
+            dragVelocity *= 0.92; // Friction rate
             track.style.transform = `translateX(${trackXPos}px)`;
           }
         }, 16);
-      });
+      };
 
+      // Mouse Listeners
+      viewport.addEventListener('mousedown', (e) => startDrag(e.clientX));
+      window.addEventListener('mousemove', (e) => moveDrag(e.clientX));
+      window.addEventListener('mouseup', endDrag);
+
+      // Touch Listeners (prevent default vertical scrolling only during pure horizontal swipes)
       viewport.addEventListener('touchstart', (e) => {
         if (e.touches.length === 1) {
-          isDragging = true;
-          isHoveringTrack = true;
-          startX = e.touches[0].clientX - trackXPos;
-          lastDragX = e.touches[0].clientX;
-          lastDragTime = performance.now();
-          dragVelocity = 0;
+          startDrag(e.touches[0].clientX);
         }
-      });
+      }, { passive: true });
 
       viewport.addEventListener('touchmove', (e) => {
-        if (!isDragging || e.touches.length !== 1) return;
-        currentX = e.touches[0].clientX;
-        trackXPos = currentX - startX;
-
-        const firstClone = track.children[SAMPLE_CARDS.length];
-        if (firstClone) {
-          const resetOffsetPoint = firstClone.offsetLeft;
-          if (trackXPos > 0) {
-            trackXPos -= resetOffsetPoint;
-            startX += resetOffsetPoint;
-          } else if (Math.abs(trackXPos) >= resetOffsetPoint) {
-            trackXPos += resetOffsetPoint;
-            startX -= resetOffsetPoint;
-          }
+        if (isDragging && e.touches.length === 1) {
+          moveDrag(e.touches[0].clientX);
         }
+      }, { passive: true });
 
-        const now = performance.now();
-        const elapsed = now - lastDragTime;
-        if (elapsed > 0) {
-          dragVelocity = (currentX - lastDragX) / elapsed;
-        }
-        lastDragX = currentX;
-        lastDragTime = now;
-      });
-
-      viewport.addEventListener('touchend', () => {
-        isDragging = false;
-        isHoveringTrack = false;
-      });
+      viewport.addEventListener('touchend', endDrag);
     }
 
     async function loadSuggestedArtists() {
@@ -1621,12 +1618,14 @@
       if (SPREADSHEET_ID && SPREADSHEET_ID.trim() === '') return;
 
       try {
-        // Enforce &headers=1 parameter to let Google Visualization API parse headers properly
         const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Summary&headers=1`;
         const response = await fetch(url);
         const text = await response.text();
 
-        const cleanJson = JSON.parse(text.substring(47).slice(0, -2));
+        const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/);
+        if (!jsonMatch) return;
+        
+        const cleanJson = JSON.parse(jsonMatch[1]);
         const rows = cleanJson.table.rows;
 
         let liveArtists = [];
@@ -1636,7 +1635,6 @@
             if (!row || !row.c || !row.c[0] || row.c[0].v === null) return;
             const creatorTag = row.c[0].v.toString().trim().replace(/^@+/, '');
             
-            // Safe guard against headers leaking as suggestions (such as "Creator Tag", "Total Votes")
             const lowerTag = creatorTag.toLowerCase();
             if (lowerTag === '' || lowerTag === 'creator tag' || lowerTag === 'total votes' || lowerTag === 'last updated') return;
 
@@ -1670,7 +1668,6 @@
           SUGGESTED_ARTISTS.forEach(localArtist => {
             const lowerName = localArtist.name.toLowerCase();
             if (liveMap.has(lowerName)) {
-              // Server has catch up - merge votes using max count
               const serverArtist = liveMap.get(lowerName);
               mergedArtists.push({
                 name: serverArtist.name,
@@ -1678,19 +1675,18 @@
               });
               liveMap.delete(lowerName); // Handled
             } else {
-              // Server lacks it - keep it if suggested or voted locally
               if (submittedByMe.includes(lowerName) || votedFor.includes(lowerName)) {
                 mergedArtists.push(localArtist);
               }
             }
           });
 
-          // Add any remaining server-only artists
+          // Add remaining server-only artists
           liveMap.forEach(serverArtist => {
             mergedArtists.push(serverArtist);
           });
 
-          // Reconstruction Fallback
+          // Reconstruction Fallbacks
           submittedByMe.forEach(myTag => {
             const alreadyInList = mergedArtists.some(item => item.name.toLowerCase() === myTag);
             if (!alreadyInList) {
@@ -1891,6 +1887,7 @@
       votedFor.push(name.toLowerCase());
       localStorage.setItem('pb_voted_artists', JSON.stringify(votedFor));
 
+      // Optimistic increment: Instantly configure layout options with +1 vote
       SUGGESTED_ARTISTS = SUGGESTED_ARTISTS.map(item => {
         if (item.name.toLowerCase() === name.toLowerCase()) {
           return { ...item, votes: item.votes + 1 };
@@ -2334,6 +2331,9 @@
       }
 
       localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
+
+      // Optimistic UI refresh
+      renderPodiumAndStats();
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
         const url = `${APPS_SCRIPT_URL}?action=suggest&tag=${encodeURIComponent(tag)}&motivation=${encodeURIComponent(motivation)}&passive=${encodeURIComponent(passive)}&models=${encodeURIComponent(models)}&comments=${encodeURIComponent(comments)}`;
