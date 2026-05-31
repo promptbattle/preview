@@ -1646,12 +1646,64 @@
         });
 
         if (liveArtists.length > 0) {
-          SUGGESTED_ARTISTS = liveArtists;
+          // --- SMART CO-EXISTENCE MERGE LOGIC ---
+          // Prevent newly submitted suggestions or newly cast votes from getting erased 
+          // by the Google Visualization API cache delay.
+          const submittedByMe = JSON.parse(localStorage.getItem('pb_my_suggestions') || '[]');
+          const votedFor = JSON.parse(localStorage.getItem('pb_voted_artists') || '[]');
+
+          const liveMap = new Map();
+          liveArtists.forEach(artist => {
+            liveMap.set(artist.name.toLowerCase(), artist);
+          });
+
+          let mergedArtists = [];
+
+          // Walk our in-memory list first to protect active entries
+          SUGGESTED_ARTISTS.forEach(localArtist => {
+            const lowerName = localArtist.name.toLowerCase();
+            if (liveMap.has(lowerName)) {
+              // Server has catch up - merge votes using max count
+              const serverArtist = liveMap.get(lowerName);
+              mergedArtists.push({
+                name: serverArtist.name,
+                votes: Math.max(localArtist.votes, serverArtist.votes)
+              });
+              liveMap.delete(lowerName); // Handled
+            } else {
+              // Server lacks it - keep it if suggested or voted locally
+              if (submittedByMe.includes(lowerName) || votedFor.includes(lowerName)) {
+                mergedArtists.push(localArtist);
+              }
+            }
+          });
+
+          // Add any remaining server-only artists
+          liveMap.forEach(serverArtist => {
+            mergedArtists.push(serverArtist);
+          });
+
+          // Reconstruction Fallback: Ensure any local records ever entered on this client are always represented
+          submittedByMe.forEach(myTag => {
+            const alreadyInList = mergedArtists.some(item => item.name.toLowerCase() === myTag);
+            if (!alreadyInList) {
+              mergedArtists.push({ name: myTag, votes: 1 });
+            }
+          });
+
+          votedFor.forEach(votedTag => {
+            const alreadyInList = mergedArtists.some(item => item.name.toLowerCase() === votedTag);
+            if (!alreadyInList) {
+              mergedArtists.push({ name: votedTag, votes: 1 });
+            }
+          });
+
+          SUGGESTED_ARTISTS = mergedArtists;
           localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
         }
 
       } catch (error) {
-        // Validation handled silently
+        // Handled silently
       }
 
       renderPodiumAndStats();
