@@ -807,7 +807,7 @@
             </div>
 
             <div class="overflow-hidden rounded-2xl border border-brand-200/10 bg-brand-950/60 backdrop-blur">
-              <div class="max-h-[350px] overflow-y-auto" id="full-nominees-list font-sans">
+              <div class="max-h-[350px] overflow-y-auto font-sans" id="full-nominees-list">
                 <!-- Programmatically rendered row elements go here -->
               </div>
             </div>
@@ -893,6 +893,7 @@
     // State Variables
     let CURRENT_SERVER_NOTIF = null;
     let GLOBAL_ANNOUNCEMENT_KEY = '';
+    let SESSION_REGISTERED_BETA_TAGS = new Set(); // In-memory cache of already registered beta usernames (silent lookup, no persistence)
 
     // Card Design Vote Option cards for interactive 3D inspection
     const DESIGN_OPTIONS_CARDS = {
@@ -1024,9 +1025,10 @@
       checkExistingClosedBetaApplication();
       synchronizeNotificationsFromServer();
       loadGlobalAnnouncements();
+      silentlyPreloadBetaTags(); // Fetch registered beta usernames instantly
+      setupLiveBetaInputListener(); // Wire real-time keystroke lookups
     });
 
-    // Generate/Load Unique Identifier & Initial status
     // Generate/Load Unique Identifier & Initial status
     function initializeUserIdentifier() {
       let fingerprint = localStorage.getItem('pb_device_id');
@@ -1118,7 +1120,7 @@
           }
         }
       } catch (err) {
-        console.error("Failed to query global announcements.", err);
+        // Silently catch exceptions to respect quiet visual environment
       }
     }
 
@@ -1130,6 +1132,40 @@
       document.getElementById('global-announcement-banner').classList.add('hidden');
     }
 
+    // Quietly Fetch and Preload Registered Tags on Page Load (No Console Logs)
+    async function silentlyPreloadBetaTags() {
+      if (!APPS_SCRIPT_URL) return;
+      try {
+        const url = `${APPS_SCRIPT_URL}?action=get-beta-tags`;
+        const response = await fetch(url, { method: 'GET' });
+        const result = await response.json();
+        if (result && result.status === 'success' && Array.isArray(result.tags)) {
+          SESSION_REGISTERED_BETA_TAGS = new Set(result.tags.map(tag => tag.toLowerCase()));
+        }
+      } catch (err) {
+        // Quiet failure to satisfy user's preference for no logs
+      }
+    }
+
+    // Live Intercept Listener on Form Input to alert duplicates as you type
+    function setupLiveBetaInputListener() {
+      const input = document.getElementById('betaTag');
+      if (!input) return;
+
+      input.addEventListener('input', (e) => {
+        const cleanedVal = e.target.value.trim().replace(/^@+/, '').toLowerCase();
+        if (SESSION_REGISTERED_BETA_TAGS.has(cleanedVal)) {
+          showBetaWarning("This username has already requested beta access! Duplicate requests are restricted.");
+          document.getElementById('betaSubmitBtn').disabled = true;
+          document.getElementById('betaSubmitBtn').classList.add('opacity-55', 'cursor-not-allowed');
+        } else {
+          document.getElementById('beta-warning-box').classList.add('hidden');
+          document.getElementById('betaSubmitBtn').disabled = false;
+          document.getElementById('betaSubmitBtn').classList.remove('opacity-55', 'cursor-not-allowed');
+        }
+      });
+    }
+
     // Securely query status & notification updates from database automatically
     async function synchronizeNotificationsFromServer() {
       const savedUser = localStorage.getItem('pb_applied_username') || '';
@@ -1138,12 +1174,9 @@
       if (!savedUser || !deviceId || !APPS_SCRIPT_URL) return;
 
       try {
-        // Fix: Use query parameters and a GET request to completely avoid CORS preflight blocks in Apps Script redirects
         const url = `${APPS_SCRIPT_URL}?action=check-status&tag=${encodeURIComponent(savedUser)}&deviceId=${encodeURIComponent(deviceId)}`;
         
-        const response = await fetch(url, {
-          method: 'GET'
-        });
+        const response = await fetch(url, { method: 'GET' });
         const result = await response.json();
 
         if (result && result.status === 'success') {
@@ -1162,8 +1195,7 @@
           updateHeaderStatusBadge('Waitlist');
         }
       } catch (err) {
-        console.error("Status synchronization link failed gracefully.", err);
-        // Fix: Keep user informed when network connection is paused or blocked instead of hanging on "Syncing with registry..."
+        // Keep user informed when network connection is paused or blocked instead of hanging on "Syncing with registry..."
         updateLiveAutoStatusUI({
           status: 'Waitlist',
           title: 'Live Connection Paused',
@@ -1292,12 +1324,16 @@
     function handleBetaSubmit(event) {
       event.preventDefault();
 
-      if (localStorage.getItem('pb_beta_applied') === 'true') {
-        showBetaWarning("You have already submitted an invite application on this device!");
+      const rawTag = document.getElementById('betaTag').value;
+      const tag = rawTag.trim().replace(/^@+/, '').trim();
+      const normalizedInputTag = tag.toLowerCase();
+
+      // Double-guard: check again in-memory cache set to prevent fast bypasses
+      if (SESSION_REGISTERED_BETA_TAGS.has(normalizedInputTag) || localStorage.getItem('pb_beta_applied') === 'true') {
+        showBetaWarning("This username has already applied! Duplicate requests are restricted.");
         return;
       }
 
-      const tag = document.getElementById('betaTag').value.trim().replace('@', '');
       const reason = document.getElementById('betaReason').value.trim();
       const comments = document.getElementById('betaComments').value.trim();
       const submitBtn = document.getElementById('betaSubmitBtn');
@@ -1307,35 +1343,35 @@
       submitBtn.innerText = "Transmitting Details...";
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        // Fix: Use GET request query string structure to ensure 100% successful JSON parses back from Apps Script under CORS redirects!
         const url = `${APPS_SCRIPT_URL}?action=beta-request&tag=${encodeURIComponent(tag)}&motivation=${encodeURIComponent(reason)}&comments=${encodeURIComponent(comments)}&deviceId=${encodeURIComponent(deviceId)}`;
 
         fetch(url, { method: 'GET' })
         .then(response => response.json())
         .then(data => {
           if (data && data.status === 'error') {
-            // Fix: Show warning box in the Closed Beta card, and do NOT lock local storage!
+            // Cleanly reset button and show backend duplicate error message
             showBetaWarning(data.message);
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>';
           } else {
+            // Success: Securely write status to localStorage and swap views
             localStorage.setItem('pb_beta_applied', 'true');
             localStorage.setItem('pb_applied_username', tag);
+            SESSION_REGISTERED_BETA_TAGS.add(normalizedInputTag); // Update volatile memory immediately
             checkExistingClosedBetaApplication();
             synchronizeNotificationsFromServer();
           }
         })
         .catch(err => {
-          console.error("Direct connection failed. Logging locally.", err);
-          // Network failure backup log
-          localStorage.setItem('pb_beta_applied', 'true');
-          localStorage.setItem('pb_applied_username', tag);
-          checkExistingClosedBetaApplication();
-          synchronizeNotificationsFromServer();
+          // Never bypass server check on error. Print fallback notification instead of faking success.
+          showBetaWarning("Connection delay. Could not reach registry database. Please try again in a moment.");
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Submit Access Request <i data-lucide="send" class="w-4 h-4"></i>';
         });
       } else {
         localStorage.setItem('pb_beta_applied', 'true');
         localStorage.setItem('pb_applied_username', tag);
+        SESSION_REGISTERED_BETA_TAGS.add(normalizedInputTag);
         checkExistingClosedBetaApplication();
       }
     }
@@ -1410,7 +1446,6 @@
           });
         }
       } catch (error) {
-        console.error("Live Design Votes fetch failed.", error);
         counts = { 'Option 1': 14, 'Option 2': 42, 'Option 3': 31 };
         total = 87;
       }
@@ -1433,7 +1468,6 @@
       localStorage.setItem('pb_design_choice', selected);
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        // Fix: Use GET to handle database updates immune to CORS errors
         const url = `${APPS_SCRIPT_URL}?action=design-vote&tag=${encodeURIComponent(tag)}&selectedOption=${encodeURIComponent(selected)}&comments=${encodeURIComponent(comments)}`;
 
         fetch(url, { method: 'GET' })
@@ -1644,7 +1678,7 @@
         }
 
       } catch (error) {
-        console.error("Spreadsheet fetch failed.", error);
+        // Quiet validation failure logic
       }
 
       renderPodiumAndStats();
@@ -1835,14 +1869,13 @@
       renderPodiumAndStats();
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        // Fix: Use GET for votes to secure consistent CORS-free transmission
         const url = `${APPS_SCRIPT_URL}?action=vote&tag=${encodeURIComponent(name)}`;
 
         fetch(url, { method: 'GET' })
         .then(() => {
           setTimeout(loadSuggestedArtists, 1500);
         })
-        .catch(err => console.error("Database submission link failed.", err));
+        .catch(err => { /* Swallow silently */ });
       }
     }
 
@@ -2271,14 +2304,13 @@
       localStorage.setItem('pb_suggested_artists', JSON.stringify(SUGGESTED_ARTISTS));
 
       if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== '') {
-        // Fix: Query with GET instead of POST to guarantee immediate, CORS-free database suggestions on GitHub Pages
         const url = `${APPS_SCRIPT_URL}?action=suggest&tag=${encodeURIComponent(tag)}&motivation=${encodeURIComponent(motivation)}&passive=${encodeURIComponent(passive)}&models=${encodeURIComponent(models)}&comments=${encodeURIComponent(comments)}`;
 
         fetch(url, { method: 'GET' })
         .then(() => {
           setTimeout(loadSuggestedArtists, 1500);
         })
-        .catch(err => console.error("Apps Script direct suggestion failed.", err))
+        .catch(err => { /* Swallow silently */ })
         .finally(() => {
           showArtistSuccessScreen(tag);
         });
